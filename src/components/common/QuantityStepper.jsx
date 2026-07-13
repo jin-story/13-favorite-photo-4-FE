@@ -36,7 +36,14 @@ const QuantityStepper = ({
           -
         </button>
 
-        <span className="flex items-center justify-center text-lg font-medium leading-none text-white">
+        <span
+          role="spinbutton"
+          aria-valuenow={value}
+          aria-valuemin={min}
+          aria-valuemax={max}
+          aria-live="polite"
+          className="flex items-center justify-center text-lg font-medium leading-none text-white"
+        >
           {value}
         </span>
 
