@@ -14,15 +14,18 @@ const sizeStyle = {
 };
 
 export default function GradeMyCard({ grade, count = 0, size }) {
+  // 백엔드에서 어떤 형태가 와도 동일하게 변환
+  const upperGrade = grade.toUpperCase().replace(/\s+/g, "_");
+
   return (
     <div
       className={clsx(
         "inline-flex items-center border font-medium bg-black gap-[10px]",
-        gradeStyle[grade],
+        gradeStyle[upperGrade],
         sizeStyle[size],
       )}
     >
-      <span>{grade?.replaceAll("_", " ")}</span>
+      <span>{grade}</span>
       <span>{count}장</span>
     </div>
   );
