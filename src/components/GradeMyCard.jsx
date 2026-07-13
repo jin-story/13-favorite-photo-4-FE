@@ -25,7 +25,7 @@ export default function GradeMyCard({ grade, count = 0, size }) {
         sizeStyle[size],
       )}
     >
-      <span>{grade}</span>
+      <span>{upperGrade.replace(/_/g, " ")}</span>
       <span>{count}장</span>
     </div>
   );
