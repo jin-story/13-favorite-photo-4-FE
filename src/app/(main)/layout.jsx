@@ -1,6 +1,6 @@
-import React from "react";
+import React from 'react'
 
-export default function MainLayout({ children }) {
+export default function Layout({ children }) {
   return (
     <div className="flex min-h-dvh flex-col">
       {/* Header*/}
@@ -11,5 +11,5 @@ export default function MainLayout({ children }) {
       </main>
       {/* Footer */}
     </div>
-  );
+  )
 }
