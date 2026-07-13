@@ -5,6 +5,26 @@
   --foreground: #171717;
 }
 
+/* 컬러 팔레트 */
+@theme {
+  --color-black: #0f0f0f;
+  --color-white: #ffffff;
+  --color-gray-100: #eeeeee;
+  --color-gray-200: #dddddd;
+  --color-gray-300: #a4a4a4;
+  --color-gray-400: #5a5a5a;
+  --color-gray-500: #161616;
+  --color-red: #ff483d;
+  --color-blue: #29c9f9;
+  --color-purple: #a77eff;
+  --color-pink: #ff2a6a;
+  --color-main: #efff04;
+/* 브레이크포인트 */
+@theme {
+  --breakpoint-tablet: 744px;
+  --breakpoint-pc: 1920px;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
