@@ -1,7 +1,11 @@
-import React from 'react'
+import Chip from "@/components/Chip";
+import React from "react";
 
 export default function Home() {
   return (
-    <div>Home</div>
-  )
+    <div>
+      Home
+      <Chip />
+    </div>
+  );
 }
