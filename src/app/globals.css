@@ -5,6 +5,12 @@
   --foreground: #171717;
 }
 
+/* 브레이크포인트 */
+@theme {
+  --breakpoint-tablet: 744px;
+  --breakpoint-pc: 1920px;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
