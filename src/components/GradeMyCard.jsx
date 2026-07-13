@@ -27,4 +27,4 @@ export default function GradeMyCard({ grade, count = 0, size }) {
     </div>
   );
 }
-// 사용법: <GradeMyCard grade="COMMON" count={20} size="S" />
+// 사용법: <GradeMyCard grade="COMMON" count={20} size="L" />
