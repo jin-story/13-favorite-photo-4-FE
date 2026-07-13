@@ -1,7 +1,11 @@
-import React from 'react'
+import RandomPoint from "@/components/RandomPoint";
+import React from "react";
 
 export default function Home() {
   return (
-    <div>Home</div>
-  )
+    <div>
+      Home
+      <RandomPoint />
+    </div>
+  );
 }
