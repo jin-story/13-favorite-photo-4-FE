@@ -43,4 +43,4 @@ export default function PrimaryButton({
 // 사용법:
 // <PrimaryButton variant="thick">포토카드 구매하기</PrimaryButton>
 // <PrimaryButton variant="thin" disabled>포토카드 교환하기</PrimaryButton>
-// <PrimaryButton variant="thin" variant="thinXS">승인</PrimaryButton>
+// <PrimaryButton variant="thinXS">승인</PrimaryButton>
