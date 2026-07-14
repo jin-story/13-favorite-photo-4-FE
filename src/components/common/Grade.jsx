@@ -7,7 +7,7 @@ export default function Grade({ type = "card", grade = "COMMON" }) {
     COMMON: "text-[#EFFF04]",
     RARE: "text-[#29C9F9]",
     "SUPER RARE": "text-[#A77EFF]",
-    REGENDARY: "text-[#FF2A6A]",
+    LEGENDARY: "text-[#FF2A6A]",
   };
   return (
     <>
