@@ -5,8 +5,8 @@
   --foreground: #171717;
 }
 
-/* 컬러 팔레트 */
 @theme {
+  /* 컬러 팔레트 */
   --color-black: #0f0f0f;
   --color-white: #ffffff;
   --color-gray-100: #eeeeee;
@@ -19,8 +19,9 @@
   --color-purple: #a77eff;
   --color-pink: #ff2a6a;
   --color-main: #efff04;
-/* 브레이크포인트 */
-@theme {
+
+  /* 브레이크포인트 */
+
   --breakpoint-tablet: 744px;
   --breakpoint-pc: 1920px;
 }
@@ -28,8 +29,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-noto-sans-kr);
+  --font-baskin-robbins: var(--font-baskin-robbins);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -42,5 +43,155 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+}
+
+/* 타이포그래피 */
+/* 베스킨라빈스 폰트 */
+@utility text-baskin-62 {
+  font-family: var(--font-baskin-robbins);
+  font-size: 62px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+@utility text-baskin-48 {
+  font-family: var(--font-baskin-robbins);
+  font-size: 48px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+@utility text-baskin-46 {
+  font-family: var(--font-baskin-robbins);
+  font-size: 46px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+@utility text-baskin-40 {
+  font-family: var(--font-baskin-robbins);
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+@utility text-baskin-24 {
+  font-family: var(--font-baskin-robbins);
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+@utility text-baskin-18 {
+  font-family: var(--font-baskin-robbins);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+/* 노토산스 폰트 */
+@utility text-noto-40-bold {
+  font-family: var(--font-sans);
+  font-size: 40px;
+  font-weight: 700;
+}
+@utility text-noto-32-bold {
+  font-family: var(--font-sans);
+  font-size: 32px;
+  font-weight: 700;
+}
+@utility text-noto-28-bold {
+  font-family: var(--font-sans);
+  font-size: 28px;
+  font-weight: 700;
+}
+@utility text-noto-24-bold {
+  font-family: var(--font-sans);
+  font-size: 24px;
+  font-weight: 700;
+}
+@utility text-noto-24-regular {
+  font-family: var(--font-sans);
+  font-size: 24px;
+  font-weight: 400;
+}
+@utility text-noto-22-bold {
+  font-family: var(--font-sans);
+  font-size: 22px;
+  font-weight: 700;
+}
+@utility text-noto-20-bold {
+  font-family: var(--font-sans);
+  font-size: 20px;
+  font-weight: 700;
+}
+@utility text-noto-20-regular {
+  font-family: var(--font-sans);
+  font-size: 20px;
+  font-weight: 400;
+}
+@utility text-noto-18-bold {
+  font-family: var(--font-sans);
+  font-size: 18px;
+  font-weight: 700;
+}
+@utility text-noto-18-regular {
+  font-family: var(--font-sans);
+  font-size: 18px;
+  font-weight: 400;
+}
+@utility text-noto-18-light {
+  font-family: var(--font-sans);
+  font-size: 18px;
+  font-weight: 300;
+}
+@utility text-noto-16-bold {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 700;
+}
+@utility text-noto-16-regular {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 400;
+}
+@utility text-noto-16-light {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 300;
+}
+@utility text-noto-14-bold {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 700;
+}
+@utility text-noto-14-regular {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 400;
+}
+@utility text-noto-14-light {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 300;
+}
+@utility text-noto-12-bold {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 700;
+}
+@utility text-noto-12-regular {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 400;
+}
+@utility text-noto-12-light {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 300;
+}
+@utility text-noto-10-regular {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 400;
+}
+@utility text-noto-10-light {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 300;
 }
