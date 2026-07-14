@@ -35,13 +35,6 @@ const dropdownOptions = {
 };
 
 // css 정리
-const defaultStyle = {
-  button:
-    "flex pc:min-h-[24px] px:min-w-[64px] min-h-[22px] min-w-[58px] items-start gap-[10px]",
-  menu: "flex flex-col absolute z-10 items-start gap-[15px] mt-[18px] border border-gray-200 bg-red",
-  item: "flex items-start w-full py-[15px] px-[20px] text-left inline hover:bg-gray-500",
-};
-
 const dropdownStyle = {
   grade: {
     button: "flex pc:min-h-[24px] min-h-[22px] items-start gap-[10px]",
@@ -57,7 +50,7 @@ const dropdownStyle = {
 
   sort: {
     button:
-      "flex pc:min-w-[180px] pc:min-h-[50px] tablet:min-w-[140px] tablet:min-h-[45px] min-w[130pc] min-h-[35px] justify-center gap-[10px] items-start border border-gray-200 py-[10px] px-[15px]",
+      "flex pc:min-w-[180px] pc:min-h-[50px] tablet:min-w-[140px] tablet:min-h-[45px] min-w-[130] min-h-[35px] justify-center gap-[10px] items-start border border-gray-200 py-[10px] px-[15px]",
     menu: "flex flex-col absolute z-10 mt-[5px] w-full border border-gray-200 bg-red",
     item: "flex w-full items-center px-[20px] py-[15px] hover:bg-gray-500",
   },
@@ -99,10 +92,10 @@ export default function Dropdown({ type, value, onChange, disabled = false }) {
         <span className="text-noto-16-regular whitespace-nowrap">
           {selected}
         </span>
-        <div className="w-[24px] h-[24px] items-center justify-center">
+        <div className="flex w-[24px] h-[24px] items-center justify-center">
           <Image
             src={arrowDownIcon}
-            alt="arrow_down"
+            alt=""
             className={clsx("transition-transform", isOpen && "rotate-180")}
           />
         </div>
