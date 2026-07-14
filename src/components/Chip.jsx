@@ -1,20 +1,12 @@
 import React from "react";
 
-export default function Chip({ type="판매" }) {
-
-
+export default function Chip({ type = "판매" }) {
   return (
-    <>
-      {type === "판매" && (
-        <strong className="text-noto-10-regular font-normal text-white bg-black/50 rounded-xs px-2 py-1 tablet:text-noto-14-regular pc:text-noto-16-regular">
-          판매 중
-        </strong>
-      )}
+    <span className="inline-flex items-center font-normal bg-black/50 rounded-xs py-1 text-noto-10-regular tablet:text-noto-14-regular pc:text-noto-16-regular">
+      {type === "판매" && <span className="text-white px-2">판매 중</span>}
       {type === "교환" && (
-        <strong className="text-noto-10-regular font-normal text-[#EFFF04] bg-black/50 rounded-xs px-2.5 py-1 tablet:text-noto-14-regular pc:text-noto-16-regular">
-          교환 제시 대기 중
-        </strong>
+        <span className="text-[#EFFF04] px-2.5">교환 제시 대기 중</span>
       )}
-    </>
+    </span>
   );
 }
