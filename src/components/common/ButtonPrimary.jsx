@@ -3,23 +3,21 @@
 import clsx from "clsx";
 
 const buttonStyle = {
-  thick: {
-    L: "w-[440px] h-[80px] text-noto-20-bold",
-    M: "w-[342px] h-[75px] text-noto-18-bold",
-    S: "w-[345px] h-[75px] text-noto-18-bold",
-  },
-  thin: {
-    L: "w-[520px] h-[60px] text-noto-14-bold",
-    M: "w-[440px] h-[55px] text-noto-14-bold",
-    S: "w-[345px] h-[55px] text-noto-14-bold",
-    XS: "w-[150px] h-[40px] text-noto-12-bold",
-  },
+  thick:
+    "w-[345px] h-[75px] text-noto-18-bold \
+     tablet:w-[342px] tablet:h-[75px] tablet:text-noto-18-bold \
+     pc:w-[440px] pc:h-[80px] pc:text-noto-20-bold",
+
+  thin: "w-[345px] h-[55px] text-noto-14-bold \
+     tablet:w-[440px] tablet:h-[55px] tablet:text-noto-14-bold \
+     pc:w-[520px] pc:h-[60px] pc:text-noto-14-bold",
+
+  thinXS: "w-[150px] h-[40px] text-noto-12-bold",
 };
 
 export default function PrimaryButton({
   children,
   variant = "thick",
-  size = "M",
   disabled = false,
   type = "button",
   className,
@@ -31,10 +29,8 @@ export default function PrimaryButton({
       disabled={disabled}
       className={clsx(
         "flex items-center justify-center",
-        buttonStyle[variant][size],
-        disabled
-          ? "bg-gray-400 text-gray-300 cursor-not-allowed"
-          : "bg-main text-black hover:brightness-95",
+        buttonStyle[variant],
+        disabled ? "bg-gray-400 text-gray-300" : "bg-main text-black",
         className,
       )}
       {...props}
@@ -45,6 +41,6 @@ export default function PrimaryButton({
 }
 
 // 사용법:
-// <PrimaryButton variant="thick" size="L">포토카드 구매하기</PrimaryButton>
-// <PrimaryButton variant="thin" size="L">포토카드 교환하기</PrimaryButton>
-// <PrimaryButton variant="thin" size="L" disabled>포토카드 교환하기</PrimaryButton>
+// <PrimaryButton variant="thick">포토카드 구매하기</PrimaryButton>
+// <PrimaryButton variant="thin" disabled>포토카드 교환하기</PrimaryButton>
+// <PrimaryButton variant="thin" variant="thinXS">승인</PrimaryButton>
