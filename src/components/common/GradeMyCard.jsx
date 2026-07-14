@@ -7,13 +7,12 @@ const gradeStyle = {
   LEGENDARY: "border-pink text-pink",
 };
 
-const sizeStyle = {
-  L: "h-[40px] text-noto-16-light px-[20px] py-[8px]",
-  M: "h-[32px] text-noto-14-light px-[10px] py-[6px]",
-  S: "h-[30px] text-noto-12-light px-[10px] py-[6px]",
-};
+const sizeStyle =
+  "h-[30px] px-[10px] py-[6px] text-noto-12-light \
+  tablet:h-[32px] tablet:px-[10px] tablet:py-[6px] tablet:text-noto-14-light \
+  pc:h-[40px] pc:px-[20px] pc:py-[8px] pc:text-noto-16-light";
 
-export default function GradeMyCard({ grade, count = 0, size }) {
+export default function GradeMyCard({ grade, count = 0 }) {
   // 백엔드에서 어떤 형태가 와도 동일하게 변환
   const upperGrade = grade.toUpperCase().replace(/\s+/g, "_");
 
@@ -22,7 +21,7 @@ export default function GradeMyCard({ grade, count = 0, size }) {
       className={clsx(
         "inline-flex items-center border bg-black gap-[10px]",
         gradeStyle[upperGrade],
-        sizeStyle[size],
+        sizeStyle,
       )}
     >
       <span>{upperGrade.replace(/_/g, " ")}</span>
