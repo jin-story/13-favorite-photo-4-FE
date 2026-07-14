@@ -19,14 +19,9 @@
   --color-purple: #a77eff;
   --color-pink: #ff2a6a;
   --color-main: #efff04;
-<<<<<<< HEAD
 }
 /* 브레이크포인트 */
 @theme {
-=======
-
-  /* 브레이크포인트 */
->>>>>>> 07208f2e7d4dbf3768936fdab11382d373a9fe4a
   --breakpoint-tablet: 744px;
   --breakpoint-pc: 1920px;
 }
