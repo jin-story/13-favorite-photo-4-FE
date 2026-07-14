@@ -1,6 +1,7 @@
 import React from "react";
 
 export default function Chip({ type = "판매" }) {
+  if (type !== "판매" && type !== "교환") return null;
   return (
     <span className="inline-flex items-center font-normal bg-black/50 rounded-xs py-1 text-noto-10-regular tablet:text-noto-14-regular pc:text-noto-16-regular">
       {type === "판매" && <span className="text-white px-2">판매 중</span>}
