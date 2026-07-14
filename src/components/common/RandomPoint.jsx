@@ -21,7 +21,7 @@ export default function RandomPoint({ time = "59분 59초" }) {
       </div>
       <div className="flex flex-col items-center text-noto-16-bold text-white pc:text-noto-20-bold">
         <p>1시간마다 돌아오는 기회!</p>
-        <p> 랜덤 상자 뽑기를 통해 포인트를 획득하세요!</p>
+        <p>랜덤 상자 뽑기를 통해 포인트를 획득하세요!</p>
       </div>
       <div className="flex flex-col items-center gap-[5px] text-noto-14-regular pc:flex-row pc:gap-2.5">
         <p className="text-gray-300">다음 기회까지 남은 시간</p>
