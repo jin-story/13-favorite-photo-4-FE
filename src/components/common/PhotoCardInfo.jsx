@@ -28,7 +28,7 @@ const PhotoCardInfo = ({
         </div>
 
         {ownerNickname && (
-          <span className="shrink-0 text-lg font-bold underline underline-offset-4">
+          <span className="min-w-0 max-w-[40%] truncate text-lg font-bold underline underline-offset-4">
             {ownerNickname}
           </span>
         )}
