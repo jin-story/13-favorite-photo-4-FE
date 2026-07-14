@@ -38,20 +38,22 @@ const dropdownOptions = {
 const dropdownStyle = {
   grade: {
     button: "flex pc:min-h-[24px] min-h-[22px] items-start gap-[10px]",
-    menu: "flex flex-col absolute min-w-[134px] z-10 items-start mt-[18px] border border-gray-200 bg-red",
+    menu: "flex flex-col absolute min-w-[134px] z-10 items-start mt-[18px] border border-gray-200 bg-black",
     item: "flex items-start min-w-[134px] py-[15px] px-[20px] text-left inline hover:bg-gray-500",
   },
 
   sale: {
     button: "flex pc:min-h-[24px] min-h-[22px] items-start gap-[10px]",
-    menu: "flex flex-col absolute z-10 items-start mt-[18px] border border-gray-200 bg-red",
+    menu: "flex flex-col absolute z-10 items-start mt-[18px] border border-gray-200 bg-black",
     item: "flex items-start w-full py-[15px] px-[20px] text-left inline hover:bg-gray-500",
   },
 
   sort: {
     button:
-      "flex pc:min-w-[180px] pc:min-h-[50px] tablet:min-w-[140px] tablet:min-h-[45px] min-w-[130] min-h-[35px] justify-center gap-[10px] items-start border border-gray-200 py-[10px] px-[15px]",
-    menu: "flex flex-col absolute z-10 mt-[5px] w-full border border-gray-200 bg-red",
+      "pc:min-w-[180px] pc:min-h-[50px] \
+      tablet:min-w-[140px] tablet:min-h-[45px] \
+      flex min-w-[130px] min-h-[35px] justify-center gap-[10px] items-start border border-gray-200 py-[10px] px-[15px] bg-black",
+    menu: "flex flex-col absolute z-10 mt-[5px] w-full border border-gray-200 bg-black",
     item: "flex w-full items-center px-[20px] py-[15px] hover:bg-gray-500",
   },
 };
@@ -89,7 +91,7 @@ export default function Dropdown({ type, value, onChange, disabled = false }) {
           disabled && "cursor-not-allowed opacity-50",
         )}
       >
-        <span className="text-noto-16-regular whitespace-nowrap">
+        <span className="pc:text-noto-16-regular tablet:text-noto-14-regular text-noto-12-regular whitespace-nowrap">
           {selected}
         </span>
         <div className="flex w-[24px] h-[24px] items-center justify-center">
