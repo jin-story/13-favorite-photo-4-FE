@@ -2,16 +2,6 @@
 
 import { useId, useState } from "react";
 
-/**
- * @param {string} label - 라벨 텍스트
- * @param {string} value - 인풋 값
- * @param {(value: string) => void} onChange - 값 변경 시 호출, 이벤트가 아니라 value를 바로 전달
- * @param {(e: React.KeyboardEvent) => void} [onKeyDown] - 추가 키보드 핸들러
- * @param {string} [placeholder] - 값이 비어있을 때 안내 텍스트
- * @param {string} [errorMessage] - 에러 스타일(빨간 보더) + 메시지 표시
- * @param {number} [maxLength] - 최대 입력 글자 수
- */
-
 export default function InputTextfield({
   label,
   value = "",
@@ -20,6 +10,7 @@ export default function InputTextfield({
   placeholder,
   errorMessage,
   maxLength,
+  className = "",
 }) {
   const inputId = useId();
   const [isFocused, setIsFocused] = useState(false);
@@ -31,7 +22,9 @@ export default function InputTextfield({
   };
 
   return (
-    <div className="flex w-full max-w-[345px] flex-col items-start gap-[10px] tablet:max-w-[440px] pc:max-w-[520px]">
+    <div
+      className={`flex w-full max-w-[345px] flex-col items-start gap-[10px] tablet:max-w-[440px] pc:max-w-[520px] ${className}`}
+    >
       <label
         htmlFor={inputId}
         className="text-noto-16-bold text-white pc:text-noto-20-bold"
