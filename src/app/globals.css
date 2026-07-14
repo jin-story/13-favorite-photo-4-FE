@@ -21,6 +21,7 @@
   --color-main: #efff04;
 
   /* 브레이크포인트 */
+
   --breakpoint-tablet: 744px;
   --breakpoint-pc: 1920px;
 }
