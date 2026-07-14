@@ -1,0 +1,67 @@
+"use client";
+
+import { useId, useState } from "react";
+
+/**
+ * @param {string} label - 라벨 텍스트
+ * @param {string} value - 인풋 값
+ * @param {(value: string) => void} onChange - 값 변경 시 호출, 이벤트가 아니라 value를 바로 전달
+ * @param {(e: React.KeyboardEvent) => void} [onKeyDown] - 추가 키보드 핸들러
+ * @param {string} [placeholder] - 값이 비어있을 때 안내 텍스트
+ * @param {string} [errorMessage] - 에러 스타일(빨간 보더) + 메시지 표시
+ * @param {number} [maxLength] - 최대 입력 글자 수
+ */
+
+export default function InputTextfield({
+  label,
+  value = "",
+  onChange,
+  onKeyDown,
+  placeholder,
+  errorMessage,
+  maxLength,
+}) {
+  const inputId = useId();
+  const [isFocused, setIsFocused] = useState(false);
+  const hasError = Boolean(errorMessage);
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") e.preventDefault();
+    onKeyDown?.(e);
+  };
+
+  return (
+    <div className="flex w-full max-w-[345px] flex-col items-start gap-[10px] tablet:max-w-[440px] pc:max-w-[520px]">
+      <label
+        htmlFor={inputId}
+        className="text-noto-16-bold text-white pc:text-noto-20-bold"
+      >
+        {label}
+      </label>
+      <div
+        className={`flex h-[55px] w-full items-center rounded-[2px] border px-5 py-[18px] pc:h-[60px] ${
+          hasError
+            ? "border-red bg-gray-500"
+            : isFocused
+              ? "border-gray-200 bg-gray-500"
+              : "border-gray-200 bg-black"
+        }`}
+      >
+        <input
+          id={inputId}
+          value={value}
+          onChange={(e) => onChange?.(e.target.value)}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          onKeyDown={handleKeyDown}
+          placeholder={placeholder}
+          maxLength={maxLength}
+          className="text-noto-14-regular placeholder:text-noto-14-light w-full bg-transparent text-white outline-none pc:text-noto-16-regular pc:placeholder:text-noto-16-light"
+        />
+      </div>
+      {hasError && (
+        <p className="text-noto-16-light text-red">{errorMessage}</p>
+      )}
+    </div>
+  );
+}
