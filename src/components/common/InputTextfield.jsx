@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
+import clsx from "clsx";
 
 export default function InputTextfield({
   label,
@@ -33,13 +34,12 @@ export default function InputTextfield({
         {label}
       </label>
       <div
-        className={`flex h-[55px] w-full items-center rounded-[2px] border px-5 py-[18px] pc:h-[60px] ${
-          hasError
-            ? "border-red bg-gray-500"
-            : isFocused
-              ? "border-gray-200 bg-gray-500"
-              : "border-gray-200 bg-black"
-        }`}
+        className={clsx(
+          "flex h-[55px] w-full items-center rounded-[2px] border px-5 py-[18px] pc:h-[60px]",
+          hasError && "border-red bg-gray-500",
+          !hasError && isFocused && "border-gray-200 bg-gray-500",
+          !hasError && !isFocused && "border-gray-200 bg-black",
+        )}
       >
         <input
           id={inputId}
