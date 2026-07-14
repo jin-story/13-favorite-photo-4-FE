@@ -15,6 +15,7 @@ export default function InputTextfield({
   const inputId = useId();
   const [isFocused, setIsFocused] = useState(false);
   const hasError = Boolean(errorMessage);
+  const errorId = `${inputId}-error`;
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") e.preventDefault();
@@ -49,11 +50,15 @@ export default function InputTextfield({
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
           maxLength={maxLength}
+          aria-invalid={hasError}
+          aria-describedby={hasError ? errorId : undefined}
           className="text-noto-14-regular placeholder:text-noto-14-light w-full bg-transparent text-white outline-none pc:text-noto-16-regular pc:placeholder:text-noto-16-light"
         />
       </div>
       {hasError && (
-        <p className="text-noto-16-light text-red">{errorMessage}</p>
+        <p id={errorId} className="text-noto-16-light text-red">
+          {errorMessage}
+        </p>
       )}
     </div>
   );
