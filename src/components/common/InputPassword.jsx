@@ -29,7 +29,10 @@ export default function InputPassword({
 
   return (
     <div
-      className={`flex w-full max-w-[345px] flex-col items-start gap-[10px] tablet:max-w-[440px] pc:max-w-[520px] ${className}`}
+      className={clsx(
+        "flex w-full max-w-[345px] flex-col items-start gap-[10px] tablet:max-w-[440px] pc:max-w-[520px]",
+        className,
+      )}
     >
       <label
         htmlFor={inputId}
