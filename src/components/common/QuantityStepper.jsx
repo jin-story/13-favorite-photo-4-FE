@@ -1,5 +1,7 @@
 "use client";
 
+import clsx from "clsx";
+
 const QuantityStepper = ({
   value = 1,
   min = 1,
@@ -23,22 +25,40 @@ const QuantityStepper = ({
 
   return (
     <div
-      className={`flex h-[45px] flex-col items-center justify-between rounded-[2px] border border-[#DDDDDD] bg-[#0F0F0F] px-3 py-2.5 ${className}`}
+      className={clsx(
+        "flex flex-col items-center justify-between rounded-[2px] border border-[#DDDDDD] bg-[#0F0F0F]",
+        "h-[40px] px-2.5 py-2",
+        "pc:h-[45px] pc:px-3 pc:py-2.5",
+        className,
+      )}
     >
-      <div className="flex w-[120px] flex-1 items-center justify-between">
+      <div
+        className={clsx(
+          "flex flex-1 items-center justify-between",
+          "w-[110px]",
+          "pc:w-[120px]",
+        )}
+      >
         <button
           type="button"
           onClick={handleDecrease}
           disabled={disabled || isMin}
           aria-label="수량 감소"
-          className="flex items-center justify-center text-xl leading-none text-white disabled:cursor-not-allowed disabled:opacity-30"
+          className={clsx(
+            "flex items-center justify-center leading-none text-white",
+            "text-base pc:text-xl",
+            "disabled:cursor-not-allowed disabled:opacity-30",
+          )}
         >
           -
         </button>
 
         <span
           aria-live="polite"
-          className="flex items-center justify-center text-lg font-medium leading-none text-white"
+          className={clsx(
+            "flex items-center justify-center font-medium leading-none text-white",
+            "text-base pc:text-lg",
+          )}
         >
           {value}
         </span>
@@ -48,7 +68,11 @@ const QuantityStepper = ({
           onClick={handleIncrease}
           disabled={disabled || isMax}
           aria-label="수량 증가"
-          className="flex items-center justify-center text-xl leading-none text-white disabled:cursor-not-allowed disabled:opacity-30"
+          className={clsx(
+            "flex items-center justify-center leading-none text-white",
+            "text-base pc:text-xl",
+            "disabled:cursor-not-allowed disabled:opacity-30",
+          )}
         >
           +
         </button>
