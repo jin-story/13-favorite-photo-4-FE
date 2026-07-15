@@ -22,6 +22,15 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const handlePageChange = (page) => {
+    if (page < 1 || page > totalPages) return;
+
+    onPageChange(page);
+
+    // 나중에 필요하면 추가
+    // window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   const getPages = () => {
     // 페이지가 적으면 전부 출력
     if (totalPages <= (isMobile ? 5 : 7)) {
@@ -69,7 +78,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
       <button
         type="button"
         disabled={currentPage === 1}
-        onClick={() => onPageChange(currentPage - 1)}
+        onClick={() => handlePageChange(currentPage - 1)}
         className={clsx(
           "flex h-[36px] w-[36px] items-center justify-center",
           currentPage === 1 && "cursor-not-allowed opacity-40",
@@ -91,7 +100,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
           <button
             key={`${page}-${index}`}
             type="button"
-            onClick={() => onPageChange(page)}
+            onClick={() => handlePageChange(page)}
             className={clsx(
               "flex items-center justify-center border",
               "pc:text-noto-16-regular pc:w-[50px] pc:h-[50px]  \
@@ -109,7 +118,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
       <button
         type="button"
         disabled={currentPage === totalPages}
-        onClick={() => onPageChange(currentPage + 1)}
+        onClick={() => handlePageChange(currentPage + 1)}
         className={clsx(
           "flex h-[24px] w-[24px] items-center justify-center",
           currentPage === totalPages && "cursor-not-allowed opacity-40",
@@ -126,8 +135,8 @@ const [page, setPage] = useState(1);
 
 <Pagination
   currentPage={page}
-  totalPages={10}
+  totalPages={totalPages}
   onPageChange={setPage}
-/>;
+/>
 
 */
