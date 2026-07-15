@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import clsx from "clsx";
 import PrimaryButton from "./ButtonPrimary";
 import QuantityStepper from "./QuantityStepper";
@@ -12,9 +11,10 @@ const clampQuantity = (value, min, max) => {
 
 const BuyerCardAction = ({
   price = 0,
+  quantity = 1,
   minQuantity = 1,
   maxQuantity = 1,
-  initialQuantity = 1,
+  onQuantityChange,
   onPurchase,
   disabled = false,
   className = "",
@@ -22,16 +22,6 @@ const BuyerCardAction = ({
   const isSoldOut = maxQuantity <= 0;
   const safeMinQuantity = isSoldOut ? 0 : minQuantity;
   const safeMaxQuantity = Math.max(maxQuantity, 0);
-
-  const [quantity, setQuantity] = useState(() =>
-    clampQuantity(initialQuantity, safeMinQuantity, safeMaxQuantity),
-  );
-
-  useEffect(() => {
-    setQuantity((prevQuantity) =>
-      clampQuantity(prevQuantity, safeMinQuantity, safeMaxQuantity),
-    );
-  }, [safeMinQuantity, safeMaxQuantity]);
 
   const clampedQuantity = clampQuantity(
     quantity,
@@ -43,7 +33,13 @@ const BuyerCardAction = ({
   const isDisabled = disabled || isSoldOut;
 
   const handleQuantityChange = (nextQuantity) => {
-    setQuantity(clampQuantity(nextQuantity, safeMinQuantity, safeMaxQuantity));
+    const nextClampedQuantity = clampQuantity(
+      nextQuantity,
+      safeMinQuantity,
+      safeMaxQuantity,
+    );
+
+    onQuantityChange?.(nextClampedQuantity);
   };
 
   const handlePurchase = () => {
