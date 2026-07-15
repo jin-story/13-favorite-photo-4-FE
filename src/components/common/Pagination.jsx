@@ -37,7 +37,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
       return Array.from({ length: totalPages }, (_, i) => i + 1);
     }
 
-    // ---------- Mobile ----------
+    // ---------------- Mobile ----------------
     if (isMobile) {
       if (currentPage <= 2) {
         return [1, 2, "...", totalPages - 1, totalPages];
@@ -50,15 +50,47 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
       return [1, "...", currentPage, "...", totalPages];
     }
 
-    // ---------- Tablet / PC ----------
-    if (currentPage <= 3) {
+    // ---------------- PC / Tablet ----------------
+
+    // 1
+    if (currentPage === 1) {
       return [1, 2, 3, "...", totalPages - 2, totalPages - 1, totalPages];
     }
 
-    if (currentPage >= totalPages - 2) {
+    // 2
+    if (currentPage === 2) {
+      return [1, 2, 3, "...", totalPages - 2, totalPages - 1, totalPages];
+    }
+
+    // 3
+    if (currentPage === 3) {
+      return [1, 2, 3, 4, "...", totalPages - 2, totalPages - 1, totalPages];
+    }
+
+    // 마지막
+    if (currentPage === totalPages) {
       return [1, 2, "...", totalPages - 2, totalPages - 1, totalPages];
     }
 
+    // 마지막 -1
+    if (currentPage === totalPages - 1) {
+      return [1, 2, "...", totalPages - 2, totalPages - 1, totalPages];
+    }
+
+    // 마지막 -2
+    if (currentPage === totalPages - 2) {
+      return [
+        1,
+        "...",
+        totalPages - 4,
+        totalPages - 3,
+        totalPages - 2,
+        totalPages - 1,
+        totalPages,
+      ];
+    }
+
+    // 가운데
     return [
       1,
       "...",
