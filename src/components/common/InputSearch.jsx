@@ -12,6 +12,10 @@ export default function InputSearch({
   placeholder = "검색",
   className = "",
 }) {
+  if (!onChange) {
+    console.warn("onChange는 필수 props 입니다.");
+  }
+
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.nativeEvent.isComposing) onSearch?.(value);
     onKeyDown?.(e);
@@ -29,6 +33,7 @@ export default function InputSearch({
         onChange={(e) => onChange?.(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
+        aria-label={placeholder}
         className="text-noto-14-regular placeholder:text-noto-14-light min-w-0 flex-1 bg-transparent text-white outline-none pc:text-noto-16-regular pc:placeholder:text-noto-16-light"
       />
       <Image
