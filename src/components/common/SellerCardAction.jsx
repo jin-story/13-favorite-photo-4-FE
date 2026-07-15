@@ -64,7 +64,7 @@ const SellerCardAction = ({
           variant="thin"
           onClick={handleEdit}
           disabled={disabled}
-          className="!w-full"
+          className="w-full!"
         >
           수정하기
         </PrimaryButton>
@@ -74,7 +74,7 @@ const SellerCardAction = ({
           onClick={handleClose}
           disabled={disabled}
           className={clsx(
-            "!w-full border border-gray-200",
+            "w-full! border border-gray-200",
             disabled && "cursor-not-allowed text-gray-300",
           )}
         >
