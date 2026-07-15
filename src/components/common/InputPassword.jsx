@@ -18,7 +18,6 @@ export default function InputPassword({
   disabled = false,
 }) {
   const inputId = useId();
-  const [isFocused, setIsFocused] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const hasError = Boolean(errorMessage);
   const errorId = `${inputId}-error`;
@@ -47,8 +46,9 @@ export default function InputPassword({
           "flex h-[55px] w-full items-center gap-[20px] rounded-[2px] border px-5 py-[18px] pc:h-[60px]",
           disabled && "border-gray-400 bg-black",
           !disabled && hasError && "border-red bg-gray-500",
-          !disabled && !hasError && isFocused && "border-gray-200 bg-gray-500",
-          !disabled && !hasError && !isFocused && "border-gray-200 bg-black",
+          !disabled &&
+            !hasError &&
+            "border-gray-200 bg-black focus-within:bg-gray-500",
         )}
       >
         <input
@@ -56,8 +56,6 @@ export default function InputPassword({
           type={isVisible ? "text" : "password"}
           value={value}
           onChange={(e) => onChange?.(e.target.value)}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
           maxLength={maxLength}
