@@ -1,3 +1,14 @@
+/* 사용법: 
+const [page, setPage] = useState(1);
+
+<Pagination
+  currentPage={page}
+  totalPages={totalPages}
+  onPageChange={setPage}
+/>
+
+*/
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -8,6 +19,7 @@ import arrowRightIcon from "@/assets/icons/arrow_right.svg";
 
 export default function Pagination({ currentPage, totalPages, onPageChange }) {
   const [isMobile, setIsMobile] = useState(false);
+  const [openEllipsis, setOpenEllipsis] = useState(null);
 
   // Mobile : 744px 미만
   useEffect(() => {
@@ -102,6 +114,28 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
     ];
   };
 
+  //숨겨진 페이지 dropdown
+  const getHiddenPages = (ellipsisIndex) => {
+    const hiddenPages = [];
+
+    const prevNumber = [...pages]
+      .slice(0, ellipsisIndex)
+      .reverse()
+      .find((item) => typeof item === "number");
+
+    const nextNumber = pages
+      .slice(ellipsisIndex + 1)
+      .find((item) => typeof item === "number");
+
+    if (!prevNumber || !nextNumber) return [];
+
+    for (let i = prevNumber + 1; i < nextNumber; i++) {
+      hiddenPages.push(i);
+    }
+
+    return hiddenPages;
+  };
+
   const pages = getPages();
 
   return (
@@ -123,12 +157,45 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
       {/* 페이지 */}
       {pages.map((page, index) =>
         page === "..." ? (
-          <span
-            key={`ellipsis-${index}`}
-            className="pc:text-noto-16-regular tablet:text-noto-14-regular text-noto-12-regular"
-          >
-            ...
-          </span>
+          <div key={`ellipsis-${index}`} className="relative">
+            <button
+              type="button"
+              onClick={() =>
+                setOpenEllipsis(openEllipsis === index ? null : index)
+              }
+              className="pc:text-noto-16-regular tablet:text-noto-14-regular text-noto-12-regular"
+            >
+              ...
+            </button>
+
+            {openEllipsis === index && (
+              <div className="absolute bottom-full left-1/2 z-20 mb-2 -translate-x-1/2 overflow-y-auto scrollbar-thumb-gray-400 border border-gray-200 bg-black pc:max-h-[180px] tablet:max-h-[170px] max-h-[150px]">
+                {getHiddenPages(index).map((hiddenPage) => (
+                  <button
+                    key={hiddenPage}
+                    type="button"
+                    onClick={() => {
+                      handlePageChange(hiddenPage);
+                      setOpenEllipsis(null);
+                    }}
+                    className={clsx(
+                      "flex w-full items-center justify-center",
+
+                      "pc:h-[36px] tablet:min-w-[36px] tablet:h-[34px] w-[34px] h-[30px]",
+
+                      "pc:text-noto-16-regular tablet:text-noto-14-regular text-noto-14-regular",
+
+                      "hover:bg-gray-500",
+
+                      hiddenPage === currentPage && "border border-gray-200",
+                    )}
+                  >
+                    {hiddenPage}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         ) : (
           <button
             key={`${page}-${index}`}
@@ -164,14 +231,3 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
     </nav>
   );
 }
-
-/* 사용법: 
-const [page, setPage] = useState(1);
-
-<Pagination
-  currentPage={page}
-  totalPages={totalPages}
-  onPageChange={setPage}
-/>
-
-*/
