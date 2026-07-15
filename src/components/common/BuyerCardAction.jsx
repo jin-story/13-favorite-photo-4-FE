@@ -77,12 +77,7 @@ const BuyerCardAction = ({
   };
 
   return (
-    <section
-      className={clsx(
-        "w-[345px] bg-[#0F0F0F] text-white tablet:w-[342px] pc:w-[440px]",
-        className,
-      )}
-    >
+    <section className={clsx("w-full bg-[#0F0F0F] text-white", className)}>
       <div className="flex items-center justify-between">
         <span className="text-noto-14-regular text-white pc:text-noto-16-regular">
           구매수량
