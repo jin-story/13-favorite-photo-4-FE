@@ -68,6 +68,7 @@ export default function Dropdown({ type, value, onChange, disabled = false }) {
   const selected =
     options.find((option) => option.value === value)?.label ?? placeholder;
 
+  // 바깥 클릭 시 닫기
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -79,6 +80,13 @@ export default function Dropdown({ type, value, onChange, disabled = false }) {
 
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  // disabled가 되면 메뉴 닫기
+  useEffect(() => {
+    if (disabled) {
+      setIsOpen(false);
+    }
+  }, [disabled]);
 
   return (
     <div ref={dropdownRef} className="relative inline-block">
@@ -103,7 +111,7 @@ export default function Dropdown({ type, value, onChange, disabled = false }) {
         </div>
       </button>
 
-      {isOpen && (
+      {!disabled && isOpen && (
         <ul className={style.menu}>
           {options.map((option) => (
             <li key={option.value}>
