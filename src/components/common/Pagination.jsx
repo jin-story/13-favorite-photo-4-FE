@@ -105,10 +105,11 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
   const pages = getPages();
 
   return (
-    <nav className="flex items-center gap-[20px]">
+    <nav aria-label="페이지 탐색" className="flex items-center gap-[20px]">
       {/* 이전 */}
       <button
         type="button"
+        aria-label="이전 페이지"
         disabled={currentPage === 1}
         onClick={() => handlePageChange(currentPage - 1)}
         className={clsx(
@@ -116,7 +117,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
           currentPage === 1 && "cursor-not-allowed opacity-40",
         )}
       >
-        <Image src={arrowLeftIcon} alt="이전 페이지" />
+        <Image src={arrowLeftIcon} alt="" />
       </button>
 
       {/* 페이지 */}
@@ -132,6 +133,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
           <button
             key={`${page}-${index}`}
             type="button"
+            aria-current={page === currentPage ? "page" : undefined}
             onClick={() => handlePageChange(page)}
             className={clsx(
               "flex items-center justify-center border",
@@ -149,6 +151,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
       {/* 다음 */}
       <button
         type="button"
+        aria-label="다음 페이지"
         disabled={currentPage === totalPages}
         onClick={() => handlePageChange(currentPage + 1)}
         className={clsx(
@@ -156,7 +159,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
           currentPage === totalPages && "cursor-not-allowed opacity-40",
         )}
       >
-        <Image src={arrowRightIcon} alt="다음 페이지" />
+        <Image src={arrowRightIcon} alt="" />
       </button>
     </nav>
   );
