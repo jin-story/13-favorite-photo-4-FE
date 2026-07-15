@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import ButtonPrimary from "./ButtonPrimary";
 import ButtonSecondary from "./ButtonSecondary";
 
@@ -34,7 +35,13 @@ const TITLE_CONFIG = {
   },
 };
 
-export default function Title({ type = "title_button", text, buttonText, onButtonClick }) {
+export default function Title({
+  type = "title_button",
+  text,
+  buttonText,
+  onButtonClick,
+  className = "",
+}) {
   const config = TITLE_CONFIG[type];
 
   if (!config) {
@@ -45,10 +52,10 @@ export default function Title({ type = "title_button", text, buttonText, onButto
   const { textClass, button } = config;
 
   return (
-    <div className="flex w-full flex-col gap-5">
+    <div className={clsx("flex w-full flex-col gap-5", className)}>
       {button ? (
         <div className="flex w-full flex-col tablet:flex-row tablet:items-center tablet:justify-between">
-          <p className={`${textClass} text-white`}>{text}</p>
+          <p className={clsx(textClass, "text-white")}>{text}</p>
           <div className="hidden tablet:block">
             {button === "primary" ? (
               <ButtonPrimary variant="thick" onClick={onButtonClick}>
@@ -62,7 +69,7 @@ export default function Title({ type = "title_button", text, buttonText, onButto
           </div>
         </div>
       ) : (
-        <p className={`${textClass} text-white`}>{text}</p>
+        <p className={clsx(textClass, "text-white")}>{text}</p>
       )}
       <div className="h-[2px] w-full bg-gray-100" />
     </div>
