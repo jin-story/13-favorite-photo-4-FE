@@ -184,7 +184,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
                       setOpenEllipsis(null);
                     }}
                     className={clsx(
-                      "flex w-full items-center justify-center",
+                      "flex w-full items-center justify-center text-white",
 
                       "pc:h-[36px] tablet:min-w-[36px] tablet:h-[34px] w-[34px] h-[30px]",
 
