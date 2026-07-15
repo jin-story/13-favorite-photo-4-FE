@@ -26,12 +26,7 @@ const SellerCardAction = ({
   };
 
   return (
-    <section
-      className={clsx(
-        "w-[345px] bg-[#0F0F0F] text-white tablet:w-[342px] pc:w-[440px]",
-        className,
-      )}
-    >
+    <section className={clsx("w-full bg-[#0F0F0F] text-white", className)}>
       <div className="flex items-center gap-2 border-b border-white pb-3 pc:gap-3 pc:pb-4">
         <img
           src={exchangeIcon.src}
