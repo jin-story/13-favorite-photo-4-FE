@@ -137,6 +137,7 @@ export default function Photocard({
           alt={description}
           src={imgUrl || mook_img}
           fill
+          sizes="(min-width: 1024px) 360px, (min-width: 768px) 302px, 150px"
           className="object-cover z-0"
         />
         {soldOut && (
