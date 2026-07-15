@@ -117,6 +117,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
   //숨겨진 페이지 dropdown
   const getHiddenPages = (ellipsisIndex) => {
     const hiddenPages = [];
+    const MAX_HIDDEN_PAGES = 200;
 
     const prevNumber = [...pages]
       .slice(0, ellipsisIndex)
@@ -129,7 +130,11 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
 
     if (!prevNumber || !nextNumber) return [];
 
-    for (let i = prevNumber + 1; i < nextNumber; i++) {
+    for (
+      let i = prevNumber + 1;
+      i < nextNumber && hiddenPages.length < MAX_HIDDEN_PAGES;
+      i++
+    ) {
       hiddenPages.push(i);
     }
 
