@@ -1,12 +1,33 @@
 "use client";
 
+import { useEffect } from "react";
 import clsx from "clsx";
 import PrimaryButton from "./ButtonPrimary";
 import QuantityStepper from "./QuantityStepper";
 
+const toSafeNumber = (value, fallback = 0) => {
+  const numberValue = Number(value);
+  return Number.isFinite(numberValue) ? numberValue : fallback;
+};
+
+const normalizeQuantityBounds = (minQuantity, maxQuantity) => {
+  const normalizedMaxQuantity = Math.max(0, toSafeNumber(maxQuantity, 0));
+  const normalizedMinQuantity = Math.min(
+    Math.max(0, toSafeNumber(minQuantity, 0)),
+    normalizedMaxQuantity,
+  );
+
+  return {
+    min: normalizedMinQuantity,
+    max: normalizedMaxQuantity,
+  };
+};
+
 const clampQuantity = (value, min, max) => {
   if (max <= 0) return 0;
-  return Math.min(Math.max(value, min), max);
+
+  const safeValue = toSafeNumber(value, min);
+  return Math.min(Math.max(safeValue, min), max);
 };
 
 const BuyerCardAction = ({
@@ -19,17 +40,25 @@ const BuyerCardAction = ({
   disabled = false,
   className = "",
 }) => {
-  const isSoldOut = maxQuantity <= 0;
-  const safeMinQuantity = isSoldOut ? 0 : minQuantity;
-  const safeMaxQuantity = Math.max(maxQuantity, 0);
+  const safePrice = Math.max(0, toSafeNumber(price, 0));
 
+  const { min: safeMinQuantity, max: safeMaxQuantity } =
+    normalizeQuantityBounds(minQuantity, maxQuantity);
+
+  const isSoldOut = safeMaxQuantity <= 0;
   const clampedQuantity = clampQuantity(
     quantity,
     safeMinQuantity,
     safeMaxQuantity,
   );
 
-  const totalPrice = price * clampedQuantity;
+  useEffect(() => {
+    if (quantity !== clampedQuantity) {
+      onQuantityChange?.(clampedQuantity);
+    }
+  }, [quantity, clampedQuantity, onQuantityChange]);
+
+  const totalPrice = safePrice * clampedQuantity;
   const isDisabled = disabled || isSoldOut;
 
   const handleQuantityChange = (nextQuantity) => {
