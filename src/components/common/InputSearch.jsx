@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import clsx from "clsx";
 import searchIcon from "@/assets/icons/search.svg";
 
 export default function InputSearch({
@@ -18,7 +19,10 @@ export default function InputSearch({
 
   return (
     <div
-      className={`flex h-[45px] w-full items-center justify-between rounded-[2px] border border-gray-200 bg-black px-5 tablet:w-[200px] pc:h-[50px] pc:w-[320px] className`}
+      className={clsx(
+        "flex h-[45px] w-full items-center justify-between rounded-[2px] border border-gray-200 bg-black px-5 tablet:w-[200px] pc:h-[50px] pc:w-[320px]",
+        className,
+      )}
     >
       <input
         value={value}
