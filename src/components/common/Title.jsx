@@ -1,49 +1,65 @@
-const TITLE_STYLES = {
-  "title_button-L": { textClass: "text-baskin-62", buttonWidth: "w-[440px]" },
-  "title_button-M": { textClass: "text-baskin-48", buttonWidth: "w-[342px]" },
-  "title_line-L": { textClass: "text-baskin-62" },
-  "title_line-M": { textClass: "text-baskin-48" },
-  "title_line_modal-L": { textClass: "text-baskin-46" },
-  "title_line_modal-M": { textClass: "text-baskin-40" },
-  "card_detail-L": { textClass: "text-noto-40-bold" },
-  "card_detail-M": { textClass: "text-noto-32-bold" },
-  "card_detail-S": { textClass: "text-noto-24-bold" },
-  "exchange_buyer-L": {
+import ButtonPrimary from "./ButtonPrimary";
+import ButtonSecondary from "./ButtonSecondary";
+
+const TITLE_CONFIG = {
+  title_button: {
+    textClass: "text-baskin-48 pc:text-baskin-62",
+    button: "primary",
+  },
+  title_line: {
+    textClass: "text-baskin-48 pc:text-baskin-62",
+    button: null,
+  },
+  title_line_modal: {
+    textClass: "text-baskin-40 pc:text-baskin-46",
+    button: null,
+  },
+  card_detail: {
+    textClass:
+      "text-noto-24-bold tablet:text-noto-32-bold pc:text-noto-40-bold",
+    button: null,
+  },
+  exchange_buyer: {
+    textClass:
+      "text-noto-24-bold tablet:text-noto-32-bold pc:text-noto-40-bold",
+    button: "primary",
+  },
+  exchange_seller: {
     textClass: "text-noto-40-bold",
-    buttonWidth: "w-[440px]",
+    button: "secondary",
   },
-  "exchange_buyer-M": {
-    textClass: "text-noto-32-bold",
-    buttonWidth: "w-[342px]",
+  exchange_info_modal: {
+    textClass: "text-noto-22-bold pc:text-noto-28-bold",
+    button: null,
   },
-  "exchange_buyer-S": { textClass: "text-noto-24-bold" },
-  "exchange_seller-L": {
-    textClass: "text-noto-40-bold",
-    buttonWidth: "w-[440px]",
-  },
-  "exchange_info_modal-L": { textClass: "text-noto-28-bold" },
-  "exchange_info_modal-M": { textClass: "text-noto-22-bold" },
 };
 
-export default function Title({ type = "title_button", size = "L", text }) {
-  const style = TITLE_STYLES[`${type}-${size}`];
+export default function Title({ type = "title_button", text, buttonText, onButtonClick }) {
+  const config = TITLE_CONFIG[type];
 
-  if (!style) {
-    console.warn(
-      `Title: 지원하지 않는 type/size 입니다. (type: ${type}, size: ${size})`,
-    );
+  if (!config) {
+    console.warn(`Title: 지원하지 않는 type입니다. (type: ${type})`);
     return null;
   }
 
-  const { textClass, buttonWidth } = style;
+  const { textClass, button } = config;
 
   return (
     <div className="flex w-full flex-col gap-5">
-      {buttonWidth ? (
-        <div className="flex w-full items-center justify-between">
+      {button ? (
+        <div className="flex w-full flex-col tablet:flex-row tablet:items-center tablet:justify-between">
           <p className={`${textClass} text-white`}>{text}</p>
-          {/* 버튼 영역 */}
-          <div className={`${buttonWidth} h-[60px]`} />
+          <div className="hidden tablet:block">
+            {button === "primary" ? (
+              <ButtonPrimary variant="thick" onClick={onButtonClick}>
+                {buttonText}
+              </ButtonPrimary>
+            ) : (
+              <ButtonSecondary variant="thick" onClick={onButtonClick}>
+                {buttonText}
+              </ButtonSecondary>
+            )}
+          </div>
         </div>
       ) : (
         <p className={`${textClass} text-white`}>{text}</p>
