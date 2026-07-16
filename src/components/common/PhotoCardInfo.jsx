@@ -35,7 +35,7 @@ const PhotoCardInfo = ({
       </div>
 
       <div className="mt-4 border-t border-[#3A3A3A] pt-5">
-        <p className="min-h-[52px] whitespace-pre-line text-base leading-7 text-[#EDEDED]">
+        <p className="min-h-[52px] whitespace-pre-line text-noto-16-regular leading-7 text-[#EDEDED] pc:text-noto-18-regular pc:leading-8">
           {description}
         </p>
       </div>
