@@ -1,3 +1,26 @@
+/* 사용법:
+(백엔드 연동이전 껍데기 값)
+  const isLoggedIn = true; // false로 바꾸면 로그아웃 상태
+  const user = {
+    nickname: "유디",
+    point: 1540,
+  };
+
+  return (
+    <Gnb
+      isLoggedIn={isLoggedIn}
+      user={user}
+    />
+  );
+
+  (구현 필요 {}, {()=>})
+  onMenuClick,
+  onBackClick,
+  onLoginClick,
+  onSignupClick,
+  onLogoutClick,
+*/
+
 "use client";
 
 import Image from "next/image";
