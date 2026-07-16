@@ -51,7 +51,7 @@ export default function Gnb({
           "hidden pc:flex",
           "w-full h-[80px]",
           "items-center justify-between",
-          "bg-black px-[220px] pt-[20px]",
+          "bg-black px-[220px]",
         )}
       >
         <Image src={logo} alt="최애의 포토" className="w-[138.945px] h-auto" />
@@ -59,14 +59,16 @@ export default function Gnb({
         {isLoggedIn ? (
           <div className="flex items-center gap-[30px]">
             <div className="flex items-center">
-              <span className="text-noto-14-bold">
+              <span className="text-gray-200 text-noto-14-bold">
                 {user.point?.toLocaleString()} P
               </span>
             </div>
 
             <Image src={alarmIcon} alt="" width={24} />
 
-            <span className="text-baskin-18">{user.nickname}</span>
+            <span className="text-gray-200 text-baskin-18">
+              {user.nickname}
+            </span>
 
             <span className="text-gray-400 text-noto-14-regular">|</span>
 
@@ -83,7 +85,7 @@ export default function Gnb({
             <button
               type="button"
               onClick={onLoginClick}
-              className="text-noto-14-regular"
+              className="text-gray-200 text-noto-14-regular"
             >
               로그인
             </button>
@@ -91,7 +93,7 @@ export default function Gnb({
             <button
               type="button"
               onClick={onSignupClick}
-              className="text-noto-14-regular"
+              className="text-gray-200 text-noto-14-regular"
             >
               회원가입
             </button>
@@ -105,7 +107,7 @@ export default function Gnb({
           "hidden tablet:flex pc:hidden",
           "w-full h-[70px]",
           "items-center justify-between",
-          "px-[40px] pt-[25px] bg-black",
+          "px-[40px] bg-black",
         )}
       >
         <Image src={logo} alt="최애의 포토" className="w-[111px] h-auto" />
@@ -113,14 +115,16 @@ export default function Gnb({
         {isLoggedIn ? (
           <div className="flex items-center gap-[30px]">
             <div className="flex items-center">
-              <span className="text-noto-14-bold">
+              <span className="text-gray-200 text-noto-14-bold">
                 {user.point?.toLocaleString()} P
               </span>
             </div>
 
             <Image src={alarmIcon} alt="" width={19} />
 
-            <span className="text-baskin-18">{user.nickname}</span>
+            <span className="text-gray-200 text-baskin-18">
+              {user.nickname}
+            </span>
 
             <span className="text-gray-300">|</span>
 
@@ -137,7 +141,7 @@ export default function Gnb({
             <button
               type="button"
               onClick={onLoginClick}
-              className="text-noto-14-regular"
+              className="text-gray-200 text-noto-14-regular"
             >
               로그인
             </button>
@@ -145,7 +149,7 @@ export default function Gnb({
             <button
               type="button"
               onClick={onSignupClick}
-              className="text-noto-14-regular"
+              className="text-gray-200 text-noto-14-regular"
             >
               회원가입
             </button>
@@ -159,7 +163,7 @@ export default function Gnb({
           "flex tablet:hidden",
           "w-full h-[60px]",
           "items-center justify-between",
-          "px-[20px] pt-[19px] bg-black",
+          "px-[20px] bg-black",
         )}
       >
         {mobileType === "main" ? (
@@ -195,7 +199,7 @@ export default function Gnb({
             </button>
 
             {/* Center */}
-            <h1 className="text-baskin-20">{title}</h1>
+            <h1 className=" text-white text-baskin-20">{title}</h1>
 
             {/* Right */}
             <div className="w-[24px]" />
