@@ -44,7 +44,7 @@ const formatRelativeTime = (timeInput) => {
 };
 
 /**
- * @component AlarmMessage
+ * @component NotificationMessage
  * @description 알림 메시지와 경과 시간을 조건에 맞춰 보여주는 컴포넌트입니다.
  *
  * @param {Object} props
@@ -52,7 +52,7 @@ const formatRelativeTime = (timeInput) => {
  * @param {string | number | Date} props.time - 알림이 발생한 시간 (ISO 포맷 또는 타임스탬프)
  * @param {boolean} [props.state=false] - 알림 읽음 상태 여부
  */
-export default function AlarmMessage({
+export default function NotificationMessage({
   message = "기며누님이 [RARE | 우리집 앞마당]을 1장 구매했습니다",
   time = "2026-06-14 20:53:24",
   state = true,

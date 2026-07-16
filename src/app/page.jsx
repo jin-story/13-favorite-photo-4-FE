@@ -1,10 +1,13 @@
-import Alarm from "@/components/common/MobileAlarm";
+import NotificationDropdown from "@/components/common/NotificationDropdown";
+
 import React from "react";
 
 export default function Home() {
   return (
     <div>
-      <Alarm />
+      <div className="flex justify-center mt-15">
+        <NotificationDropdown />
+      </div>
     </div>
   );
 }
