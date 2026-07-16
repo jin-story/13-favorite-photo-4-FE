@@ -10,6 +10,7 @@ export default function InputTextbox({
   onKeyDown,
   placeholder,
   className = "",
+  ...props
 }) {
   const inputId = useId();
   const [isFocused, setIsFocused] = useState(false);
@@ -43,6 +44,7 @@ export default function InputTextbox({
           onKeyDown={onKeyDown}
           placeholder={placeholder}
           className="text-noto-14-regular placeholder:text-noto-14-light h-full w-full resize-none bg-transparent text-white outline-none placeholder:text-gray-200 pc:text-noto-16-regular pc:placeholder:text-noto-16-light"
+          {...props}
         />
       </div>
     </div>
