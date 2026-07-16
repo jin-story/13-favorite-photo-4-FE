@@ -130,7 +130,7 @@ export default function SheetFilter({
               )}
             >
               {tab === "grade" ? (
-                <Grade type="card" grade={option.value} />
+                <Grade type="sheetfilter" grade={option.value} />
               ) : (
                 <span>{option.label}</span>
               )}
