@@ -28,10 +28,10 @@ export default function InputUpload({
         {label}
       </p>
       <div className="flex w-full items-center gap-[10px]">
-        <div className="flex h-[55px] flex-1 items-center rounded-[2px] border border-gray-200 bg-black px-5 pc:h-[60px]">
+        <div className="flex h-[55px] min-w-0 flex-1 items-center rounded-[2px] border border-gray-200 bg-black px-5 pc:h-[60px]">
           {value ? (
-            <div className="flex w-full items-center justify-between">
-              <span className="text-noto-14-regular pc:text-noto-16-regular text-white">
+            <div className="flex w-full min-w-0 items-center justify-between">
+              <span className="text-noto-14-regular pc:text-noto-16-regular min-w-0 truncate text-white">
                 {value.name}
               </span>
               <button
@@ -50,12 +50,15 @@ export default function InputUpload({
           )}
         </div>
         <input
+          {...props}
           id={inputId}
           type="file"
           accept={accept}
-          onChange={(e) => onChange?.(e.target.files?.[0] ?? null)}
+          onChange={(e) => {
+            onChange?.(e.target.files?.[0] ?? null);
+            e.target.value = "";
+          }}
           className="sr-only"
-          {...props}
         />
         <label
           htmlFor={inputId}
