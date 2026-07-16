@@ -5,50 +5,23 @@ import alarm_default from "@/assets/icons/alarm_default.svg";
 import alarm_active from "@/assets/icons/alarm_active.svg";
 import Image from "next/image";
 import NotificationMessage from "./NotificationMessage";
-import { useInfiniteQuery } from "@tanstack/react-query";
 
-// 💡 1. 가상의 API 호출 함수 (실제 API fetch로 대체)
-const fetchNotifications = async ({ pageParam = 1 }) => {
-
-  const LIMIT = 5;
-
-  // 가상의 전체 데이터베이스 데이터 (테스트용으로 15개 준비)
-  const TOTAL_MOCK_DATA = Array.from({ length: 15 }, (_, index) => ({
-    id: index + 1,
-    message: `알림 메시지 #${index + 1}: 새로운 이벤트가 발생했습니다.`,
-    isRead: index > 2, 
-    createdAt: new Date(Date.now() - index * 2 * 3600 * 1000).toISOString(), 
-  }));
-
-  const start = (pageParam - 1) * LIMIT;
-  const end = start + LIMIT;
-  const items = TOTAL_MOCK_DATA.slice(start, end);
-
-  // 1초 딜레이를 주어 실제 네트워크 통신 느낌을 냅니다.
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  return {
-    items,
-    nextPage: end < TOTAL_MOCK_DATA.length ? pageParam + 1 : undefined,
-  };
-};
-
-export default function NotificationDropdown() {
+/**
+ * @component NotificationDropdown
+ * @description 알림 목록을 보여주고, 무한 스크롤을 지원하는 순수 UI 드롭다운 컴포넌트입니다.
+ * 모든 상태 관리와 API 호출 로직은 부모 컴포넌트로부터 전달받습니다.
+ */
+export default function NotificationDropdown({
+  notifications = [],
+  hasNextPage = false,
+  isFetchingNextPage = false,
+  isPending = false,
+  onFetchNextPage = () => {},
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   const scrollContainerRef = useRef(null);
 
-  // 💡 2. React Query의 useInfiniteQuery 훅 세팅
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
-    useInfiniteQuery({
-      queryKey: ["notifications"],
-      queryFn: fetchNotifications,
-      initialPageParam: 1,
-      getNextPageParam: (lastPage) => lastPage.nextPage,
-      enabled: isOpen, // 드롭다운이 열렸을 때만 데이터를 가져오기 시작함 (최적화)
-    });
-
-  // 💡 3. 바깥 영역 클릭 시 드롭다운 닫기
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -59,23 +32,17 @@ export default function NotificationDropdown() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // 💡 4. 스크롤 끝 감지 핸들러
   const handleScroll = () => {
     const container = scrollContainerRef.current;
     if (!container) return;
 
     const { scrollTop, scrollHeight, clientHeight } = container;
-
-    // 오차 범위 5px 적용하여 바닥 근처에 닿았을 때 작동
-    const isAtBottom = scrollHeight - scrollTop - clientHeight < 5;
+    const isAtBottom = scrollHeight - scrollTop - clientHeight < 10;
 
     if (isAtBottom && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
+      onFetchNextPage();
     }
   };
-
-  // 모든 페이지의 데이터를 단일 배열로 플랫하게 합치기
-  const notifications = data?.pages.flatMap((page) => page.items) || [];
 
   // 읽지 않은 알림이 하나라도 있는지 확인
   const hasUnread = notifications.some((n) => !n.isRead);
@@ -84,7 +51,7 @@ export default function NotificationDropdown() {
     <div className="relative" ref={dropdownRef}>
       {/* 🔔 알림 아이콘 버튼 */}
       <button
-        className="relative cursor-pointer"
+        className="relative cursor-pointer p-2 hover:opacity-80 transition-opacity"
         onClick={() => setIsOpen((prev) => !prev)}
       >
         {hasUnread ? (
@@ -106,21 +73,21 @@ export default function NotificationDropdown() {
             [&::-webkit-scrollbar-thumb]:rounded-full 
             hover:[&::-webkit-scrollbar-thumb]:bg-white/30"
         >
-          {/* 로딩 중 UI */}
-          {isLoading && (
+          {/* 첫 로딩 상태 */}
+          {isPending && (
             <div className="p-5 text-center text-noto-12-regular text-gray-300">
               알림 불러오는 중...
             </div>
           )}
 
-          {/* 데이터가 비어있을 때 */}
-          {!isLoading && notifications.length === 0 && (
+          {/* 데이터 빈 상태 */}
+          {!isPending && notifications.length === 0 && (
             <div className="p-5 text-center text-noto-12-regular text-gray-300">
               새로운 알림이 없습니다
             </div>
           )}
 
-          {/* 알림 리스트 렌더링 */}
+          {/* 알림 리스트 */}
           {notifications.map((notification) => (
             <NotificationMessage
               key={notification.id}
@@ -130,7 +97,7 @@ export default function NotificationDropdown() {
             />
           ))}
 
-          {/* 추가 데이터를 가져오는 중일 때 하단 로딩 스피너 표시 */}
+          {/* 추가 페이지 데이터 로딩 상태 */}
           {isFetchingNextPage && (
             <div className="p-3 text-center text-noto-12-light text-gray-400 bg-white/5 border-t border-gray-400">
               더 불러오는 중...
