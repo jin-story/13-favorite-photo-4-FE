@@ -101,19 +101,22 @@ const MyCardDetailSaleForm = ({
       </div>
 
       <div className="mt-6 border-t border-[#3A3A3A] pt-6 pc:mt-8 pc:pt-8">
-        <div className="grid grid-cols-[110px_1fr] items-center gap-x-3 gap-y-4 pc:grid-cols-[130px_1fr] pc:gap-y-5">
-          <span className="text-noto-14-regular text-white pc:text-noto-16-regular">
+        <div className="grid grid-cols-[120px_1fr] items-center gap-x-3 gap-y-4 pc:grid-cols-[150px_1fr] pc:gap-y-5">
+          <span className="text-noto-18-regular text-white pc:text-noto-20-regular">
             총 판매 수량
           </span>
 
           <div className="flex items-center justify-end gap-3">
-            <QuantityStepper
-              value={clampedQuantity}
-              min={safeMinQuantity}
-              max={safeMaxQuantity}
-              onChange={handleQuantityChange}
-              disabled={isDisabled}
-            />
+            <div className="w-[130px] pc:w-[180px]">
+              <QuantityStepper
+                value={clampedQuantity}
+                min={safeMinQuantity}
+                max={safeMaxQuantity}
+                onChange={handleQuantityChange}
+                disabled={isDisabled}
+                className="w-full!"
+              />
+            </div>
 
             <div className="flex min-w-[40px] flex-col items-start pc:min-w-[48px]">
               <span className="text-noto-16-bold text-white pc:text-noto-18-bold">
@@ -127,26 +130,28 @@ const MyCardDetailSaleForm = ({
 
           <label
             htmlFor={priceInputId}
-            className="text-noto-14-regular text-white pc:text-noto-16-regular"
+            className="text-noto-18-regular text-white pc:text-noto-20-regular"
           >
             장당 가격
           </label>
 
-          <div className="flex h-[40px] items-center rounded-[2px] border border-gray-200 bg-[#0F0F0F] px-4 pc:h-[45px]">
-            <input
-              id={priceInputId}
-              type="text"
-              inputMode="numeric"
-              value={price}
-              onChange={handlePriceChange}
-              placeholder="숫자만 입력"
-              disabled={disabled}
-              className="w-full bg-transparent text-noto-14-regular text-white outline-none placeholder:text-gray-300 pc:text-noto-16-regular"
-            />
+          <div className="flex justify-end">
+            <div className="flex h-[40px] w-[183px] items-center rounded-[2px] border border-gray-200 bg-[#0F0F0F] px-4 pc:h-[45px] pc:w-[231px]">
+              <input
+                id={priceInputId}
+                type="text"
+                inputMode="numeric"
+                value={price}
+                onChange={handlePriceChange}
+                placeholder="숫자만 입력"
+                disabled={disabled}
+                className="w-full bg-transparent text-noto-14-regular text-white outline-none placeholder:text-gray-300 pc:text-noto-16-regular"
+              />
 
-            <span className="ml-3 text-noto-16-bold text-white pc:text-noto-18-bold">
-              P
-            </span>
+              <span className="ml-3 text-noto-16-bold text-white pc:text-noto-18-bold">
+                P
+              </span>
+            </div>
           </div>
         </div>
       </div>
