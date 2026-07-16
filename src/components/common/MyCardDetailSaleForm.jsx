@@ -10,10 +10,15 @@ const toSafeNumber = (value, fallback = 0) => {
   return Number.isFinite(numberValue) ? numberValue : fallback;
 };
 
+const toSafeInteger = (value, fallback = 0) => {
+  const numberValue = toSafeNumber(value, fallback);
+  return Math.floor(numberValue);
+};
+
 const normalizeQuantityBounds = (minQuantity, maxQuantity) => {
-  const normalizedMaxQuantity = Math.max(0, toSafeNumber(maxQuantity, 0));
+  const normalizedMaxQuantity = Math.max(0, toSafeInteger(maxQuantity, 0));
   const normalizedMinQuantity = Math.min(
-    Math.max(0, toSafeNumber(minQuantity, 1)),
+    Math.max(0, toSafeInteger(minQuantity, 1)),
     normalizedMaxQuantity,
   );
 
@@ -26,7 +31,7 @@ const normalizeQuantityBounds = (minQuantity, maxQuantity) => {
 const clampQuantity = (value, min, max) => {
   if (max <= 0) return 0;
 
-  const safeValue = toSafeNumber(value, min);
+  const safeValue = toSafeInteger(value, min);
   return Math.min(Math.max(safeValue, min), max);
 };
 
@@ -54,6 +59,8 @@ const MyCardDetailSaleForm = ({
     safeMaxQuantity,
   );
 
+  const isDisabled = disabled || safeMaxQuantity <= 0;
+
   useEffect(() => {
     if (quantity !== clampedQuantity) {
       onQuantityChange?.(clampedQuantity);
@@ -74,8 +81,6 @@ const MyCardDetailSaleForm = ({
     const nextValue = event.target.value.replace(/[^0-9]/g, "");
     onPriceChange?.(nextValue);
   };
-
-  const isDisabled = disabled || safeMaxQuantity <= 0;
 
   return (
     <section className={clsx("w-full bg-[#0F0F0F] text-white", className)}>
@@ -144,8 +149,8 @@ const MyCardDetailSaleForm = ({
                 value={price}
                 onChange={handlePriceChange}
                 placeholder="숫자만 입력"
-                disabled={disabled}
-                className="w-full bg-transparent text-noto-14-regular text-white outline-none placeholder:text-gray-300 pc:text-noto-16-regular"
+                disabled={isDisabled}
+                className="w-full bg-transparent text-noto-14-regular text-white outline-none placeholder:text-gray-300 disabled:cursor-not-allowed disabled:text-gray-300 pc:text-noto-16-regular"
               />
 
               <span className="ml-3 text-noto-16-bold text-white pc:text-noto-18-bold">
