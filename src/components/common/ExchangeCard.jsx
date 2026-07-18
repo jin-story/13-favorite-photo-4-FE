@@ -23,7 +23,7 @@ const TEXT_RESPONSIVE_STYLING = clsx(
   "tablet:text-noto-16-regular",
 );
 
-export default function ExchangeCard({ card = {} }) {
+export default function ExchangeCard({ card = {}, onApprove, onReject }) {
   const {
     makerNickname = "알 수 없음",
     name = "이름 없는 카드",
@@ -42,10 +42,10 @@ export default function ExchangeCard({ card = {} }) {
     >
       <div className={clsx(IMAGE_RESPONSIVE_STYLING, "relative")}>
         <Image
-          alt={description}
+          alt={name}
           src={imgUrl || mock_img}
           fill
-          sizes="(min-width: 1024px) 360px, (min-width: 768px) 302px, 150px"
+          sizes="(min-width: 1920px) 360px, (min-width: 744px) 302px, 150px"
           className="object-cover"
         />
       </div>
@@ -96,24 +96,28 @@ export default function ExchangeCard({ card = {} }) {
         <ButtonSecondary
           variant="thinXS"
           className="w-[72.5px]! border border-gray-100 rounded-xs tablet:hidden "
+          onClick={onReject}
         >
-          거절
+          거절하기
         </ButtonSecondary>
         <PrimaryButton
           variant="thinXS"
           className="w-[72.5px]! rounded-xs tablet:hidden"
+          onClick={onApprove}
         >
           승인하기
         </PrimaryButton>
         <ButtonSecondary
           variant="thin"
           className="hidden border border-gray-100 rounded-xs tablet:text-noto-16-regular tablet:flex!"
+          onClick={onReject}
         >
-          거절
+          거절하기
         </ButtonSecondary>
         <PrimaryButton
           variant="thin"
           className="hidden rounded-xs tablet:text-noto-16-regular tablet:flex!"
+          onClick={onApprove}
         >
           승인하기
         </PrimaryButton>
