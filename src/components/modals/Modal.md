@@ -80,7 +80,7 @@ export default function ProductCard() {
     <div className="border p-4">
       <h4>최애 포토카드 상품</h4>
       {/* 💡 링크 클릭 시 자동으로 URL 주소가 변경되면서 레지스트리에 등록된 모달이 뜹니다. */}
-      <Link className="text-blue-500 underline" href="?modal=cart" scroll="{false}">
+      <Link className="text-blue-500 underline" href="?modal=cart" scroll={false}>
         장바구니 담기 (모달 열기)
       </Link>
     </div>

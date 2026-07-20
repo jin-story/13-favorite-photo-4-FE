@@ -21,7 +21,7 @@ function UrlModal() {
   const closeModal = () => {
     const params = new URLSearchParams(searchParams);
     params.delete("modal");
-// params.delete("파라미터에 추가된 부분"); 추가해서 사용 
+    // params.delete("파라미터에 추가된 부분"); 추가해서 사용
     const query = params.toString();
     router.push(query ? `${pathname}?${query}` : pathname, { scroll: false });
   };
@@ -47,8 +47,7 @@ export function ModalProvider({ children }) {
 
   const closeModal = () => {
     setIsOpen(false);
-    // 애니메이션 후 컨텐츠 제거 (선택사항)
-    setTimeout(() => setModalContent(null), 200);
+    setModalContent(null);
   };
 
   // Context에 전달할 값

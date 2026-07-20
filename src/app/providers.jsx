@@ -6,7 +6,7 @@ import QueryProvider from "@/providers/QueryProvider";
 export function Providers({ children }) {
   return (
     <QueryProvider>
-      <ModalProvider>{children}</ModalProvider>;
+      <ModalProvider>{children}</ModalProvider>
     </QueryProvider>
   );
 }
