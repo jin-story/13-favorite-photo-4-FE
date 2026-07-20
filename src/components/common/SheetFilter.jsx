@@ -79,7 +79,7 @@ export default function SheetFilter({
     <div className="fixed inset-0 z-50 flex items-end tablet:hidden">
       <div
         ref={sheetRef}
-        className="w-full h-[480px] bg-[#1b1b1b] rounded-t-[16px]"
+        className="flex flex-col w-full h-[480px] bg-[#1b1b1b] rounded-t-[16px]"
       >
         {/* Header */}
         <div className="relative flex justify-center items-center h-[52px] gap-[10px] rounded-t-[20px]">
@@ -139,15 +139,14 @@ export default function SheetFilter({
             </button>
           ))}
         </div>
-
         {/* Footer */}
-        <div className="flex items-center justify-between max-w-[345px] pl-[8px] gap-[10px] mx-auto mb-[40px]">
+        <div className="shrink-0 flex items-center justify-between max-w-[345px] pl-[8px] gap-[10px] mx-auto pb-[40px]">
           <button
             type="button"
             onClick={() => {
               onReset?.();
             }}
-            className="flex-1 justify-center items-center h-[55px] py-[15px] px-[15px]"
+            className="flex items-center max-h-[55px] py-[15px] px-[15px]"
           >
             <Image
               src={refreshIcon}
@@ -158,7 +157,7 @@ export default function SheetFilter({
 
           <ButtonPrimary
             variant="thick"
-            className="border-t items-center justify-center max-w-[272px] max-h-[55px] text-noto-16-bold"
+            className="flex items-center justify-center max-w-[272px] max-h-[55px] text-noto-16-bold shrink-0"
             onClick={onApply}
           >
             {totalCount}개 포토보기
