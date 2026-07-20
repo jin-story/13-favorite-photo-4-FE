@@ -30,7 +30,7 @@ const filterOptions = {
     ],
   },
 
-  sale: {
+  availability: {
     title: "매진 여부",
     options: [
       { label: "판매 중", value: "SALE" },
