@@ -24,6 +24,24 @@ const dropdownOptions = {
     ],
   },
 
+  genre: {
+    placeholder: "장르",
+    options: [
+      { label: "여행", value: "TRAVEL" },
+      { label: "풍경", value: "LANDSCAPE" },
+      { label: "인물", value: "PERSON" },
+      { label: "사물", value: "OBJECT" },
+    ],
+  },
+
+  availability: {
+    placeholder: "매진 여부",
+    options: [
+      { label: "판매 중", value: "SALE" },
+      { label: "판매 완료", value: "SOLD_OUT" },
+    ],
+  },
+
   sort: {
     placeholder: "낮은 가격순",
     options: [
@@ -35,18 +53,20 @@ const dropdownOptions = {
 };
 
 // css 정리
-const dropdownStyle = {
-  grade: {
-    button: "flex pc:min-h-[24px] min-h-[22px] items-start gap-[10px]",
-    menu: "flex flex-col absolute min-w-[134px] z-10 items-start mt-[18px] border border-gray-200 bg-black",
-    item: "flex items-start min-w-[134px] py-[15px] px-[20px] text-left inline hover:bg-gray-500",
-  },
+const defaultStyle = {
+  button: "flex pc:min-h-[24px] min-h-[22px] items-start gap-[10px]",
+  menu: "flex flex-col absolute z-10 items-start mt-[18px] border border-gray-200 bg-black",
+  item: "flex items-start w-full py-[15px] px-[20px] text-left hover:bg-gray-500",
+};
 
-  sale: {
-    button: "flex pc:min-h-[24px] min-h-[22px] items-start gap-[10px]",
-    menu: "flex flex-col absolute z-10 items-start mt-[18px] border border-gray-200 bg-black",
-    item: "flex items-start w-full py-[15px] px-[20px] text-left inline hover:bg-gray-500",
-  },
+const dropdownStyle = {
+  grade: defaultStyle,
+
+  sale: defaultStyle,
+
+  genre: defaultStyle,
+
+  availability: defaultStyle,
 
   sort: {
     button:
