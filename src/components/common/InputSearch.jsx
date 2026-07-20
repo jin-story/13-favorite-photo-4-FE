@@ -11,6 +11,7 @@ export default function InputSearch({
   onKeyDown,
   placeholder = "검색",
   className = "",
+  ...props
 }) {
   if (!onChange) {
     console.warn("onChange는 필수 props 입니다.");
@@ -29,6 +30,7 @@ export default function InputSearch({
       )}
     >
       <input
+        {...props}
         value={value}
         onChange={(e) => onChange?.(e.target.value)}
         onKeyDown={handleKeyDown}

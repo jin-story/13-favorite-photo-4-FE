@@ -1,7 +1,8 @@
 import React from "react";
 
 export default function Grade({ type = "card", grade = "COMMON" }) {
-  if (type !== "card" && type !== "detail") return null;
+  if (type !== "card" && type !== "detail" && type !== "sheetfilter")
+    return null;
   const upperGrade = grade.toUpperCase();
   const gradeStyles = {
     COMMON: "text-[#EFFF04]",
@@ -21,6 +22,13 @@ export default function Grade({ type = "card", grade = "COMMON" }) {
       {type === "detail" && (
         <span
           className={` ${gradeStyles[upperGrade]} text-noto-18-bold text-center tablet:text-noto-24-bold`}
+        >
+          {upperGrade}
+        </span>
+      )}
+      {type === "sheetfilter" && (
+        <span
+          className={` ${gradeStyles[upperGrade]} text-noto-14-regular text-center`}
         >
           {upperGrade}
         </span>
