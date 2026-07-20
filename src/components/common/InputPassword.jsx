@@ -16,6 +16,7 @@ export default function InputPassword({
   maxLength,
   className = "",
   disabled = false,
+  ...props
 }) {
   const inputId = useId();
   const [isVisible, setIsVisible] = useState(false);
@@ -30,7 +31,7 @@ export default function InputPassword({
   return (
     <div
       className={clsx(
-        "flex w-full max-w-[345px] flex-col items-start gap-[10px] tablet:max-w-[440px] pc:max-w-[520px]",
+        "flex w-full flex-col items-start gap-[10px] tablet:max-w-[440px] pc:max-w-[520px]",
         className,
       )}
     >
@@ -55,6 +56,7 @@ export default function InputPassword({
         )}
       >
         <input
+          {...props}
           id={inputId}
           type={isVisible ? "text" : "password"}
           value={value}
