@@ -89,6 +89,7 @@ export default function SheetFilter({
             type="button"
             onClick={onClose}
             className="absolute right-[15px]"
+            aria-label="닫기"
           >
             <Image src={closeIcon} alt="" className="w-[24px] brightness-35" />
           </button>
@@ -130,7 +131,7 @@ export default function SheetFilter({
               )}
             >
               {tab === "grade" ? (
-                <Grade type="sheetfilter" grade={option.value} />
+                <Grade type="sheetfilter" grade={option.label} />
               ) : (
                 <span>{option.label}</span>
               )}
