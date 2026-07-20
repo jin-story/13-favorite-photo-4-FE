@@ -13,6 +13,7 @@ export default function InputEmail({
   maxLength,
   className = "",
   disabled = false,
+  ...props
 }) {
   const inputId = useId();
   const [isFocused, setIsFocused] = useState(false);
@@ -26,7 +27,10 @@ export default function InputEmail({
 
   return (
     <div
-      className={`flex w-full max-w-[345px] flex-col items-start gap-[10px] tablet:max-w-[440px] pc:max-w-[520px] ${className}`}
+      className={clsx(
+        "flex w-full flex-col items-start gap-[10px] tablet:max-w-[440px] pc:max-w-[520px]",
+        className,
+      )}
     >
       <label
         htmlFor={inputId}
@@ -48,6 +52,7 @@ export default function InputEmail({
         )}
       >
         <input
+          {...props}
           id={inputId}
           type="email"
           value={value}
