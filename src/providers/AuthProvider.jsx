@@ -54,9 +54,9 @@ export default function AuthProvider({ children }) {
   };
 
   const login = async (email, password) => {
-    const { userData, success } = await loginAction(email, password);
+    const { userData, success, error } = await loginAction(email, password);
     if (!success) {
-      throw new Error("로그인 실패");
+      throw new Error(error || "로그인 실패");
     }
     setUser(userData);
   };
