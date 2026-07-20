@@ -1,6 +1,10 @@
 "use client";
 
-import { getServerSideToken, loginAction, registerAction } from "@/lib/actions/auth";
+import {
+  getServerSideToken,
+  loginAction,
+  registerAction,
+} from "@/lib/actions/auth";
 import { authService } from "@/lib/services/authService";
 import { userService } from "@/lib/services/userService";
 import { createContext, useContext, useEffect, useState } from "react";
@@ -35,14 +39,16 @@ export default function AuthProvider({ children }) {
   };
 
   const register = async (nickname, email, password, passwordConfirmation) => {
-    const { userData, success } = await registerAction(
+    if (password !== passwordConfirmation) {
+      throw new Error("비밀번호가 일치하지 않습니다.");
+    }
+    const { userData, success, error } = await registerAction(
       nickname,
       email,
       password,
-      passwordConfirmation,
     );
     if (!success) {
-      throw new Error("회원가입 실패");
+      throw new Error(error || "회원가입 실패");
     }
     setUser(userData);
   };
@@ -67,7 +73,6 @@ export default function AuthProvider({ children }) {
   useEffect(() => {
     async function fetchUser() {
       const token = await getServerSideToken();
-      console.log("token::", token);
       if (token) {
         getUser();
       } else {

@@ -85,7 +85,7 @@ export async function loginAction(email, password) {
     const match = setCookieHeader?.match(/refreshToken=([^;]+)/);
     const refreshToken = match ? match[1] : null;
 
-    if (!accessToken) {
+    if (!accessToken || !refreshToken) {
       return {
         success: false,
         error: "서버로부터 인증 토큰을 받지 못했습니다.",

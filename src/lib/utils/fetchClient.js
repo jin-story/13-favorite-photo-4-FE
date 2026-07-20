@@ -1,6 +1,5 @@
 import { getServerSideToken, updateAccessToken } from "../actions/auth";
 
-
 /**
  * 기본 fetch 클라이언트 - 인증이 필요 없는 일반 요청용
  */
@@ -26,8 +25,10 @@ export const defaultFetch = async (url, options = {}) => {
   const response = await fetch(`${baseURL}${url}`, mergedOptions);
 
   if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message);
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(
+      errorData.message || `요청 실패 (status: ${response.status})`,
+    );
   }
 
   return response;
@@ -62,8 +63,9 @@ export const tokenFetch = async (url, options = {}) => {
   const REFRESH_PATH = "/auth/refresh-token";
 
   if (response.status === 401 && url !== REFRESH_PATH) {
+    let refreshResponse;
     try {
-      const refreshResponse = await fetch(`${baseURL}${REFRESH_PATH}`, {
+      refreshResponse = await fetch(`${baseURL}${REFRESH_PATH}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -83,8 +85,10 @@ export const tokenFetch = async (url, options = {}) => {
   }
 
   if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message);
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(
+      errorData.message || `요청 실패 (status: ${response.status})`,
+    );
   }
 
   const contentType = response.headers.get("content-type");
