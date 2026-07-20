@@ -35,7 +35,7 @@ const dropdownOptions = {
   },
 
   availability: {
-    title: "매진 여부",
+    placeholder: "매진 여부",
     options: [
       { label: "판매 중", value: "SALE" },
       { label: "판매 완료", value: "SOLD_OUT" },
