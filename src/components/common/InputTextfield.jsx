@@ -12,6 +12,7 @@ export default function InputTextfield({
   errorMessage,
   maxLength,
   className = "",
+  ...props
 }) {
   const inputId = useId();
   const [isFocused, setIsFocused] = useState(false);
@@ -25,7 +26,10 @@ export default function InputTextfield({
 
   return (
     <div
-      className={`flex w-full max-w-[345px] flex-col items-start gap-[10px] tablet:max-w-[440px] pc:max-w-[520px] ${className}`}
+      className={clsx(
+        "flex w-full flex-col items-start gap-[10px] tablet:max-w-[440px] pc:max-w-[520px]",
+        className,
+      )}
     >
       <label
         htmlFor={inputId}
@@ -42,6 +46,7 @@ export default function InputTextfield({
         )}
       >
         <input
+          {...props}
           id={inputId}
           value={value}
           onChange={(e) => onChange?.(e.target.value)}
