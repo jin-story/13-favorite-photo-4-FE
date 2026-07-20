@@ -1,6 +1,12 @@
-import React from 'react'
+import { redirect, RedirectType } from "next/navigation";
+import React from "react";
 
-export default function Layout({ children }) {
+export default async function Layout({ children }) {
+  const isAuthenticated = await checkAuthWithRefres();
+
+  if (!isAuthenticated) {
+    redirect("/login", RedirectType.replace);
+  }
   return (
     <div className="flex min-h-dvh flex-col">
       {/* Header*/}
@@ -11,5 +17,5 @@ export default function Layout({ children }) {
       </main>
       {/* Footer */}
     </div>
-  )
+  );
 }
