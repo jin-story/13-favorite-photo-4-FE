@@ -7,7 +7,7 @@ export default function Grade({ type = "card", grade = "COMMON" }) {
   const gradeStyles = {
     COMMON: "text-[#EFFF04]",
     RARE: "text-[#29C9F9]",
-    "SUPER RARE": "text-[#A77EFF]",
+    SUPER_RARE: "text-[#A77EFF]",
     LEGENDARY: "text-[#FF2A6A]",
   };
   return (
