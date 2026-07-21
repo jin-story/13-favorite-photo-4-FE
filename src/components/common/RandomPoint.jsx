@@ -13,7 +13,7 @@
 
 export default function RandomPoint({ time = "59분 59초", children }) {
   return (
-    <div className="flex flex-col items-center gap-7.5 pc:gap-10">
+    <div className="flex flex-col items-center gap-7.5 pc:gap-10 pc:mt-[80px] tablet:mt-[60px] mt-[60px]">
       <div className="font-baskin-robbins text-3xl tablet:text-4xl pc:text-baskin-46">
         <span className="text-white">랜덤</span>
         <span className="text-main">포인트</span>
