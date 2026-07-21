@@ -10,6 +10,7 @@ import Gnb from "@/components/common/Gnb";
 import Grade from "@/components/common/Grade";
 import PhotoCardInfo from "@/components/common/PhotoCardInfo";
 import MarketplacePurchaseModal from "@/components/modals/MarketplacePurchaseModal";
+import MarketplaceExchangeCancelModal from "@/components/modals/MarketplaceExchangeCancelModal";
 import { useModal } from "@/providers/ModalProvider";
 import cardCastle from "@/assets/images/card_castle.svg";
 import cardImage from "@/assets/images/card_woman.svg";
@@ -124,9 +125,6 @@ export default function MarketplacePostingDetailPage() {
     console.log("로그인이 필요한 액션입니다.");
     alert("로그인이 필요한 서비스입니다.");
 
-    // 로그인 페이지 작업 완료 후 아래 코드로 연결 예정
-    // router.push("/login");
-
     return false;
   };
 
@@ -175,12 +173,21 @@ export default function MarketplacePostingDetailPage() {
   };
 
   const handleCancelExchangeOffer = (offer) => {
-    console.log("교환 제시 취소 클릭:", {
-      exchangeOfferId: offer.id,
-      marketPostingId: mockMarketPostingDetail.id,
-    });
+    openModal(
+      <MarketplaceExchangeCancelModal
+        offer={offer}
+        onClose={closeModal}
+        onConfirm={() => {
+          console.log("교환 제시 취소 요청 목업 데이터:", {
+            exchangeOfferId: offer.id,
+            marketPostingId: mockMarketPostingDetail.id,
+          });
 
-    alert("교환 제시 취소하기 모달로 연결 예정입니다.");
+          closeModal();
+          alert("교환 제시가 취소되었습니다.");
+        }}
+      />,
+    );
   };
 
   return (
