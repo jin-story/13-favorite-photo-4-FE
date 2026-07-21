@@ -1,6 +1,7 @@
 import localFont from "next/font/local";
 import "./globals.css";
 import { Providers } from "./providers";
+import Gnb from "@/components/common/Gnb";
 
 const notoSansKR = localFont({
   src: [
@@ -29,6 +30,7 @@ export default function RootLayout({ children }) {
       className={`${notoSansKR.variable} ${baskinRobbins.variable}`}
     >
       <body>
+        <Gnb />
         <Providers>{children}</Providers>
       </body>
     </html>
