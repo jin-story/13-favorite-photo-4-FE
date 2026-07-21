@@ -1,4 +1,3 @@
-import React from "react";
 /**
  * @description 1시간마다 돌아오는 랜덤 포인트 타이머 UI 컴포넌트
  *
@@ -12,16 +11,15 @@ import React from "react";
  * <RandomPoint time={timeLeft} />
  */
 
-export default function RandomPoint({ time = "59분 59초" }) {
+export default function RandomPoint({ time = "59분 59초", children }) {
   return (
-    <div className="flex flex-col items-center gap-7.5 pc:gap-10">
+    <div className="flex flex-col items-center gap-7.5 pc:gap-10 pc:mt-[80px] tablet:mt-[60px] mt-[60px]">
       <div className="font-baskin-robbins text-3xl tablet:text-4xl pc:text-baskin-46">
         <span className="text-white">랜덤</span>
         <span className="text-main">포인트</span>
       </div>
-      <div className="flex flex-col items-center text-noto-16-bold text-white pc:text-noto-20-bold">
-        <p>1시간마다 돌아오는 기회!</p>
-        <p>랜덤 상자 뽑기를 통해 포인트를 획득하세요!</p>
+      <div className="flex flex-col items-center text-noto-16-bold text-white pc:text-noto-20-bold text-center">
+        {children}
       </div>
       <div className="flex flex-col items-center gap-[5px] text-noto-14-regular pc:flex-row pc:gap-2.5">
         <p className="text-gray-300">다음 기회까지 남은 시간</p>

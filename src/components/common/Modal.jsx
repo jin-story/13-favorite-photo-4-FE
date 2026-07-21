@@ -1,7 +1,16 @@
 "use client";
 
-export default function Modal({ isOpen, onClose, children }) {
-  // 모달이 닫힌 상태면 아무것도 렌더링하지 않음
+import { useEffect } from "react";
+import Image from "next/image";
+import closeIcon from "@/assets/icons/close.svg";
+
+export default function Modal({
+  isOpen,
+  onClose,
+  children,
+  // 예외 케이스를 위한 옵션
+  showCloseButton = true,
+}) {
   useEffect(() => {
     if (!isOpen) return;
 
@@ -36,7 +45,19 @@ export default function Modal({ isOpen, onClose, children }) {
       className="fixed inset-0 flex justify-center items-center w-full h-dvh bg-black/80"
       onClick={handleBackdropClick}
     >
-      <div className="w-fit h-fit bg-gray-500">{children}</div>
+      <div className="relative w-fit h-fit bg-gray-500">
+        {showCloseButton && (
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="모달 닫기"
+            className="absolute right-[15px] top-[15px] size-7 pc:right-7.5 pc:top-7.5 pc:size-8"
+          >
+            <Image src={closeIcon} alt="" className="size-full" />
+          </button>
+        )}
+        {children}
+      </div>
     </div>
   );
 }
