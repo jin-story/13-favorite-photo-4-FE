@@ -17,7 +17,7 @@ const buttonStyle = {
 
 export default function PrimaryButton({
   children,
-  variant = "thick",
+  variant,
   disabled = false,
   type = "button",
   className,

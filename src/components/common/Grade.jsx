@@ -3,11 +3,11 @@ import React from "react";
 export default function Grade({ type = "card", grade = "COMMON" }) {
   if (type !== "card" && type !== "detail" && type !== "sheetfilter")
     return null;
-  const upperGrade = grade.toUpperCase();
+  const upperGrade = grade.toUpperCase().replace(/\s+/g, "_");
   const gradeStyles = {
     COMMON: "text-[#EFFF04]",
     RARE: "text-[#29C9F9]",
-    "SUPER RARE": "text-[#A77EFF]",
+    SUPER_RARE: "text-[#A77EFF]",
     LEGENDARY: "text-[#FF2A6A]",
   };
   return (
