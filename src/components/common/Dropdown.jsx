@@ -11,7 +11,7 @@ const dropdownOptions = {
     options: [
       { label: "COMMON", value: "COMMON" },
       { label: "RARE", value: "RARE" },
-      { label: "SUPER RARE", value: "SUPER_RARE" },
+      { label: "SUPER_RARE", value: "SUPER_RARE" },
       { label: "LEGENDARY", value: "LEGENDARY" },
     ],
   },
