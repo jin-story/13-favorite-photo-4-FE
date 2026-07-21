@@ -2,23 +2,28 @@
 
 import Image from "next/image";
 import { useState } from "react";
-// import { useRouter } from "next/navigation";(추후 작업용)
+// import { useRouter } from "next/navigation"; // 로그인 페이지 연결 시 사용 예정
 import BuyerCardAction from "@/components/common/BuyerCardAction";
 import ButtonPrimary from "@/components/common/ButtonPrimary";
 import Gnb from "@/components/common/Gnb";
 import Grade from "@/components/common/Grade";
 import PhotoCardInfo from "@/components/common/PhotoCardInfo";
+import MarketplacePurchaseModal from "@/components/modals/MarketplacePurchaseModal";
+import { useModal } from "@/providers/ModalProvider";
 import cardImage from "@/assets/images/card_woman.svg";
 
 const mockIsLoggedIn = true;
 
 const mockUser = {
+  id: 10,
   nickname: "유디",
   point: 1540,
 };
 
 const mockMarketPostingDetail = {
   id: 1,
+  photoCardId: 101,
+  sellerId: 20,
   name: "우리집 앞마당",
   imageUrl: cardImage,
   grade: "LEGENDARY",
@@ -39,6 +44,7 @@ const mockMarketPostingDetail = {
 
 export default function MarketplaceBuyerDetailPage() {
   // const router = useRouter();
+  const { openModal, closeModal } = useModal();
   const [quantity, setQuantity] = useState(2);
 
   const requireLogin = () => {
@@ -47,25 +53,42 @@ export default function MarketplaceBuyerDetailPage() {
     console.log("로그인이 필요한 액션입니다.");
     alert("로그인이 필요한 서비스입니다.");
 
-    // 로그인 페이지 작업 완료 후 아래 코드로 연결
+    // 로그인 페이지 작업 완료 후 아래 코드로 연결 예정
     // router.push("/login");
 
     return false;
   };
 
+  const handleConfirmPurchase = (purchaseQuantity) => {
+    const purchasePayload = {
+      marketPostingId: mockMarketPostingDetail.id,
+      buyerId: mockUser.id,
+      sellerId: mockMarketPostingDetail.sellerId,
+      photoCardId: mockMarketPostingDetail.photoCardId,
+      quantity: purchaseQuantity,
+      transactionPrice: mockMarketPostingDetail.price * purchaseQuantity,
+    };
+
+    console.log("구매 요청 목업 데이터:", purchasePayload);
+
+    closeModal();
+
+    alert(
+      "구매 요청이 완료되었습니다. 이후 성공/실패 페이지로 연결 예정입니다.",
+    );
+  };
+
   const handlePurchase = (purchaseQuantity) => {
     if (!requireLogin()) return;
 
-    console.log("포토카드 구매하기 클릭:", {
-      marketPostingId: mockMarketPostingDetail.id,
-      quantity: purchaseQuantity,
-      totalPrice: mockMarketPostingDetail.price * purchaseQuantity,
-    });
-
-    alert(
-      `포토카드 구매하기 클릭\n수량: ${purchaseQuantity}장\n총 가격: ${
-        mockMarketPostingDetail.price * purchaseQuantity
-      } P`,
+    openModal(
+      <MarketplacePurchaseModal
+        cardName={mockMarketPostingDetail.name}
+        grade={mockMarketPostingDetail.grade}
+        quantity={purchaseQuantity}
+        onClose={closeModal}
+        onConfirm={() => handleConfirmPurchase(purchaseQuantity)}
+      />,
     );
   };
 
@@ -129,7 +152,7 @@ export default function MarketplaceBuyerDetailPage() {
               />
 
               <BuyerCardAction
-                className="mt-6 [&>button]:mt-[82px]! tablet:[&>button]:mt-[92px]! pc:mt-8 pc:[&>button]:mt-[108px]!"
+                className="mt-6 pc:mt-8"
                 price={mockMarketPostingDetail.price}
                 quantity={quantity}
                 minQuantity={1}
