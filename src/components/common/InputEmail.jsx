@@ -3,7 +3,7 @@
 import { useId, useState } from "react";
 import clsx from "clsx";
 
-export default function InputTextfield({
+export default function InputEmail({
   label,
   value = "",
   onChange,
@@ -12,6 +12,7 @@ export default function InputTextfield({
   errorMessage,
   maxLength,
   className = "",
+  disabled = false,
   ...props
 }) {
   const inputId = useId();
@@ -33,21 +34,27 @@ export default function InputTextfield({
     >
       <label
         htmlFor={inputId}
-        className="text-noto-16-bold text-white pc:text-noto-20-bold"
+        className={clsx(
+          "text-noto-16-regular pc:text-noto-18-regular",
+          disabled && "text-gray-400",
+          !disabled && "text-white",
+        )}
       >
         {label}
       </label>
       <div
         className={clsx(
           "flex h-[55px] w-full items-center rounded-[2px] border px-5 py-[18px] pc:h-[60px]",
-          hasError && "border-red bg-gray-500",
-          !hasError && isFocused && "border-gray-200 bg-gray-500",
-          !hasError && !isFocused && "border-gray-200 bg-black",
+          disabled && "border-gray-400 bg-black",
+          !disabled && hasError && "border-red bg-gray-500",
+          !disabled && !hasError && isFocused && "border-gray-200 bg-gray-500",
+          !disabled && !hasError && !isFocused && "border-gray-200 bg-black",
         )}
       >
         <input
           {...props}
           id={inputId}
+          type="email"
           value={value}
           onChange={(e) => onChange?.(e.target.value)}
           onFocus={() => setIsFocused(true)}
@@ -55,9 +62,14 @@ export default function InputTextfield({
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
           maxLength={maxLength}
+          disabled={disabled}
           aria-invalid={hasError}
           aria-describedby={hasError ? errorId : undefined}
-          className="text-noto-14-regular placeholder:text-noto-14-light w-full bg-transparent text-white outline-none pc:text-noto-16-regular pc:placeholder:text-noto-16-light"
+          className={clsx(
+            "text-noto-14-regular placeholder:text-noto-14-light w-full bg-transparent outline-none pc:text-noto-16-regular pc:placeholder:text-noto-16-light",
+            disabled && "text-gray-400 placeholder:text-gray-400",
+            !disabled && "text-white placeholder:text-gray-200",
+          )}
         />
       </div>
       {hasError && (
