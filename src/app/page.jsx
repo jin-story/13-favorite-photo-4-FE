@@ -140,7 +140,14 @@ export default function Home() {
         />
       </section>
       <section className="h-[421px] tablet:h-[620px] pc:h-[597px] flex flex-col justify-center items-center gap-[23px] tablet:gap-[27px]">
-        <Image src={landing_bottom} alt="포토카드" className="object-cover" />
+        <div className="relative h-[153px] w-[130px] tablet:h-[179px]  tablet:w-[152px]">
+          <Image
+            src={landing_bottom}
+            alt="포토카드"
+            fill
+            className="object-cover"
+          />
+        </div>
         <span className="text-noto-20-bold tablet:text-noto-28-bold">
           나의 최애를 지금 찾아보세요!
         </span>
