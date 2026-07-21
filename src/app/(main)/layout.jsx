@@ -1,8 +1,10 @@
-import { redirect, RedirectType } from "next/navigation";
-import React from "react";
+import { checkAuthWithRefresh } from '@/lib/actions/auth';
+import { redirect, RedirectType } from 'next/navigation';
+import React from 'react'
 
 export default async function Layout({ children }) {
-  const isAuthenticated = await checkAuthWithRefres();
+
+    const isAuthenticated = await checkAuthWithRefresh();
 
   if (!isAuthenticated) {
     redirect("/login", RedirectType.replace);
