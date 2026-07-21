@@ -28,7 +28,7 @@ export default function AuthForm({ type }) {
   const [passwordConfirmError, setPasswordConfirmError] = useState("");
   const [generalError, setGeneralError] = useState("");
 
-  // 모달을 열 때 에러 메시지를 직접 인자로 받도록 수정
+  
   const handleOpenModal = (errorMessage) => {
     openModal(
       <div className="w-[345px] h-[291px] flex flex-col justify-center items-center gap-7.5 tablet:w-[400px] tablet:h-[291px] pc:w-[560px] pc:h-[375px] pc:gap-10">
@@ -73,7 +73,7 @@ export default function AuthForm({ type }) {
       setPasswordError("비밀번호를 입력해 주세요.");
       isValid = false;
     } else if (password.length < 8) {
-      // 🔥 누락되었던 8자 미만 검증 및 튕김 처리 추가
+
       setPasswordError("비밀번호는 8자 이상 입력해 주세요.");
       isValid = false;
     }
@@ -96,7 +96,6 @@ export default function AuthForm({ type }) {
       const errorMessage = err.message || "요청에 실패했습니다.";
       setGeneralError(errorMessage);
 
-      // 🔥 state 대신 에러 메시지 변수를 직접 모달 함수에 전달
       handleOpenModal(errorMessage);
     }
   };
