@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
-// import { useRouter } from "next/navigation"; // 로그인 페이지 연결 시 사용 예정
+import { useRouter } from "next/navigation";
 import BuyerCardAction from "@/components/common/BuyerCardAction";
 import ButtonPrimary from "@/components/common/ButtonPrimary";
 import Gnb from "@/components/common/Gnb";
@@ -13,6 +13,7 @@ import { useModal } from "@/providers/ModalProvider";
 import cardImage from "@/assets/images/card_woman.svg";
 
 const mockIsLoggedIn = true;
+const mockPurchaseShouldSucceed = true;
 
 const mockUser = {
   id: 10,
@@ -43,7 +44,7 @@ const mockMarketPostingDetail = {
 };
 
 export default function MarketplaceBuyerDetailPage() {
-  // const router = useRouter();
+  const router = useRouter();
   const { openModal, closeModal } = useModal();
   const [quantity, setQuantity] = useState(2);
 
@@ -73,8 +74,9 @@ export default function MarketplaceBuyerDetailPage() {
 
     closeModal();
 
-    alert(
-      "구매 요청이 완료되었습니다. 이후 성공/실패 페이지로 연결 예정입니다.",
+    const resultPath = mockPurchaseShouldSucceed ? "success" : "failure";
+    router.push(
+      `/marketplace/${mockMarketPostingDetail.id}/purchase-result/${resultPath}`,
     );
   };
 
@@ -99,7 +101,7 @@ export default function MarketplaceBuyerDetailPage() {
       marketPostingId: mockMarketPostingDetail.id,
     });
 
-    alert("포토카드 교환하기 클릭");
+    router.push("?modal=marketplaceExchangeSelect", { scroll: false });
   };
 
   return (
@@ -129,7 +131,7 @@ export default function MarketplaceBuyerDetailPage() {
 
           <div className="mt-4 border-t border-gray-100 tablet:mt-5 pc:mt-6" />
 
-          <div className="mt-7 grid gap-8 tablet:mt-10 tablet:grid-cols-[minmax(0,342px)_minmax(0,342px)] tablet:gap-5 pc:mt-[70px] pc:grid-cols-[minmax(0,960px)_440px] pc:gap-[80px]">
+          <div className="mt-7 grid gap-8 tablet:mt-10 tablet:grid-cols-[minmax(0,744px)_minmax(0,744px)] tablet:gap-5 pc:grid-cols-[1fr_440px] pc:gap-[80px]">
             <div className="relative aspect-[345/258] w-full overflow-hidden bg-gray-500 tablet:aspect-[342/256] pc:aspect-[960/720]">
               <Image
                 src={mockMarketPostingDetail.imageUrl}
