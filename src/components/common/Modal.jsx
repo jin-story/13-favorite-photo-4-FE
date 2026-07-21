@@ -1,5 +1,8 @@
 "use client";
 
+import { useEffect } from "react";
+
+
 export default function Modal({ isOpen, onClose, children }) {
   // 모달이 닫힌 상태면 아무것도 렌더링하지 않음
   useEffect(() => {
