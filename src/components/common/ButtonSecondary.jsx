@@ -17,7 +17,7 @@ const buttonStyle = {
 
 export default function ButtonSecondary({
   children,
-  variant = "thick",
+  variant,
   type = "button",
   className,
   ...props
