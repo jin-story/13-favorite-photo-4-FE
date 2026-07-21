@@ -1,8 +1,14 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useRef } from "react";
-import { useModal } from "@/providers/ModalProvider";
 import RandomPointModalContent from "@/components/modals/RandomPointModalContent";
+import { useModal } from "@/providers/ModalProvider";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+} from "react";
 
 const RandomPointContext = createContext(null);
 
@@ -21,6 +27,7 @@ export function RandomPointProvider({ children }) {
   const nextAvailableAtRef = useRef(null);
 
   const openRandomPointModal = useCallback(() => {
+    nextAvailableAtRef.current = null;
     openModal(<RandomPointModalContent onClaimed={scheduleNext} />);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openModal]);
@@ -77,7 +84,9 @@ export function useRandomPoint() {
   const context = useContext(RandomPointContext);
 
   if (!context) {
-    throw new Error("useRandomPoint은 RandomPointProvider 안에서 사용해야 합니다.");
+    throw new Error(
+      "useRandomPoint은 RandomPointProvider 안에서 사용해야 합니다.",
+    );
   }
 
   return context;

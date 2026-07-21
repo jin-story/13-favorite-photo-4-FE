@@ -6,7 +6,9 @@ import { useEffect, useState } from "react";
  * @description targetAt(타임스탬프)까지 남은 시간을 매초 "MM분 SS초" 형태로 반환
  */
 export function useCountdown(targetAt) {
-  const [remaining, setRemaining] = useState(() => targetAt - Date.now());
+  const [remaining, setRemaining] = useState(() =>
+    targetAt ? targetAt - Date.now() : 0,
+  );
 
   useEffect(() => {
     if (!targetAt) return;

@@ -3,8 +3,8 @@
 import boxBlue from "@/assets/images/box_blue.svg";
 import boxPurple from "@/assets/images/box_purple.svg";
 import boxRed from "@/assets/images/box_red.svg";
-import PointResult from "@/components/common/PointResult";
 import PrimaryButton from "@/components/common/ButtonPrimary";
+import PointResult from "@/components/common/PointResult";
 import RandomPoint from "@/components/common/RandomPoint";
 import { useCountdown } from "@/hooks/useCountdown";
 import clsx from "clsx";
@@ -92,8 +92,6 @@ export default function RandomPointModalContent({ onClaimed }) {
                   }}
                   transition={{
                     type: "tween",
-                    stiffness: 250,
-                    damping: 15,
                   }}
                   whileHover={{
                     scale: selectedBox === null ? 1.05 : undefined,
@@ -126,6 +124,7 @@ export default function RandomPointModalContent({ onClaimed }) {
                     variant="thin"
                     className="pc:w-[520px]! tablet:w-[440px]! w-[300px]! pc:mb-[80px] tablet:mb-[58px] mb-[45px] rounded-b-xs"
                     onClick={handleOpenBox}
+                    disabled={isOpening}
                   >
                     선택완료
                   </PrimaryButton>
