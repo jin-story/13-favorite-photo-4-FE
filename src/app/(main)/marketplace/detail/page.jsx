@@ -1,0 +1,143 @@
+"use client";
+
+import Image from "next/image";
+import { useState } from "react";
+// import { useRouter } from "next/navigation"; // 로그인 페이지 연결 시 사용 예정
+import Gnb from "@/components/common/Gnb";
+import PhotoCardInfo from "@/components/common/PhotoCardInfo";
+import { useModal } from "@/providers/ModalProvider";
+import cardImage from "@/assets/images/card_woman.svg";
+import SellerCardAction from "@/components/common/SellerCardAction";
+import Title from "@/components/common/Title";
+import ExchangeCard from "@/components/common/ExchangeCard";
+
+const mockIsLoggedIn = true;
+
+const mockUser = {
+  id: 10,
+  nickname: "유디",
+  point: 1540,
+};
+
+const mockMarketPostingDetail = {
+  id: 1,
+  photoCardId: 101,
+  sellerId: 20,
+  name: "우리집 앞마당",
+  imageUrl: cardImage,
+  grade: "LEGENDARY",
+  genre: "풍경",
+  ownerNickname: "미쓰손",
+  description:
+    "우리집 앞마당 포토카드입니다. 우리집 앞마당 포토카드입니다. 우리집 앞마당 포토카드입니다.",
+  price: 4,
+  remainingQuantity: 2,
+  totalQuantity: 5,
+  exchange: {
+    grade: "RARE",
+    genre: "풍경",
+    description:
+      "푸릇푸릇한 여름 풍경, 눈 많이 내린 겨울 풍경 사진에 관심이 많습니다.",
+  },
+};
+
+const exchangeDataList = {
+  makerNickname: "권태현",
+  name: "스페인 여행",
+  grade: "COMMON",
+  genre: "풍경",
+  price: "50",
+  // imgUrl:,
+  description:
+    "스페인 여행 사진도 좋은데.. 우리집 앞마당 포토카드와 교환하고 싶습니다!",
+};
+
+export default function MarketplaceBuyerDetailPage() {
+  // const router = useRouter();
+  const { openModal, closeModal } = useModal();
+  const [quantity, setQuantity] = useState(2);
+
+  const requireLogin = () => {
+    if (mockIsLoggedIn) return true;
+
+    console.log("로그인이 필요한 액션입니다.");
+    alert("로그인이 필요한 서비스입니다.");
+
+    // 로그인 페이지 작업 완료 후 아래 코드로 연결 예정
+    // router.push("/login");
+
+    return false;
+  };
+
+  return (
+    <>
+      <div className="fixed inset-x-0 top-0 z-50">
+        <Gnb
+          isLoggedIn={mockIsLoggedIn}
+          user={mockUser}
+          mobileType="sub"
+          title="마켓플레이스"
+          onBackClick={() => window.history.back()}
+          onLoginClick={() => console.log("로그인 클릭")}
+          onSignupClick={() => console.log("회원가입 클릭")}
+          onLogoutClick={() => console.log("로그아웃 클릭")}
+        />
+      </div>
+
+      <main className="bg-black text-white">
+        <p className="hidden text-baskin-18 text-gray-300 tablet:block pc:text-baskin-24">
+          마켓플레이스
+        </p>
+        <section className="mx-auto w-full max-w-[1480px] pb-[140px] pt-10 tablet:pb-[170px] tablet:pt-[50px] pc:pb-[180px] pc:pt-[80px]">
+          <Title type="card_detail" text={mockMarketPostingDetail.name} />
+
+          <div className="mt-7 grid gap-8 tablet:mt-10 tablet:grid-cols-2 tablet:gap-5 pc:grid-cols-[1fr_440px] pc:gap-[80px]">
+            <div className="relative aspect-[345/258] w-full overflow-hidden bg-gray-500 tablet:aspect-[342/256] pc:aspect-[960/720]">
+              <Image
+                src={mockMarketPostingDetail.imageUrl}
+                alt={mockMarketPostingDetail.name}
+                fill
+                priority
+                className="object-cover"
+              />
+            </div>
+
+            <aside className="w-full">
+              <PhotoCardInfo
+                grade={mockMarketPostingDetail.grade}
+                genre={mockMarketPostingDetail.genre}
+                ownerNickname={mockMarketPostingDetail.ownerNickname}
+                description={mockMarketPostingDetail.description}
+                price={mockMarketPostingDetail.price}
+                remainingQuantity={mockMarketPostingDetail.remainingQuantity}
+                totalQuantity={mockMarketPostingDetail.totalQuantity}
+              />
+              <SellerCardAction
+                className="mt-6 pc:mt-8"
+                exchangeGrade={mockMarketPostingDetail.exchange.grade}
+                exchangeGenre={mockMarketPostingDetail.exchange.genre}
+                exchangeDescription={
+                  mockMarketPostingDetail.exchange.description
+                }
+                //onEdit={handleOnEdit} 연결필요
+                //oncClose={handleOnClose} 연결필요
+              />
+            </aside>
+          </div>
+
+          <section className="mt-[90px] tablet:mt-[120px] pc:mt-[140px]">
+            <Title type="card_detail" text={"교환 제시 목록"} />
+
+            <div className="mt-9 tablet:mt-10 pc:mt-[70px]">
+              <ExchangeCard
+                card={exchangeDataList}
+                // onApprove={handleApprove} 연결필요
+                // onReject={handleReject} 연결필요
+              />
+            </div>
+          </section>
+        </section>
+      </main>
+    </>
+  );
+}
