@@ -40,8 +40,12 @@ export function ModalProvider({ children }) {
   // 모달에 표시할 컨텐츠 (React Element)
   const [modalContent, setModalContent] = useState(null);
 
-  const openModal = (content) => {
+  // 닫기 버튼 노출 여부 등 모달 옵션 (예: 강제로 버튼 클릭 응답을 받아야 하는 예외 케이스)
+  const [modalOptions, setModalOptions] = useState({});
+
+  const openModal = (content, options = {}) => {
     setModalContent(content);
+    setModalOptions(options);
     setIsOpen(true);
   };
 
@@ -62,7 +66,12 @@ export function ModalProvider({ children }) {
       {children}
 
       {/* 방식 1: 상태 기반 모달 — openModal(JSX 내용)으로 엽니다 */}
-      <Modal isOpen={isOpen} onClose={closeModal}>
+      <Modal
+        isOpen={isOpen}
+        onClose={closeModal}
+        // openModal(content, { showCloseButton: false })로 호출한 경우에만 X 버튼을 숨김
+        showCloseButton={modalOptions.showCloseButton ?? true}
+      >
         {modalContent}
       </Modal>
 
