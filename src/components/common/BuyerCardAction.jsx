@@ -111,7 +111,7 @@ const BuyerCardAction = ({
         variant="thin"
         onClick={handlePurchase}
         disabled={isDisabled}
-        className="mt-8 !w-full pc:mt-10"
+        className="mt-8 w-full! pc:mt-10"
       >
         포토카드 구매하기
       </PrimaryButton>
