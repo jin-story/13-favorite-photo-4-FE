@@ -27,8 +27,10 @@ export default function AuthForm({ type }) {
   const [passwordError, setPasswordError] = useState("");
   const [passwordConfirmError, setPasswordConfirmError] = useState("");
   const [generalError, setGeneralError] = useState("");
+  const isFormFilled = registerForm
+    ? Boolean(email && nickname && password && passwordConfirmation)
+    : Boolean(email && password);
 
-  
   const handleOpenModal = (errorMessage) => {
     openModal(
       <div className="w-[345px] h-[291px] flex flex-col justify-center items-center gap-7.5 tablet:w-[400px] tablet:h-[291px] pc:w-[560px] pc:h-[375px] pc:gap-10">
@@ -73,7 +75,6 @@ export default function AuthForm({ type }) {
       setPasswordError("비밀번호를 입력해 주세요.");
       isValid = false;
     } else if (password.length < 8) {
-
       setPasswordError("비밀번호는 8자 이상 입력해 주세요.");
       isValid = false;
     }
@@ -140,7 +141,12 @@ export default function AuthForm({ type }) {
       )}
 
       <div className="flex flex-col gap-4">
-        <PrimaryButton type="submit" variant="thin" className="cursor-pointer">
+        <PrimaryButton
+          type="submit"
+          variant="thin"
+          className="cursor-pointer"
+          disabled={!isFormFilled}
+        >
           {registerForm ? "가입하기" : "로그인"}
         </PrimaryButton>
         <button
