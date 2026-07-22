@@ -112,7 +112,7 @@ export default function MarketplacePage() {
           <ButtonPrimary
             variant="thin"
             onClick={closeModal}
-            className="w-[120px] pc:w-[170px]"
+            className="w-[120px]! pc:w-[170px]!"
           >
             확인
           </ButtonPrimary>
