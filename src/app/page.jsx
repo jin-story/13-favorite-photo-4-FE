@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import React from "react";
 import landing_top from "@/assets/images/landing_top.png";
 import landing_bg from "@/assets/images/landing_bg.png";
 import lgNumber_2 from "@/assets/images/lgNumber_2.svg";
