@@ -52,7 +52,7 @@ const exchangeDataList = {
     "스페인 여행 사진도 좋은데.. 우리집 앞마당 포토카드와 교환하고 싶습니다!",
 };
 
-export default function MarketplaceBuyerDetailPage() {
+export default function SellingPhotocardDetails() {
   // const router = useRouter();
   const { openModal, closeModal } = useModal();
   const [quantity, setQuantity] = useState(2);
