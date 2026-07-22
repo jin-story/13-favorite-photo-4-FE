@@ -30,8 +30,10 @@ export default function RootLayout({ children }) {
       className={`${notoSansKR.variable} ${baskinRobbins.variable}`}
     >
       <body>
-        <Gnb />
-        <Providers>{children}</Providers>
+        <Providers>
+          <Gnb />
+          {children}
+        </Providers>
       </body>
     </html>
   );
