@@ -41,21 +41,41 @@ const mockMarketPostingDetail = {
   },
 };
 
-const exchangeDataList = {
-  makerNickname: "권태현",
-  name: "스페인 여행",
-  grade: "COMMON",
-  genre: "풍경",
-  price: "50",
-  // imgUrl:,
-  description:
-    "스페인 여행 사진도 좋은데.. 우리집 앞마당 포토카드와 교환하고 싶습니다!",
-};
+const exchangeCards = [
+  {
+    id: 1,
+    makerNickname: "4팀 화이팅",
+    name: "스페인 여행",
+    grade: "COMMON",
+    genre: "풍경",
+    price: 4,
+    // imgUrl:,
+    description:
+      "스페인 여행 사진도 좋은데.. 우리집 앞마당 포토카드와 교환하고 싶습니다!",
+  },
+  {
+    id: 2,
+    makerNickname: "코드잇 화이팅",
+    name: "How Far I'll Go",
+    grade: "SUPER RARE",
+    genre: "풍경",
+    price: 4,
+    // imgUrl:,
+    description: "여름 바다 풍경 사진과 교환 하실래요?",
+  },
+];
 
 export default function SellingPhotocardDetails() {
   // const router = useRouter();
   const { openModal, closeModal } = useModal();
   const [quantity, setQuantity] = useState(2);
+
+  // 교환 제시 목록 API 연동
+  // const [exchangeCards, setExchangeCards] = useState([]);
+  // useEffect(() => {
+  //   // API 호출
+  //   setExchangeCards(response.data);
+  // }, []);
 
   const requireLogin = () => {
     if (mockIsLoggedIn) return true;
@@ -128,12 +148,15 @@ export default function SellingPhotocardDetails() {
           <section className="mt-[90px] tablet:mt-[120px] pc:mt-[140px]">
             <Title type="card_detail" text={"교환 제시 목록"} />
 
-            <div className="mt-9 tablet:mt-10 pc:mt-[70px]">
-              <ExchangeCard
-                card={exchangeDataList}
-                // onApprove={handleApprove} 연결필요
-                // onReject={handleReject} 연결필요
-              />
+            <div className="flex mt-9 gap-[5px] tablet:gap-[20px] tablet:20 pc:mt-[70px] pc:gap-[80px]">
+              {exchangeCards.map((card) => (
+                <ExchangeCard
+                  key={card.id}
+                  card={card}
+                  // onApprove={() => handleApprove(card.id)} 연결필요
+                  // onReject={() => handleReject(card.id)} 연결필요
+                />
+              ))}
             </div>
           </section>
         </section>
