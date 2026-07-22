@@ -67,7 +67,7 @@ export default function MarketplacePurchaseResultPage() {
         />
       </div>
 
-      <main className="min-h-dvh bg-black text-white">
+      <main className="-mx-[15px] min-h-dvh bg-black px-[15px] text-white tablet:-mx-5 tablet:px-5 pc:-mx-[220px] pc:px-[220px]">
         <section className="mx-auto flex min-h-dvh w-full max-w-[1480px] items-center justify-center px-[15px] pb-[90px] pt-[70px] tablet:px-10 tablet:pb-[120px] tablet:pt-[90px] pc:px-0 pc:pb-[140px] pc:pt-[120px]">
           <div className="relative flex w-full max-w-[345px] flex-col items-center tablet:max-w-[440px] pc:max-w-[520px]">
             <button
