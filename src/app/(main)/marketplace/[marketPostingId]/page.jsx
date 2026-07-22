@@ -9,20 +9,20 @@ import ButtonSecondary from "@/components/common/ButtonSecondary";
 import Gnb from "@/components/common/Gnb";
 import Grade from "@/components/common/Grade";
 import PhotoCardInfo from "@/components/common/PhotoCardInfo";
+import Title from "@/components/common/Title";
 import MarketplacePurchaseModal from "@/components/modals/MarketplacePurchaseModal";
 import MarketplaceExchangeCancelModal from "@/components/modals/MarketplaceExchangeCancelModal";
 import { useModal } from "@/providers/ModalProvider";
 import cardCastle from "@/assets/images/card_castle.svg";
 import cardImage from "@/assets/images/card_woman.svg";
 
-const mockIsLoggedIn = true;
 const mockPurchaseShouldSucceed = true;
 
-const mockUser = {
+const mockLoginUser = {
   id: 10,
   nickname: "유디",
   point: 1540,
-};
+}; // 추후 useAuth user로 교체 예정
 
 const mockMarketPostingDetail = {
   id: 1,
@@ -117,21 +117,21 @@ export default function MarketplacePostingDetailPage() {
   const { openModal, closeModal } = useModal();
   const [quantity, setQuantity] = useState(2);
 
-  const hasMyExchangeOffers = mockIsLoggedIn && mockMyExchangeOffers.length > 0;
+  const currentUser = mockLoginUser;
+  const isLoggedIn = Boolean(currentUser);
+  const hasMyExchangeOffers = isLoggedIn && mockMyExchangeOffers.length > 0;
 
   const requireLogin = () => {
-    if (mockIsLoggedIn) return true;
+    if (isLoggedIn) return true;
 
-    console.log("로그인이 필요한 액션입니다.");
-    alert("로그인이 필요한 서비스입니다.");
-
+    router.push("/login");
     return false;
   };
 
   const handleConfirmPurchase = (purchaseQuantity) => {
     const purchasePayload = {
       marketPostingId: mockMarketPostingDetail.id,
-      buyerId: mockUser.id,
+      buyerId: currentUser?.id,
       sellerId: mockMarketPostingDetail.sellerId,
       photoCardId: mockMarketPostingDetail.photoCardId,
       quantity: purchaseQuantity,
@@ -194,14 +194,9 @@ export default function MarketplacePostingDetailPage() {
     <>
       <div className="fixed inset-x-0 top-0 z-50">
         <Gnb
-          isLoggedIn={mockIsLoggedIn}
-          user={mockUser}
           mobileType="sub"
           title="마켓플레이스"
           onBackClick={() => window.history.back()}
-          onLoginClick={() => console.log("로그인 클릭")}
-          onSignupClick={() => console.log("회원가입 클릭")}
-          onLogoutClick={() => console.log("로그아웃 클릭")}
         />
       </div>
 
@@ -211,11 +206,11 @@ export default function MarketplacePostingDetailPage() {
             마켓플레이스
           </p>
 
-          <h1 className="mt-0 text-noto-24-bold tablet:mt-[38px] tablet:text-noto-32-bold pc:mt-[58px] pc:text-noto-40-bold">
-            {mockMarketPostingDetail.name}
-          </h1>
-
-          <div className="mt-4 border-t border-gray-100 tablet:mt-5 pc:mt-6" />
+          <Title
+            type="card_detail"
+            text={mockMarketPostingDetail.name}
+            className="mt-0 tablet:mt-[38px] pc:mt-[58px]"
+          />
 
           <div className="mt-7 grid gap-8 tablet:mt-10 tablet:grid-cols-[minmax(0,1fr)_342px] tablet:gap-5 min-[1440px]:grid-cols-[minmax(0,1fr)_440px] min-[1440px]:gap-[80px] pc:mt-[70px] pc:grid-cols-[minmax(0,960px)_440px] pc:gap-[80px]">
             <div className="relative aspect-[345/258] w-full overflow-hidden bg-gray-500 tablet:aspect-[342/256] min-[1440px]:aspect-[960/720] pc:aspect-[960/720]">
@@ -252,21 +247,17 @@ export default function MarketplacePostingDetailPage() {
           </div>
 
           <section className="mt-[90px] tablet:mt-[120px] pc:mt-[140px]">
-            <div className="flex items-end justify-between gap-5">
-              <h2 className="text-noto-24-bold tablet:text-noto-32-bold pc:text-noto-40-bold">
-                교환 희망 정보
-              </h2>
+            <div className="relative">
+              <Title type="card_detail" text="교환 희망 정보" />
 
               <ButtonPrimary
                 variant="thin"
-                className="hidden w-[342px]! tablet:flex min-[1440px]:w-[440px]! pc:w-[440px]!"
+                className="absolute right-0 top-[-10px] hidden w-[342px]! tablet:flex min-[1440px]:w-[440px]! pc:top-0 pc:w-[440px]!"
                 onClick={handleExchange}
               >
                 포토카드 교환하기
               </ButtonPrimary>
             </div>
-
-            <div className="mt-4 border-t border-gray-100 tablet:mt-5 pc:mt-6" />
 
             <div className="mt-9 tablet:mt-10 pc:mt-[70px]">
               <p className="whitespace-pre-line text-noto-16-bold leading-7 text-white pc:text-noto-18-bold pc:leading-8">
@@ -296,11 +287,7 @@ export default function MarketplacePostingDetailPage() {
 
           {hasMyExchangeOffers && (
             <section className="mt-[90px] tablet:mt-[120px] pc:mt-[140px]">
-              <h2 className="text-noto-24-bold tablet:text-noto-32-bold pc:text-noto-40-bold">
-                내가 제시한 교환 목록
-              </h2>
-
-              <div className="mt-4 border-t border-gray-100 tablet:mt-5 pc:mt-6" />
+              <Title type="card_detail" text="내가 제시한 교환 목록" />
 
               <div className="mt-8 grid grid-cols-2 gap-3 tablet:mt-10 tablet:grid-cols-2 tablet:gap-5 pc:mt-[70px] pc:grid-cols-3 pc:gap-10">
                 {mockMyExchangeOffers.map((offer) => (
