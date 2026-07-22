@@ -89,6 +89,95 @@ export default function SellingPhotocardDetails() {
     return false;
   };
 
+  // 판매 내리기
+  const handleSellClose = () => {
+    openModal(
+      <div
+        className="flex flex-col justify-center items-center gap-[30px] w-[345px] h-[291px] border-gray-500 rounded-[2px] \
+      tablet:w-[400px] tablet:h-[291px] pc:w-[560px] pc:h-[352px] pc: gap-[40px]"
+      >
+        <p className="text-noto-18-bold pc:text-noto-20-bold">
+          포토카드 판매 내리기
+        </p>
+
+        <p className="text-noto-14-regular text-gray-300 pc:text-noto-16-regular">
+          정말로 판매를 중단하시겠습니까?
+        </p>
+
+        <button
+          className="flex bg-main text-noto-16-bold text-black items-center justify-center w-[120px] h-[55px] mt-[10px] \
+          pc:w-[170px] pc:w-[60px] pc:mt-[20px] pc:text-noto-18-bold tablet:w-[140px]"
+          onClick={() => {
+            // 판매내리기 API
+            closeModal();
+          }}
+        >
+          판매 내리기
+        </button>
+      </div>,
+    );
+  };
+
+  // 거절하기
+  const handleReject = (card, cardId) => {
+    openModal(
+      <div
+        className="flex flex-col justify-center items-center gap-[30px] w-[345px] h-[291px] rounded-[2px] \
+      tablet:w-[400px] tablet:h-[291px] pc:w-[560px] pc:h-[352px] pc: gap-[40px]"
+      >
+        <p className="text-noto-18-bold pc:text-noto-20-bold">
+          교환 제시를 거절
+        </p>
+
+        <p className="text-noto-14-regular text-gray-300 pc:text-noto-16-regular">
+          [{card.grade} | {card.name}]<br />
+          카드와의 교환을 거절하시겠습니까?
+        </p>
+
+        <button
+          className="flex bg-main text-noto-16-bold text-black items-center justify-center w-[120px] h-[55px] mt-[10px] \
+          pc:w-[170px] pc:w-[60px] pc:mt-[20px] pc:text-noto-18-bold tablet:w-[140px]"
+          onClick={() => {
+            // reject api(cardId)
+
+            closeModal();
+          }}
+        >
+          거절하기
+        </button>
+      </div>,
+    );
+  };
+
+  //승인하기
+  const handleApprove = (card, cardId) => {
+    openModal(
+      <div
+        className="flex flex-col justify-center items-center gap-[30px] w-[345px] h-[291px] rounded-[2px] \
+      tablet:w-[400px] tablet:h-[291px] pc:w-[560px] pc:h-[352px] pc: gap-[40px]"
+      >
+        <p className="text-noto-18-bold pc:text-noto-20-bold">교환 제시 승인</p>
+
+        <p className="text-noto-14-regular text-gray-300 pc:text-noto-16-regular">
+          [{card.grade} | {card.name}]<br />
+          카드와의 교환을 승인하시겠습니까?
+        </p>
+
+        <button
+          className="flex bg-main text-noto-16-bold text-black items-center justify-center w-[120px] h-[55px] mt-[10px] \
+          pc:w-[170px] pc:w-[60px] pc:mt-[20px] pc:text-noto-18-bold tablet:w-[140px]"
+          onClick={() => {
+            // reject api(cardId)
+
+            closeModal();
+          }}
+        >
+          승인하기
+        </button>
+      </div>,
+    );
+  };
+
   return (
     <>
       <div className="fixed inset-x-0 top-0 z-50">
@@ -140,7 +229,7 @@ export default function SellingPhotocardDetails() {
                   mockMarketPostingDetail.exchange.description
                 }
                 //onEdit={handleOnEdit} 연결필요
-                //oncClose={handleOnClose} 연결필요
+                onClose={handleSellClose}
               />
             </aside>
           </div>
@@ -153,8 +242,8 @@ export default function SellingPhotocardDetails() {
                 <ExchangeCard
                   key={card.id}
                   card={card}
-                  // onApprove={() => handleApprove(card.id)} 연결필요
-                  // onReject={() => handleReject(card.id)} 연결필요
+                  onApprove={() => handleApprove(card, card.id)}
+                  onReject={() => handleReject(card, card.id)}
                 />
               ))}
             </div>
