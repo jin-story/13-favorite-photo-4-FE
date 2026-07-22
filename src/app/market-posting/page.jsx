@@ -12,6 +12,7 @@ import Photocard from "@/components/common/Photocard";
 import filterIcon from "@/assets/icons/filter.svg";
 import Gnb from "@/components/common/Gnb";
 import LoginRequiredModal from "./_components/LoginRequiredModal";
+import SellModal from "./_components/SellModal";
 
 // 목업 데이터
 const sampleCards = [
@@ -54,7 +55,7 @@ export default function MarketplacePage() {
     availability: [],
   });
   const { openModal } = useModal();
-  const isLoggedIn = false;
+  const isLoggedIn = true; // 임시
 
   function handleSellClick() {
     if (!isLoggedIn) {
@@ -62,12 +63,7 @@ export default function MarketplacePage() {
       return;
     }
 
-    // 나의 포토카드 판매하기 선택 모달
-    openModal(
-      <div>
-        <p>미구현</p>
-      </div>,
-    );
+    openModal(<SellModal />);
   }
 
   return (
