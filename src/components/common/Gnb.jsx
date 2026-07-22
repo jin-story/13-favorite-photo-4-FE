@@ -16,9 +16,6 @@
   (구현 필요 {}, {()=>})
   onMenuClick,
   onBackClick,
-  onLoginClick,
-  onSignupClick,
-  onLogoutClick,
 */
 
 "use client";
@@ -30,19 +27,26 @@ import logo from "@/assets/images/logo.svg";
 import menuIcon from "@/assets/icons/menu.svg";
 import backIcon from "@/assets/icons/arrow_left.svg";
 import alarmIcon from "@/assets/icons/alarm_default.svg";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useAuth } from "@/providers/AuthProvider";
 
 export default function Gnb({
-  isLoggedIn = false,
-  user = {},
   mobileType = "main", // main | sub
   title = "",
-
   onMenuClick,
   onBackClick,
-  onLoginClick,
-  onSignupClick,
-  onLogoutClick,
 }) {
+  const { user, logout } = useAuth();
+  const isLoggedIn = !!user;
+  const router = useRouter();
+  const onLoginClick = () => {
+    router.push("/login");
+  };
+
+  const onSignupClick = () => {
+    router.push("/register");
+  };
   return (
     <>
       {/* ================= PC ================= */}
@@ -52,9 +56,16 @@ export default function Gnb({
           "w-full h-[80px]",
           "items-center justify-between",
           "bg-black px-[220px]",
+          "fixed top-0 z-50",
         )}
       >
-        <Image src={logo} alt="최애의 포토" className="w-[138.945px] h-auto" />
+        <Link href="/market-posting">
+          <Image
+            src={logo}
+            alt="최애의 포토"
+            className="w-[138.945px] h-auto cursor-pointer"
+          />
+        </Link>
 
         {isLoggedIn ? (
           <div className="flex items-center gap-[30px]">
@@ -74,7 +85,7 @@ export default function Gnb({
 
             <button
               type="button"
-              onClick={onLogoutClick}
+              onClick={logout}
               className="text-gray-400 text-noto-14-regular"
             >
               로그아웃
@@ -85,7 +96,7 @@ export default function Gnb({
             <button
               type="button"
               onClick={onLoginClick}
-              className="text-gray-200 text-noto-14-regular"
+              className="text-gray-200 text-noto-14-regular cursor-pointer"
             >
               로그인
             </button>
@@ -93,7 +104,7 @@ export default function Gnb({
             <button
               type="button"
               onClick={onSignupClick}
-              className="text-gray-200 text-noto-14-regular"
+              className="text-gray-200 text-noto-14-regular cursor-pointer"
             >
               회원가입
             </button>
@@ -108,9 +119,16 @@ export default function Gnb({
           "w-full h-[70px]",
           "items-center justify-between",
           "px-[40px] bg-black",
+          "fixed top-0 z-50",
         )}
       >
-        <Image src={logo} alt="최애의 포토" className="w-[111px] h-auto" />
+        <Link href="/market-posting">
+          <Image
+            src={logo}
+            alt="최애의 포토"
+            className="w-[111px] h-auto cursor-pointer"
+          />
+        </Link>
 
         {isLoggedIn ? (
           <div className="flex items-center gap-[30px]">
@@ -130,8 +148,8 @@ export default function Gnb({
 
             <button
               type="button"
-              onClick={onLogoutClick}
-              className="text-gray-400 text-noto-14-regular"
+              onClick={logout}
+              className="text-gray-400 text-noto-14-regular cursor-pointer"
             >
               로그아웃
             </button>
@@ -141,7 +159,7 @@ export default function Gnb({
             <button
               type="button"
               onClick={onLoginClick}
-              className="text-gray-200 text-noto-14-regular"
+              className="text-gray-200 text-noto-14-regular cursor-pointer"
             >
               로그인
             </button>
@@ -149,7 +167,7 @@ export default function Gnb({
             <button
               type="button"
               onClick={onSignupClick}
-              className="text-gray-200 text-noto-14-regular"
+              className="text-gray-200 text-noto-14-regular cursor-pointer"
             >
               회원가입
             </button>
@@ -164,28 +182,39 @@ export default function Gnb({
           "w-full h-[60px]",
           "items-center justify-between",
           "px-[20px] bg-black",
+          "fixed top-0 z-50",
         )}
       >
         {mobileType === "main" ? (
           <>
             {/* Left */}
-            <button type="button" onClick={onMenuClick}>
+            <button
+              type="button"
+              onClick={onMenuClick}
+              className="cursor-pointer"
+            >
               <Image src={menuIcon} alt="메뉴" width={22} height={22} />
             </button>
 
             {/* Center */}
-            <Image src={logo} alt="최애의 포토" className="w-[83px] h-auto" />
+            <Link href="/market-posting">
+              <Image
+                src={logo}
+                alt="최애의 포토"
+                className="w-[83px] h-auto cursor-pointer"
+              />
+            </Link>
 
             {/* Right */}
             {isLoggedIn ? (
-              <button type="button">
+              <button type="button" className="cursor-pointer">
                 <Image src={alarmIcon} alt="" width={22} />
               </button>
             ) : (
               <button
                 type="button"
                 onClick={onLoginClick}
-                className="text-gray-200 text-noto-14-regular"
+                className="text-gray-200 text-noto-14-regular cursor-pointer"
               >
                 로그인
               </button>
@@ -194,7 +223,11 @@ export default function Gnb({
         ) : (
           <>
             {/* Left */}
-            <button type="button" onClick={onBackClick}>
+            <button
+              type="button"
+              onClick={onBackClick}
+              className="cursor-pointer"
+            >
               <Image src={backIcon} alt="뒤로가기" width={22} height={22} />
             </button>
 
