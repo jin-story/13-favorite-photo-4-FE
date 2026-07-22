@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useModal } from "@/providers/ModalProvider";
+import { useAuth } from "@/providers/AuthProvider";
 import Title from "@/components/common/Title";
 import InputSearch from "@/components/common/InputSearch";
 import Dropdown from "@/components/common/Dropdown";
@@ -91,9 +92,8 @@ export default function MarketplacePage() {
   const [error, setError] = useState(null);
   const sentinelRef = useRef(null);
   const { openModal, closeModal } = useModal();
-
-  // 연동 전 로그인 상태 관리
-  const isLoggedIn = false;
+  const { user } = useAuth();
+  const isLoggedIn = !!user;
 
   function handleSellClick() {
     if (!isLoggedIn) {
