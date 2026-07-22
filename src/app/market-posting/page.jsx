@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { useModal } from "@/providers/ModalProvider";
-import { useAuth } from "@/providers/AuthProvider";
 import Title from "@/components/common/Title";
 import InputSearch from "@/components/common/InputSearch";
 import Dropdown from "@/components/common/Dropdown";
@@ -12,16 +11,7 @@ import ButtonPrimary from "@/components/common/ButtonPrimary";
 import Photocard from "@/components/common/Photocard";
 import filterIcon from "@/assets/icons/filter.svg";
 import Gnb from "@/components/common/Gnb";
-
-// const pageSize = 15;
-// const apiUrl = "http://localhost:3001";
-
-// const genreLabels = {
-//   TRAVEL: "여행",
-//   LANDSCAPE: "풍경",
-//   PERSON: "인물",
-//   OBJECT: "사물",
-// };
+import LoginRequiredModal from "./_components/LoginRequiredModal";
 
 // 목업 데이터
 const sampleCards = [
@@ -51,29 +41,6 @@ const sampleCards = [
   },
 ];
 
-// GET /api/marketplaces
-// async function fetchCards(page) {
-//   const response = await fetch(
-//     `${apiUrl}/api/marketplaces?page=${page}&limit=${pageSize}`,
-//   );
-//   const data = await response.json();
-//
-//   const cards = data.items.map((item) => ({
-//     id: item.id,
-//     name: item.photoCard.name,
-//     grade: item.photoCard.grade,
-//     genre: genreLabels[item.photoCard.genre] ?? item.photoCard.genre,
-//     price: item.price,
-//     totalQuantity: item.quantity,
-//     lastQuantity: item.quantity,
-//     makerNickname: item.seller.nickname,
-//     description: item.description,
-//     imgUrl: item.photoCard.imageUrl,
-//   }));
-//
-//   return { cards, total: data.pagination.total };
-// }
-
 export default function MarketplacePage() {
   const [search, setSearch] = useState("");
   const [grade, setGrade] = useState();
@@ -86,38 +53,12 @@ export default function MarketplacePage() {
     genre: [],
     availability: [],
   });
-  const [cards, setCards] = useState(sampleCards);
-  // const [page, setPage] = useState(1);
-  const [total, setTotal] = useState(sampleCards.length);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const sentinelRef = useRef(null);
-  const { openModal, closeModal } = useModal();
-  const { user } = useAuth();
-  const isLoggedIn = !!user;
+  const { openModal } = useModal();
+  const isLoggedIn = false;
 
   function handleSellClick() {
     if (!isLoggedIn) {
-      openModal(
-        <div className="flex w-[345px] flex-col items-center gap-[20px] px-[20px] pt-[60px] pb-[40px] text-center pc:w-[560px] pc:gap-[35px] pc:px-[40px] pc:pt-[80px] pc:pb-[60px]">
-          <h2 className="text-noto-18-bold pc:text-noto-20-bold text-white">
-            로그인이 필요합니다.
-          </h2>
-
-          <p className="text-noto-14-regular pc:text-noto-16-regular text-gray-300">
-            로그인 하시겠습니까?
-            <br />
-            다양한 서비스를 편리하게 이용하실 수 있습니다.
-          </p>
-
-          <ButtonPrimary
-            onClick={closeModal}
-            className="text-noto-14-bold w-[120px] h-[55px] pc:h-[60px] pc:w-[170px]"
-          >
-            확인
-          </ButtonPrimary>
-        </div>,
-      );
+      openModal(<LoginRequiredModal />);
       return;
     }
 
@@ -128,67 +69,6 @@ export default function MarketplacePage() {
       </div>,
     );
   }
-
-  // 첫 페이지 로드
-  // useEffect(() => {
-  //   async function loadFirstPage() {
-  //     try {
-  //       setLoading(true);
-  //       setError(null);
-  //       const { cards: firstCards, total: totalCount } = await fetchCards(1);
-  //       setCards(firstCards);
-  //       setTotal(totalCount);
-  //     } catch (err) {
-  //       setError(err.message);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   }
-  //
-  //   loadFirstPage();
-  // }, []);
-
-  // 스크롤 다음 페이지 로드
-  // useEffect(() => {
-  //   const target = sentinelRef.current;
-  //   if (!target) return;
-  //
-  //   const options = {
-  //     root: null,
-  //     rootMargin: "0px",
-  //     threshold: 0,
-  //   };
-  //
-  //   const observer = new IntersectionObserver((entries) => {
-  //     const entry = entries[0];
-  //     if (!entry.isIntersecting) return;
-  //
-  //     async function loadNextPage() {
-  //       const nextPage = page + 1;
-  //       const { cards: nextCards } = await fetchCards(nextPage);
-  //
-  //       if (nextCards.length < 1) {
-  //         observer.unobserve(entry.target);
-  //         return;
-  //       }
-  //
-  //       setCards((prev) => [...prev, ...nextCards]);
-  //       setPage((prev) => prev + 1);
-  //     }
-  //
-  //     loadNextPage();
-  //   }, options);
-  //
-  //   observer.observe(target);
-  //
-  //   return () => observer.disconnect();
-  // }, [page]);
-
-  if (loading) return <div className="bg-black text-white">로딩중...</div>;
-  if (error)
-    return (
-      <div className="bg-black text-white">데이터를 불러오지 못했습니다.</div>
-    );
 
   return (
     <div className="bg-black">
@@ -242,17 +122,15 @@ export default function MarketplacePage() {
           onClose={() => setIsSheetOpen(false)}
           filter={sheetFilter}
           setFilter={setSheetFilter}
-          totalCount={total}
+          totalCount={sampleCards.length}
           onApply={() => setIsSheetOpen(false)}
         /> */}
 
         <div className="flex flex-wrap gap-[5px] tablet:gap-5 pc:gap-[80px]">
-          {cards.map((card) => (
+          {sampleCards.map((card) => (
             <Photocard key={card.id} card={card} type="마켓 카드" />
           ))}
         </div>
-
-        <div ref={sentinelRef} className="h-px w-full" />
       </div>
 
       <div className="fixed inset-x-0 bottom-0 z-30 flex justify-center bg-black px-[15px] py-[15px] tablet:hidden">
