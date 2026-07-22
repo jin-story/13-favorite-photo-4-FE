@@ -46,7 +46,7 @@ export default function MarketplaceExchangeResultPage() {
       return;
     }
 
-    // TODO: 마켓플레이스 공통 페이지가 생성되면 "/marketplace"로 변경 예정
+    // 마켓플레이스 공통 페이지가 생성되면 "/marketplace"로 변경 예정
     router.push(`/marketplace/${marketPostingId}`);
   };
 
