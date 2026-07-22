@@ -110,9 +110,8 @@ export default function MarketplacePage() {
           </p>
 
           <ButtonPrimary
-            variant="thin"
             onClick={closeModal}
-            className="w-[120px]! pc:w-[170px]!"
+            className="text-noto-14-bold w-[120px] h-[55px] pc:h-[60px] pc:w-[170px]"
           >
             확인
           </ButtonPrimary>
