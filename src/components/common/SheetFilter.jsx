@@ -15,7 +15,7 @@ const filterOptions = {
     options: [
       { label: "COMMON", value: "COMMON" },
       { label: "RARE", value: "RARE" },
-      { label: "SUPER RARE", value: "SUPER_RARE" },
+      { label: "SUPER RARE", value: "SUPER_RARE" },//서로 다른 값 꼭 필요하지 않으면 값은 가
       { label: "LEGENDARY", value: "LEGENDARY" },
     ],
   },
