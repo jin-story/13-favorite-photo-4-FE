@@ -12,7 +12,7 @@ export default function Register() {
       </div>
       <div className="flex flex-col gap-11 tablet:gap-[50px] pc:gap-11 items-center">
         <AuthForm type="register" />
-        <div className="flex gap-[9px] text-noto-14-regular pc: text-noto-16-regular">
+        <div className="flex gap-[9px] text-noto-14-regular pc:text-noto-16-regular">
           <span>이미 최애의 포토 회원이신가요?</span>
           <Link
             href="/login"
