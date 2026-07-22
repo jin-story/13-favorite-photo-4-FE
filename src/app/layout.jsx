@@ -1,8 +1,6 @@
 import localFont from "next/font/local";
 import "./globals.css";
 import { Providers } from "./providers";
-import Gnb from "@/components/common/Gnb";
-
 const notoSansKR = localFont({
   src: [
     { path: "../assets/fonts/NotoSansKR-Light.ttf", weight: "300" },
