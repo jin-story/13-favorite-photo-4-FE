@@ -19,5 +19,5 @@ export default async function Layout({ children }) {
       </main>
       {/* Footer */}
     </div>
-  )
+  );
 }
