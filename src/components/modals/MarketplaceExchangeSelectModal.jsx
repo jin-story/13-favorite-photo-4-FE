@@ -15,10 +15,16 @@ import cardCastle from "@/assets/images/card_castle.svg";
 import cardImage from "@/assets/images/card_woman.svg";
 
 const genreLabelByValue = {
-  LANDSCAPE: "풍경",
   TRAVEL: "여행",
-  PORTRAIT: "인물",
+  LANDSCAPE: "풍경",
+  PERSON: "인물",
   OBJECT: "사물",
+};
+
+const initialFilter = {
+  grade: [],
+  genre: [],
+  availability: [],
 };
 
 const mockExchangeCards = [
@@ -46,7 +52,7 @@ const mockExchangeCards = [
     id: 3,
     name: "How Far I’ll Go",
     grade: "SUPER_RARE",
-    genre: "LANDSCAPE",
+    genre: "PERSON",
     ownerNickname: "랍스타",
     price: 4,
     quantity: 1,
@@ -121,13 +127,45 @@ export default function MarketplaceExchangeSelectModal() {
   const searchParams = useSearchParams();
 
   const [keyword, setKeyword] = useState("");
+  const [filter, setFilter] = useState(initialFilter);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const filteredCards = useMemo(() => {
-    return mockExchangeCards.filter((card) =>
-      card.name.toLowerCase().includes(keyword.trim().toLowerCase()),
-    );
-  }, [keyword]);
+    return mockExchangeCards.filter((card) => {
+      const matchesKeyword = card.name
+        .toLowerCase()
+        .includes(keyword.trim().toLowerCase());
+
+      const matchesGrade =
+        filter.grade.length === 0 || filter.grade.includes(card.grade);
+
+      const matchesGenre =
+        filter.genre.length === 0 || filter.genre.includes(card.genre);
+
+      return matchesKeyword && matchesGrade && matchesGenre;
+    });
+  }, [keyword, filter]);
+
+  const filterCounts = useMemo(() => {
+    return mockExchangeCards.reduce((counts, card) => {
+      return {
+        ...counts,
+        [card.grade]: (counts[card.grade] ?? 0) + 1,
+        [card.genre]: (counts[card.genre] ?? 0) + 1,
+      };
+    }, {});
+  }, []);
+
+  const updateSingleFilter = (key, value) => {
+    setFilter((prev) => ({
+      ...prev,
+      [key]: prev[key][0] === value ? [] : [value],
+    }));
+  };
+
+  const resetFilter = () => {
+    setFilter(initialFilter);
+  };
 
   const closeModal = () => {
     const params = new URLSearchParams(searchParams.toString());
@@ -196,11 +234,19 @@ export default function MarketplaceExchangeSelectModal() {
             </label>
 
             <div className="hidden tablet:block">
-              <Dropdown type="grade" />
+              <Dropdown
+                type="grade"
+                value={filter.grade[0] ?? ""}
+                onChange={(value) => updateSingleFilter("grade", value)}
+              />
             </div>
 
             <div className="hidden tablet:block">
-              <Dropdown type="genre" />
+              <Dropdown
+                type="genre"
+                value={filter.genre[0] ?? ""}
+                onChange={(value) => updateSingleFilter("genre", value)}
+              />
             </div>
           </div>
 
@@ -216,7 +262,16 @@ export default function MarketplaceExchangeSelectModal() {
         </div>
       </section>
 
-      <SheetFilter open={isFilterOpen} onClose={() => setIsFilterOpen(false)} />
+      <SheetFilter
+        open={isFilterOpen}
+        onClose={() => setIsFilterOpen(false)}
+        filter={filter}
+        setFilter={setFilter}
+        counts={filterCounts}
+        totalCount={filteredCards.length}
+        onApply={() => setIsFilterOpen(false)}
+        onReset={resetFilter}
+      />
     </div>
   );
 }
