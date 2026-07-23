@@ -134,7 +134,7 @@ export default function Gnb({
           <div className="flex items-center gap-[30px]">
             <div className="flex items-center">
               <span className="text-gray-200 text-noto-14-bold">
-                {user.point?.toLocaleString()} P
+                {user.points?.toLocaleString()} P
               </span>
             </div>
 

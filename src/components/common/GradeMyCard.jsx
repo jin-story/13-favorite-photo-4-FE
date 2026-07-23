@@ -1,7 +1,7 @@
 import clsx from "clsx";
 
 const gradeStyle = {
-  COMMON: "border-main text-main",
+  COMMON: "border-main text-main ",
   RARE: "border-blue text-blue",
   SUPER_RARE: "border-purple text-purple",
   LEGENDARY: "border-pink text-pink",
@@ -19,7 +19,7 @@ export default function GradeMyCard({ grade, count = 0 }) {
   return (
     <div
       className={clsx(
-        "inline-flex items-center border bg-black gap-[10px]",
+        "inline-flex items-center border min-w-fit bg-black gap-[10px]",
         gradeStyle[upperGrade],
         sizeStyle,
       )}
