@@ -42,7 +42,7 @@ export default function Modal({
 
   return (
     <div
-      className="fixed inset-0 flex justify-center items-center w-full h-dvh bg-black/80"
+      className="fixed inset-0 flex justify-center items-center w-full h-dvh bg-black/80 tablet:z-[50]"
       onClick={handleBackdropClick}
     >
       <div className="relative w-fit h-fit bg-gray-500">
