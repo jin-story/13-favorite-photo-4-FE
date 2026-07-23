@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
-// import { useRouter } from "next/navigation"; // 로그인 페이지 연결 시 사용 예정
+import { useRouter, usePathname } from "next/navigation";
 import Gnb from "@/components/common/Gnb";
 import PhotoCardInfo from "@/components/common/PhotoCardInfo";
 import { useModal } from "@/providers/ModalProvider";
@@ -89,6 +89,19 @@ export default function SellingPhotocardDetails() {
     return false;
   };
 
+  //수정 하기
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const handleEdit = () => {
+    router.push(
+      `${pathname}?modal=editMarketCard&id=${mockMarketPostingDetail.id}`,
+      {
+        scroll: false,
+      },
+    );
+  };
+
   // 판매 내리기
   const handleSellClose = () => {
     openModal(
@@ -105,8 +118,7 @@ export default function SellingPhotocardDetails() {
         </p>
 
         <button
-          className="flex bg-main text-noto-16-bold text-black items-center justify-center w-[120px] h-[55px] mt-[10px] \
-          pc:w-[170px] pc:w-[60px] pc:mt-[20px] pc:text-noto-18-bold tablet:w-[140px]"
+          className="flex items-center justify-center w-[120px] h-[55px] mt-[10px] bg-main text-black text-noto-16-bold tablet:w-[140px] pc:w-[170px] pc:h-[60px] pc:mt-[20px] pc:text-noto-18-bold"
           onClick={() => {
             // 판매내리기 API
             closeModal();
@@ -130,8 +142,7 @@ export default function SellingPhotocardDetails() {
         </p>
 
         <p className="text-noto-14-regular text-gray-300 pc:text-noto-16-regular">
-          [{card.grade} | {card.name}]<br />
-          카드와의 교환을 거절하시겠습니까?
+          [{card.grade} | {card.name}] 카드와의 교환을 거절하시겠습니까?
         </p>
 
         <button
@@ -159,8 +170,7 @@ export default function SellingPhotocardDetails() {
         <p className="text-noto-18-bold pc:text-noto-20-bold">교환 제시 승인</p>
 
         <p className="text-noto-14-regular text-gray-300 pc:text-noto-16-regular">
-          [{card.grade} | {card.name}]<br />
-          카드와의 교환을 승인하시겠습니까?
+          [{card.grade} | {card.name}] 카드와의 교환을 승인하시겠습니까?
         </p>
 
         <button
@@ -185,7 +195,7 @@ export default function SellingPhotocardDetails() {
           isLoggedIn={mockIsLoggedIn}
           user={mockUser}
           mobileType="sub"
-          title="마켓플레이스"
+          title="마켓플레이스" // API연동?
           onBackClick={() => window.history.back()}
           onLoginClick={() => console.log("로그인 클릭")}
           onSignupClick={() => console.log("회원가입 클릭")}
@@ -194,10 +204,10 @@ export default function SellingPhotocardDetails() {
       </div>
 
       <main className="bg-black text-white">
-        <p className="hidden text-baskin-18 text-gray-300 tablet:block pc:text-baskin-24">
-          마켓플레이스
-        </p>
         <section className="mx-auto w-full max-w-[1480px] pb-[140px] pt-10 tablet:pb-[170px] tablet:pt-[50px] pc:pb-[180px] pc:pt-[80px]">
+          <p className="hidden text-gray-300 tablet:text-baskin-18 tablet:block pc:text-baskin-24 pc:block">
+            마켓플레이스
+          </p>
           <Title type="card_detail" text={mockMarketPostingDetail.name} />
 
           <div className="mt-7 grid gap-8 tablet:mt-10 tablet:grid-cols-2 tablet:gap-5 pc:grid-cols-[1fr_440px] pc:gap-[80px]">
@@ -228,7 +238,7 @@ export default function SellingPhotocardDetails() {
                 exchangeDescription={
                   mockMarketPostingDetail.exchange.description
                 }
-                //onEdit={handleOnEdit} 연결필요
+                onEdit={handleEdit}
                 onClose={handleSellClose}
               />
             </aside>
@@ -237,7 +247,7 @@ export default function SellingPhotocardDetails() {
           <section className="mt-[90px] tablet:mt-[120px] pc:mt-[140px]">
             <Title type="card_detail" text={"교환 제시 목록"} />
 
-            <div className="flex mt-9 gap-[5px] tablet:gap-[20px] tablet:20 pc:mt-[70px] pc:gap-[80px]">
+            <div className="flex mt-9 gap-[5px] tablet:gap-[20px] tablet:mb-[20px] pc:mb-[50px] pc:gap-[80px]">
               {exchangeCards.map((card) => (
                 <ExchangeCard
                   key={card.id}
