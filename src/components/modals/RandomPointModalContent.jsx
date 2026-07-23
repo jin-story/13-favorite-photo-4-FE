@@ -7,10 +7,11 @@ import PrimaryButton from "@/components/common/ButtonPrimary";
 import PointResult from "@/components/common/PointResult";
 import RandomPoint from "@/components/common/RandomPoint";
 import { useCountdown } from "@/hooks/useCountdown";
+import { pointService } from "@/lib/services/pointService";
 import clsx from "clsx";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const boxes = [
   { src: boxBlue, alt: "box1" },
@@ -18,26 +19,47 @@ const boxes = [
   { src: boxRed, alt: "box3" },
 ];
 
-const ONE_HOUR = 60 * 60 * 1000;
-
 export default function RandomPointModalContent({ onClaimed }) {
-  const [targetAt] = useState(() => Date.now() + ONE_HOUR);
+  const [targetAt, setTargetAt] = useState(null);
   const time = useCountdown(targetAt);
+  const [isStatusLoading, setIsStatusLoading] = useState(true);
   const [selectedBox, setSelectedBox] = useState(null);
   const [showResult, setShowResult] = useState(false);
   const [isOpening, setIsOpening] = useState(false);
+  const [claimedPoint, setClaimedPoint] = useState(0);
 
-  const handleOpenBox = () => {
-    if (selectedBox === null) return;
+  useEffect(() => {
+    pointService
+      .fetchDrawStatus()
+      .then(({ nextAvailableAt }) => {
+        if (nextAvailableAt) setTargetAt(new Date(nextAvailableAt).getTime());
+      })
+      .catch((error) => {
+        console.error("포인트 뽑기 상태 조회 실패:", error);
+      })
+      .finally(() => setIsStatusLoading(false));
+  }, []);
+
+  const handleOpenBox = async () => {
+    if (selectedBox === null || isOpening) return;
 
     setIsOpening(true);
 
-    // TODO: 백엔드 API 연동 시 실제 claim 요청으로 교체
-    // const { nextAvailableAt } = await claimRandomPoint(selectedBox);
-    setTimeout(() => {
+    try {
+      const [{ point, nextAvailableAt }] = await Promise.all([
+        pointService.claimRandomPoint(),
+        new Promise((resolve) => setTimeout(resolve, 350)),
+      ]);
+
+      setClaimedPoint(point);
+      setTargetAt(new Date(nextAvailableAt).getTime());
       setShowResult(true);
-      onClaimed?.(null);
-    }, 350);
+      onClaimed?.(nextAvailableAt);
+    } catch (error) {
+      alert(error.message);
+      setIsOpening(false);
+      setSelectedBox(null);
+    }
   };
 
   return (
@@ -52,7 +74,7 @@ export default function RandomPointModalContent({ onClaimed }) {
             transition={{ duration: 0.4 }}
             className="w-[345px] tablet:w-[455px]"
           >
-            <PointResult time={time} />
+            <PointResult time={time} point={claimedPoint} />
           </motion.div>
         ) : (
           <motion.div
@@ -75,7 +97,7 @@ export default function RandomPointModalContent({ onClaimed }) {
                 <motion.button
                   key={alt}
                   type="button"
-                  disabled={isOpening}
+                  disabled={isOpening || isStatusLoading}
                   onClick={() => setSelectedBox(index)}
                   animate={{
                     opacity:
@@ -124,7 +146,7 @@ export default function RandomPointModalContent({ onClaimed }) {
                     variant="thin"
                     className="pc:w-[520px]! tablet:w-[440px]! w-[300px]! pc:mb-[80px] tablet:mb-[58px] mb-[45px] rounded-b-xs"
                     onClick={handleOpenBox}
-                    disabled={isOpening}
+                    disabled={isOpening || isStatusLoading}
                   >
                     선택완료
                   </PrimaryButton>
