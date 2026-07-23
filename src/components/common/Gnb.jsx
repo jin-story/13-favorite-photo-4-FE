@@ -120,6 +120,7 @@ export default function Gnb({
           "items-center justify-between",
           "bg-black px-[220px]",
           "fixed top-0 z-50",
+          "inset-0",
         )}
       >
         <Link href="/market-posting">
