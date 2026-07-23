@@ -147,7 +147,7 @@ export default function SellingPhotocardDetails() {
 
         <button
           className="flex bg-main text-noto-16-bold text-black items-center justify-center w-[120px] h-[55px] mt-[10px] \
-          pc:w-[170px] pc:w-[60px] pc:mt-[20px] pc:text-noto-18-bold tablet:w-[140px]"
+          pc:w-[170px] pc:h-[60px] pc:mt-[20px] pc:text-noto-18-bold tablet:w-[140px]"
           onClick={() => {
             // reject api(cardId)
 
