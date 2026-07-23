@@ -2,8 +2,7 @@ import pointImage from "@/assets/images/point.svg";
 import Image from "next/image";
 import RandomPoint from "./RandomPoint";
 
-export default function PointResult({ time = "60분 00초" }) {
-  const point = "2";
+export default function PointResult({ time, point }) {
   return (
     <div className="mb-[93px]">
       <RandomPoint time={time}>
