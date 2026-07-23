@@ -33,7 +33,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Profile from "./Profile";
 
-function ProfileMenu({ user, onLogout, textClassName }) {
+function ProfileMenu({ user, textClassName }) {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
 
@@ -63,7 +63,6 @@ function ProfileMenu({ user, onLogout, textClassName }) {
           <Profile
             nickname={user.nickname}
             point={user.points}
-            onLogout={onLogout}
             className="h-auto"
           />
         </div>
@@ -143,7 +142,6 @@ export default function Gnb({
 
             <ProfileMenu
               user={user}
-              onLogout={logout}
               textClassName="text-gray-200 text-baskin-18"
             />
 
@@ -152,7 +150,7 @@ export default function Gnb({
             <button
               type="button"
               onClick={logout}
-              className="text-gray-400 text-noto-14-regular"
+              className="text-gray-400 text-noto-14-regular cursor-pointer"
             >
               로그아웃
             </button>
@@ -208,7 +206,6 @@ export default function Gnb({
 
             <ProfileMenu
               user={user}
-              onLogout={logout}
               textClassName="text-gray-200 text-baskin-18"
             />
 
