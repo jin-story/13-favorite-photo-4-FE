@@ -12,17 +12,12 @@ import PhotoCardInfo from "@/components/common/PhotoCardInfo";
 import Title from "@/components/common/Title";
 import MarketplacePurchaseModal from "@/components/modals/MarketplacePurchaseModal";
 import MarketplaceExchangeCancelModal from "@/components/modals/MarketplaceExchangeCancelModal";
+import { useAuth } from "@/providers/AuthProvider";
 import { useModal } from "@/providers/ModalProvider";
 import cardCastle from "@/assets/images/card_castle.svg";
 import cardImage from "@/assets/images/card_woman.svg";
 
 const mockPurchaseShouldSucceed = true;
-
-const mockLoginUser = {
-  id: 10,
-  nickname: "유디",
-  point: 1540,
-}; // 추후 useAuth user로 교체 예정
 
 const mockMarketPostingDetail = {
   id: 1,
@@ -114,10 +109,11 @@ function MyExchangeOfferCard({ offer, onCancel }) {
 
 export default function MarketplacePostingDetailPage() {
   const router = useRouter();
+  const { user } = useAuth();
   const { openModal, closeModal } = useModal();
   const [quantity, setQuantity] = useState(2);
 
-  const currentUser = mockLoginUser;
+  const currentUser = user;
   const isLoggedIn = Boolean(currentUser);
   const hasMyExchangeOffers = isLoggedIn && mockMyExchangeOffers.length > 0;
 
@@ -167,6 +163,7 @@ export default function MarketplacePostingDetailPage() {
 
     console.log("포토카드 교환하기 클릭:", {
       marketPostingId: mockMarketPostingDetail.id,
+      userId: currentUser?.id,
     });
 
     router.push("?modal=marketplaceExchangeSelect", { scroll: false });
@@ -181,6 +178,7 @@ export default function MarketplacePostingDetailPage() {
           console.log("교환 제시 취소 요청 목업 데이터:", {
             exchangeOfferId: offer.id,
             marketPostingId: mockMarketPostingDetail.id,
+            userId: currentUser?.id,
           });
 
           closeModal();
@@ -200,7 +198,7 @@ export default function MarketplacePostingDetailPage() {
         />
       </div>
 
-      <main className="-mx-[15px] bg-black px-[15px] text-white tablet:-mx-5 tablet:px-5 pc:-mx-[220px] pc:px-[220px]">
+      <main className="-mx-[15px] min-h-dvh bg-black px-[15px] text-white tablet:-mx-5 tablet:px-5 pc:-mx-[220px] pc:px-[220px]">
         <section className="mx-auto w-full max-w-[1480px] pb-[140px] pt-10 tablet:pb-[170px] tablet:pt-[50px] pc:pb-[180px] pc:pt-[80px]">
           <p className="hidden text-noto-18-bold text-gray-300 tablet:block pc:text-noto-20-bold">
             마켓플레이스
