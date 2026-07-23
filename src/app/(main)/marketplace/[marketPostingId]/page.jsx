@@ -139,8 +139,14 @@ export default function MarketplacePostingDetailPage() {
     closeModal();
 
     const resultPath = mockPurchaseShouldSucceed ? "success" : "failure";
+    const resultParams = new URLSearchParams({
+      grade: mockMarketPostingDetail.grade,
+      cardName: mockMarketPostingDetail.name,
+      quantity: String(purchaseQuantity),
+    });
+
     router.push(
-      `/marketplace/${mockMarketPostingDetail.id}/purchase-result/${resultPath}`,
+      `/marketplace/${mockMarketPostingDetail.id}/purchase-result/${resultPath}?${resultParams.toString()}`,
     );
   };
 

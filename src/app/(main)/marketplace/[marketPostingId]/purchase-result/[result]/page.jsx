@@ -1,20 +1,15 @@
 "use client";
 
 import Image from "next/image";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import ButtonSecondary from "@/components/common/ButtonSecondary";
 import Gnb from "@/components/common/Gnb";
 import closeIcon from "@/assets/icons/close.svg";
 
-const mockUser = {
-  nickname: "유디",
-  point: 1540,
-};
-
-const mockPurchaseResult = {
+const FALLBACK_PURCHASE_RESULT = {
   grade: "LEGENDARY",
   cardName: "우리집 앞마당",
-  quantity: 2,
+  quantity: "2",
 };
 
 const RESULT_CONTENT = {
@@ -37,10 +32,17 @@ const RESULT_CONTENT = {
 export default function MarketplacePurchaseResultPage() {
   const router = useRouter();
   const params = useParams();
+  const searchParams = useSearchParams();
 
   const marketPostingId = params.marketPostingId;
   const resultType = params.result;
   const result = RESULT_CONTENT[resultType] ?? RESULT_CONTENT.failure;
+
+  const purchaseResult = {
+    grade: searchParams.get("grade") ?? FALLBACK_PURCHASE_RESULT.grade,
+    cardName: searchParams.get("cardName") ?? FALLBACK_PURCHASE_RESULT.cardName,
+    quantity: searchParams.get("quantity") ?? FALLBACK_PURCHASE_RESULT.quantity,
+  };
 
   const handleClose = () => {
     router.push(`/marketplace/${marketPostingId}`);
@@ -52,19 +54,13 @@ export default function MarketplacePurchaseResultPage() {
       return;
     }
 
-    router.push("/marketplace");
+    router.push(`/marketplace/${marketPostingId}`);
   };
 
   return (
     <>
       <div className="fixed inset-x-0 top-0 z-50">
-        <Gnb
-          isLoggedIn
-          user={mockUser}
-          mobileType="sub"
-          onBackClick={handleClose}
-          onLogoutClick={() => console.log("로그아웃 클릭")}
-        />
+        <Gnb mobileType="sub" title="마켓플레이스" onBackClick={handleClose} />
       </div>
 
       <main className="-mx-[15px] min-h-dvh bg-black px-[15px] text-white tablet:-mx-5 tablet:px-5 pc:-mx-[220px] pc:px-[220px]">
@@ -94,11 +90,11 @@ export default function MarketplacePurchaseResultPage() {
 
             <p className="mt-8 text-center text-noto-16-bold leading-6 text-white tablet:mt-9 tablet:text-noto-18-bold tablet:leading-7 pc:mt-10">
               <span className="block tablet:inline">
-                [{mockPurchaseResult.grade} | {mockPurchaseResult.cardName}]
+                [{purchaseResult.grade} | {purchaseResult.cardName}]
               </span>
               <span className="block tablet:inline">
                 <span className="hidden tablet:inline"> </span>
-                {mockPurchaseResult.quantity}장
+                {purchaseResult.quantity}장
               </span>
               <span className="block tablet:inline">
                 <span className="hidden tablet:inline"> </span>
