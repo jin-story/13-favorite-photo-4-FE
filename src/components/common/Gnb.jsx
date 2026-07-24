@@ -3,7 +3,7 @@
   const isLoggedIn = true; // false로 바꾸면 로그아웃 상태
   const user = {
     nickname: "유디",
-    point: 1540,
+    points: 1540,
   };
 
   return (
@@ -11,10 +11,15 @@
       isLoggedIn={isLoggedIn}
       user={user}
     />
+
+    <Gnb mobileType="sub" />
+
+    <Gnb
+  mobileType="sub"
+  onBackClick={() => router.push("/marketplace")}
+/>
   );
 
-  (구현 필요 {}, {()=>})
-  onMenuClick,
 */
 
 "use client";
@@ -28,7 +33,7 @@ import backIcon from "@/assets/icons/back.svg";
 import alarmIcon from "@/assets/icons/alarm_default.svg";
 import Link from "next/link";
 import { useAuth } from "@/providers/AuthProvider";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Profile from "./Profile";
 import { useEffect, useRef, useState } from "react";
 
@@ -80,6 +85,16 @@ export default function Gnb({
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const pathname = usePathname();
   const modal = useSearchParams().get("modal");
+
+  const router = useRouter();
+
+  const handleBackClick = () => {
+    if (onBackClick) {
+      onBackClick();
+      return;
+    }
+    router.back();
+  };
 
   const openSidebar = () => {
     onMenuClick?.();
@@ -297,7 +312,7 @@ export default function Gnb({
             {/* Left */}
             <button
               type="button"
-              onClick={onBackClick}
+              onClick={handleBackClick}
               className="cursor-pointer"
             >
               <Image src={backIcon} alt="뒤로가기" width={22} height={22} />
