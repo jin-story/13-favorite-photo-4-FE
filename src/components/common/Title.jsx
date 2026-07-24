@@ -8,7 +8,7 @@ const TITLE_CONFIG = {
     button: "primary",
   },
   title_line: {
-    textClass: "text-baskin-48 pc:text-baskin-62",
+    textClass: "text-baskin-48-regular pc:text-baskin-62-regular",
     button: null,
   },
   title_line_modal: {
@@ -52,7 +52,9 @@ export default function Title({
   const { textClass, button } = config;
 
   return (
-    <div className={clsx("flex w-full flex-col gap-5", className)}>
+    <div
+      className={clsx("flex w-full flex-col gap-5 border-b border-b-2 border-b-gray-100 pb-5", className)}
+    >
       {button ? (
         <div className="flex w-full flex-col tablet:flex-row tablet:items-center tablet:justify-between">
           <p className={clsx(textClass, "text-white")}>{text}</p>
@@ -74,7 +76,6 @@ export default function Title({
       ) : (
         <p className={clsx(textClass, "text-white")}>{text}</p>
       )}
-      <div className="h-[2px] w-full bg-gray-100 mt-5" />
     </div>
   );
 }

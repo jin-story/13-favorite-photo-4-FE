@@ -1,7 +1,10 @@
-import React from 'react'
+import Title from "@/components/common/Title";
+import React from "react";
 
 export default function CreatePhotoCardPage() {
   return (
-    <div>포토카드 만들기 페이지</div>
-  )
+    <main>
+      <Title type="title_line" text='포토카드 생성'/>
+    </main>
+  );
 }
