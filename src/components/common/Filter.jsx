@@ -63,10 +63,12 @@ export default function Filter({
           setOpenFilter(false);
         }}
         onReset={() => {
-          setFilter({
-            grade: [],
-            genre: [],
-          });
+          setFilter(
+            categories.reduce((acc, key) => {
+              acc[key] = [];
+              return acc;
+            }, {}),
+          );
         }}
       />
     </>
