@@ -304,7 +304,7 @@ export default function Gnb({
             </button>
 
             {/* Center */}
-            <h1 className=" text-white text-baskin-20">{title}</h1>
+            <h1 className=" text-white text-baskin-20-regular">{title}</h1>
 
             {/* Right */}
             <div className="w-[24px]" />
