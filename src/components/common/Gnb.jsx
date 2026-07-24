@@ -28,14 +28,37 @@ import backIcon from "@/assets/icons/arrow_left.svg";
 import alarmIcon from "@/assets/icons/alarm_default.svg";
 import Link from "next/link";
 import { useAuth } from "@/providers/AuthProvider";
+import { usePathname, useSearchParams } from "next/navigation";
 
 export default function Gnb({
   mobileType = "main", // main | sub
-  title = "",
   onMenuClick,
 }) {
   const { user, logout } = useAuth();
   const isLoggedIn = !!user;
+
+  const pathname = usePathname();
+  const modal = useSearchParams().get("modal");
+
+  let title = "";
+
+  if (modal === "sell-card") {
+    title = "나의 포토카드 판매하기";
+  } else if (modal === "exchange-info") {
+    title = "포토카드 교환하기";
+  } else if (modal === "edit-card") {
+    title = "수정하기";
+  } else {
+    const titleMap = {
+      "/marketplace": "마켓플레이스",
+      "/my-gallery": "마이갤러리",
+      "/my-gallery/create": "포토카드 생성",
+      "/my-sales": "나의 판매 포토카드",
+      "/notifications": "알림",
+    };
+    title = titleMap[pathname] ?? "최애의포토";
+  }
+
   return (
     <>
       {/* ================= PC ================= */}
