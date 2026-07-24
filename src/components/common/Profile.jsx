@@ -1,7 +1,6 @@
-import React from "react";
-import ProfileMessage from "./ProfileMessage";
-import Link from "next/link";
 import clsx from "clsx";
+import Link from "next/link";
+import ProfileMessage from "./ProfileMessage";
 
 export default function Profile({ nickname, point, onLogout, className }) {
   return (
@@ -18,7 +17,7 @@ export default function Profile({ nickname, point, onLogout, className }) {
           <Link href={"/"}>마이갤러리</Link> {/*추후 주소 등록*/}
           <Link href={"/"}>판매 중인 포토카드</Link> {/*추후 주소 등록*/}
         </div>
-        <div className="pb-5 text-noto-14-regular text-gray-400 px-5 tablet:hidden">
+        <div className="pb-10 text-noto-14-regular text-gray-400 px-5 tablet:hidden">
           <button type="button" onClick={onLogout}>
             로그아웃
           </button>
