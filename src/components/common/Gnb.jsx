@@ -24,7 +24,7 @@ import clsx from "clsx";
 
 import logo from "@/assets/images/logo.svg";
 import menuIcon from "@/assets/icons/menu.svg";
-import backIcon from "@/assets/icons/arrow_left.svg";
+import backIcon from "@/assets/icons/back.svg";
 import alarmIcon from "@/assets/icons/alarm_default.svg";
 import Link from "next/link";
 import { useAuth } from "@/providers/AuthProvider";
