@@ -4,7 +4,7 @@ import ButtonSecondary from "./ButtonSecondary";
 
 const TITLE_CONFIG = {
   title_button: {
-    textClass: "text-baskin-48 pc:text-baskin-62",
+    textClass: "text-baskin-48-regular pc:text-baskin-62-regular",
     button: "primary",
   },
   title_line: {
@@ -58,7 +58,10 @@ export default function Title({
           <p className={clsx(textClass, "text-white")}>{text}</p>
           <div className="hidden tablet:block">
             {button === "primary" ? (
-              <ButtonPrimary variant="thick" onClick={onButtonClick}>
+              <ButtonPrimary
+                className="w-[342px] h-15 text-noto-16-bold pc:w-[440px] pc:text-noto-18-bold"
+                onClick={onButtonClick}
+              >
                 {buttonText}
               </ButtonPrimary>
             ) : (
@@ -71,7 +74,7 @@ export default function Title({
       ) : (
         <p className={clsx(textClass, "text-white")}>{text}</p>
       )}
-      <div className="h-[2px] w-full bg-gray-100" />
+      <div className="h-[2px] w-full bg-gray-100 mt-5" />
     </div>
   );
 }

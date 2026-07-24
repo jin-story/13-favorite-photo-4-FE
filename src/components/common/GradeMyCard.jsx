@@ -19,7 +19,7 @@ export default function GradeMyCard({ grade, count = 0 }) {
   return (
     <div
       className={clsx(
-        "inline-flex items-center border min-w-fit bg-black gap-[10px]",
+        "inline-flex items-center border min-w-fit bg-black gap-[5px] pc:gap-[10px]",
         gradeStyle[upperGrade],
         sizeStyle,
       )}

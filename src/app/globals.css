@@ -23,7 +23,7 @@
   /* 브레이크포인트 */
 
   --breakpoint-tablet: 744px;
-  --breakpoint-pc: 1920px;
+  --breakpoint-pc: 1480px;
 }
 
 @theme inline {
@@ -54,10 +54,22 @@ body {
   font-weight: 700;
   letter-spacing: -0.03em;
 }
+@utility text-baskin-62-regular {
+  font-family: var(--font-baskin-robbins);
+  font-size: 62px;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+}
 @utility text-baskin-48 {
   font-family: var(--font-baskin-robbins);
   font-size: 48px;
   font-weight: 700;
+  letter-spacing: -0.03em;
+}
+@utility text-baskin-48-regular {
+  font-family: var(--font-baskin-robbins);
+  font-size: 48px;
+  font-weight: 400;
   letter-spacing: -0.03em;
 }
 @utility text-baskin-46 {
@@ -76,6 +88,12 @@ body {
   font-family: var(--font-baskin-robbins);
   font-size: 24px;
   font-weight: 700;
+  letter-spacing: -0.03em;
+}
+@utility text-baskin-20 {
+  font-family: var(--font-baskin-robbins);
+  font-size: 20px;
+  font-weight: 400;
   letter-spacing: -0.03em;
 }
 @utility text-baskin-18 {

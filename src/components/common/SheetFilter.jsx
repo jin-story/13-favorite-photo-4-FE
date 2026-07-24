@@ -15,7 +15,7 @@ const filterOptions = {
     options: [
       { label: "COMMON", value: "COMMON" },
       { label: "RARE", value: "RARE" },
-      { label: "SUPER RARE", value: "SUPER_RARE" },//서로 다른 값 꼭 필요하지 않으면 값은 가
+      { label: "SUPER RARE", value: "SUPER_RARE" }, //서로 다른 값 꼭 필요하지 않으면 값은 가
       { label: "LEGENDARY", value: "LEGENDARY" },
     ],
   },
@@ -23,10 +23,16 @@ const filterOptions = {
   genre: {
     title: "장르",
     options: [
-      { label: "여행", value: "TRAVEL" },
-      { label: "풍경", value: "LANDSCAPE" },
-      { label: "인물", value: "PERSON" },
-      { label: "사물", value: "OBJECT" },
+      { label: "앨범", value: "ALBUM" },
+      { label: "특전", value: "SPECIAL" },
+      { label: "팬싸", value: "FAN_SIGN" },
+      { label: "시즌그리팅", value: "SEASON_GREETING" },
+      { label: "팬미팅", value: "FAN_MEETING" },
+      { label: "콘서트", value: "CONCERT" },
+      { label: "MD", value: "MD" },
+      { label: "콜라보", value: "COLLABORATION" },
+      { label: "팬클럽", value: "FAN_CLUB" },
+      { label: "기타", value: "ETC" },
     ],
   },
 
@@ -42,7 +48,7 @@ const filterOptions = {
 export default function SheetFilter({
   open,
   onClose,
-
+  categories = ["grade", "genre", "availability"],
   filter,
   setFilter,
 
@@ -57,17 +63,19 @@ export default function SheetFilter({
   const [tab, setTab] = useState("grade");
 
   useEffect(() => {
+    if (!open) return;
+
     const handleClick = (e) => {
       if (sheetRef.current && !sheetRef.current.contains(e.target)) {
         onClose();
       }
     };
 
-    if (open) {
-      document.addEventListener("click", handleClick);
-    }
+    document.addEventListener("mousedown", handleClick);
 
-    return () => document.removeEventListener("mousedown", handleClick);
+    return () => {
+      document.removeEventListener("mousedown", handleClick);
+    };
   }, [open, onClose]);
 
   if (!open) return null;
@@ -92,12 +100,12 @@ export default function SheetFilter({
 
   //초기화
   const handleReset = () => {
-    setFilter({
-      grade: [],
-      genre: [],
-      availability: [],
-    });
+    const emptyFilter = categories.reduce((acc, key) => {
+      acc[key] = [];
+      return acc;
+    }, {});
 
+    setFilter(emptyFilter);
     onReset?.();
   };
 
@@ -123,24 +131,26 @@ export default function SheetFilter({
 
         {/* Tab */}
         <div className="flex h-[52px] py-[0px] px-[24px] gap-[24px] border border-gray-500">
-          {Object.entries(filterOptions).map(([key, value]) => (
-            <button
-              key={key}
-              onClick={() => setTab(key)}
-              className={clsx(
-                "flex-1 py-[16px] px-[16px] justify-center items-center text-noto-14-regular border-b",
-                tab === key
-                  ? "border-white text-white"
-                  : "border-transparent text-gray-400",
-              )}
-            >
-              {value.title}
-            </button>
-          ))}
+          {Object.entries(filterOptions)
+            .filter(([key]) => categories.includes(key))
+            .map(([key, value]) => (
+              <button
+                key={key}
+                onClick={() => setTab(key)}
+                className={clsx(
+                  "flex-1 py-[16px] px-[16px] justify-center items-center text-noto-14-regular border-b",
+                  tab === key
+                    ? "border-white text-white"
+                    : "border-transparent text-gray-400",
+                )}
+              >
+                {value.title}
+              </button>
+            ))}
         </div>
 
         {/* List */}
-        <div className="flex-1 overflow-y-auto text-gray-300 text-noto-14-regular">
+        <div className="flex-1 max-h-[320px] overflow-y-auto text-gray-300 text-noto-14-regular scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
           {current.options.map((option) => (
             <button
               key={option.value}
