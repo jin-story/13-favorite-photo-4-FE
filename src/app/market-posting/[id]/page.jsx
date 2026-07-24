@@ -190,21 +190,10 @@ export default function SellingPhotocardDetails() {
 
   return (
     <>
-      <div className="fixed inset-x-0 top-0 z-50">
-        <Gnb
-          isLoggedIn={mockIsLoggedIn}
-          user={mockUser}
-          mobileType="sub"
-          title="마켓플레이스" // API연동?
-          onBackClick={() => window.history.back()}
-          onLoginClick={() => console.log("로그인 클릭")}
-          onSignupClick={() => console.log("회원가입 클릭")}
-          onLogoutClick={() => console.log("로그아웃 클릭")}
-        />
-      </div>
+      <Gnb isLoggedIn={mockIsLoggedIn} user={mockUser} mobileType="sub" />
 
       <main className="bg-black text-white">
-        <section className="mx-auto w-full max-w-[1480px] pb-[140px] pt-10 tablet:pb-[170px] tablet:pt-[50px] pc:pb-[180px] pc:pt-[80px]">
+        <section className="mx-auto w-full max-w-[1480px] pb-[40px] pt-[80px] px-[15px] tablet:pb-[60px] tablet:pt-[110px] tablet:px-[20px] pc:pb-[180px] pc:pt-[140px] pc:px-[0px]">
           <p className="hidden text-gray-300 tablet:text-baskin-18 tablet:block pc:text-baskin-24 pc:block">
             마켓플레이스
           </p>
