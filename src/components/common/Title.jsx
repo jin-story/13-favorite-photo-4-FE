@@ -53,7 +53,10 @@ export default function Title({
 
   return (
     <div
-      className={clsx("flex w-full flex-col gap-5 border-b border-b-2 border-b-gray-100 pb-5", className)}
+      className={clsx(
+        "flex w-full flex-col gap-5 border-b border-b-2 border-b-gray-100 pb-2.5 tablet:pb-5",
+        className,
+      )}
     >
       {button ? (
         <div className="flex w-full flex-col tablet:flex-row tablet:items-center tablet:justify-between">
