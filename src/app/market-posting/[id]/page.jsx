@@ -95,7 +95,7 @@ export default function SellingPhotocardDetails() {
 
   const handleEdit = () => {
     router.push(
-      `${pathname}?modal=editMarketCard&id=${mockMarketPostingDetail.id}`,
+      `${pathname}?modal=edit-card&id=${mockMarketPostingDetail.id}`,
       {
         scroll: false,
       },
