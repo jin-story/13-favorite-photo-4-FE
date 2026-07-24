@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
-import Image from "next/image";
 import closeIcon from "@/assets/icons/close.svg";
+import Image from "next/image";
+import { useEffect } from "react";
 
 export default function Modal({
   isOpen,
