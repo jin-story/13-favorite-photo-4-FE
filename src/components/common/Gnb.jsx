@@ -15,101 +15,27 @@
 
   (구현 필요 {}, {()=>})
   onMenuClick,
-  onBackClick,
 */
 
 "use client";
 
-import clsx from "clsx";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import clsx from "clsx";
 
-import alarmIcon from "@/assets/icons/alarm_default.svg";
-import backIcon from "@/assets/icons/arrow_left.svg";
-import menuIcon from "@/assets/icons/menu.svg";
 import logo from "@/assets/images/logo.svg";
-import { useAuth } from "@/providers/AuthProvider";
+import menuIcon from "@/assets/icons/menu.svg";
+import backIcon from "@/assets/icons/arrow_left.svg";
+import alarmIcon from "@/assets/icons/alarm_default.svg";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import Profile from "./Profile";
-
-function ProfileMenu({ user, textClassName }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const menuRef = useRef(null);
-
-  // 바깥 영역 클릭 시 드롭다운 닫기
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  return (
-    <div className="relative" ref={menuRef}>
-      <button
-        type="button"
-        onClick={() => setIsOpen((prev) => !prev)}
-        className={clsx(textClassName, "cursor-pointer")}
-      >
-        {user.nickname}
-      </button>
-
-      {isOpen && (
-        <div className="absolute right-0 top-[20px] mt-1 z-50">
-          <Profile
-            nickname={user.nickname}
-            point={user.points}
-            className="h-auto"
-          />
-        </div>
-      )}
-    </div>
-  );
-}
+import { useAuth } from "@/providers/AuthProvider";
 
 export default function Gnb({
   mobileType = "main", // main | sub
   title = "",
   onMenuClick,
-  onBackClick,
 }) {
   const { user, logout } = useAuth();
   const isLoggedIn = !!user;
-  const router = useRouter();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const onLoginClick = () => {
-    router.push("/login");
-  };
-
-  const onSignupClick = () => {
-    router.push("/register");
-  };
-
-  const openSidebar = () => {
-    onMenuClick?.();
-    if (isLoggedIn) setIsSidebarOpen(true);
-  };
-
-  useEffect(() => {
-    if (!isSidebarOpen) return;
-
-    document.body.style.overflow = "hidden";
-
-    function handleKeyDown(event) {
-      if (event.key === "Escape") setIsSidebarOpen(false);
-    }
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.body.style.overflow = "";
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [isSidebarOpen]);
-
   return (
     <>
       {/* ================= PC ================= */}
@@ -119,8 +45,8 @@ export default function Gnb({
           "w-full h-[80px] max-w-[1920px]",
           "items-center justify-between",
           "bg-black px-[220px]",
-          "fixed top-0 z-50",
-          "inset-0",
+          "fixed top-0 z-20",
+          "inset-0 mx-auto",
         )}
       >
         <Link href="/market-posting">
@@ -135,44 +61,41 @@ export default function Gnb({
           <div className="flex items-center gap-[30px]">
             <div className="flex items-center">
               <span className="text-gray-200 text-noto-14-bold">
-                {user.points?.toLocaleString()} P
+                {user.point?.toLocaleString()} P
               </span>
             </div>
 
             <Image src={alarmIcon} alt="" width={24} />
 
-            <ProfileMenu
-              user={user}
-              textClassName="text-gray-200 text-baskin-18"
-            />
+            <span className="text-gray-200 text-baskin-18">
+              {user.nickname}
+            </span>
 
             <span className="text-gray-400 text-noto-14-regular">|</span>
 
             <button
               type="button"
               onClick={logout}
-              className="text-gray-400 text-noto-14-regular cursor-pointer"
+              className="text-gray-400 text-noto-14-regular"
             >
               로그아웃
             </button>
           </div>
         ) : (
           <div className="flex items-center gap-[30px]">
-            <button
-              type="button"
-              onClick={onLoginClick}
+            <Link
+              href="/login"
               className="text-gray-200 text-noto-14-regular cursor-pointer"
             >
               로그인
-            </button>
+            </Link>
 
-            <button
-              type="button"
-              onClick={onSignupClick}
+            <Link
+              href="/register"
               className="text-gray-200 text-noto-14-regular cursor-pointer"
             >
               회원가입
-            </button>
+            </Link>
           </div>
         )}
       </header>
@@ -184,7 +107,7 @@ export default function Gnb({
           "w-full h-[70px]",
           "items-center justify-between",
           "px-[40px] bg-black",
-          "fixed top-0 z-50",
+          "fixed top-0 z-20",
         )}
       >
         <Link href="/market-posting">
@@ -199,16 +122,15 @@ export default function Gnb({
           <div className="flex items-center gap-[30px]">
             <div className="flex items-center">
               <span className="text-gray-200 text-noto-14-bold">
-                {user.points?.toLocaleString()} P
+                {user.point?.toLocaleString()} P
               </span>
             </div>
 
             <Image src={alarmIcon} alt="" width={19} />
 
-            <ProfileMenu
-              user={user}
-              textClassName="text-gray-200 text-baskin-18"
-            />
+            <span className="text-gray-200 text-baskin-18">
+              {user.nickname}
+            </span>
 
             <span className="text-gray-300">|</span>
 
@@ -222,21 +144,19 @@ export default function Gnb({
           </div>
         ) : (
           <div className="flex items-center gap-[30px]">
-            <button
-              type="button"
-              onClick={onLoginClick}
+            <Link
+              href="/login"
               className="text-gray-200 text-noto-14-regular cursor-pointer"
             >
               로그인
-            </button>
+            </Link>
 
-            <button
-              type="button"
-              onClick={onSignupClick}
+            <Link
+              href="/register"
               className="text-gray-200 text-noto-14-regular cursor-pointer"
             >
               회원가입
-            </button>
+            </Link>
           </div>
         )}
       </header>
@@ -248,7 +168,7 @@ export default function Gnb({
           "w-full h-[60px]",
           "items-center justify-between",
           "px-[20px] bg-black",
-          "fixed top-0 z-50",
+          "fixed top-0 z-20",
         )}
       >
         {mobileType === "main" ? (
@@ -256,7 +176,7 @@ export default function Gnb({
             {/* Left */}
             <button
               type="button"
-              onClick={openSidebar}
+              onClick={onMenuClick}
               className="cursor-pointer"
             >
               <Image src={menuIcon} alt="메뉴" width={22} height={22} />
@@ -277,13 +197,12 @@ export default function Gnb({
                 <Image src={alarmIcon} alt="" width={22} />
               </button>
             ) : (
-              <button
-                type="button"
-                onClick={onLoginClick}
+              <Link
+                href="/login"
                 className="text-gray-200 text-noto-14-regular cursor-pointer"
               >
                 로그인
-              </button>
+              </Link>
             )}
           </>
         ) : (
@@ -291,7 +210,7 @@ export default function Gnb({
             {/* Left */}
             <button
               type="button"
-              onClick={onBackClick}
+              onClick={() => window.history.back()}
               className="cursor-pointer"
             >
               <Image src={backIcon} alt="뒤로가기" width={22} height={22} />
@@ -305,26 +224,6 @@ export default function Gnb({
           </>
         )}
       </header>
-
-      {/* ================= Mobile 사이드바 (프로필) ================= */}
-      {isLoggedIn && isSidebarOpen && (
-        <div
-          className="fixed inset-0 z-50 flex bg-black/80 tablet:hidden"
-          onClick={(event) => {
-            if (event.target === event.currentTarget) setIsSidebarOpen(false);
-          }}
-        >
-          <Profile
-            nickname={user.nickname}
-            point={user.points}
-            onLogout={() => {
-              setIsSidebarOpen(false);
-              logout();
-            }}
-            className="h-dvh"
-          />
-        </div>
-      )}
     </>
   );
 }
