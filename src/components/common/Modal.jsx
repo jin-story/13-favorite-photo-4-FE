@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
-import Image from "next/image";
 import closeIcon from "@/assets/icons/close.svg";
+import Image from "next/image";
+import { useEffect } from "react";
 
 export default function Modal({
   isOpen,
@@ -42,7 +42,7 @@ export default function Modal({
 
   return (
     <div
-      className="fixed inset-0 flex justify-center items-center w-full h-dvh bg-black/80"
+      className="fixed z-100 inset-0 flex justify-center items-center w-full h-dvh bg-black/80"
       onClick={handleBackdropClick}
     >
       <div className="relative w-fit h-fit bg-gray-500">
