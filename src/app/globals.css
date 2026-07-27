@@ -226,7 +226,7 @@ body {
   font-weight: 300;
 }
 @layer base {
-  button {
+  button:not(:disabled) {
     cursor: pointer;
   }
 }
