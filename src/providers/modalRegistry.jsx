@@ -11,5 +11,5 @@ export const MODAL_COMPONENTS = {
   // url에 담을 문자: 실제 컴포넌트 이름
   // cart: CartModal,
   // welcome: WelcomeModal,
-  editMarketCard: EditMarketCardModal,
+  "edit-card": EditMarketCardModal,
 };
