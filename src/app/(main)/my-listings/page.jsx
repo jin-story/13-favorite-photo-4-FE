@@ -231,7 +231,7 @@ export default function MyListings() {
               }
             />
             <Dropdown
-              type="status"
+              type="availability"
               value={filter.status?.[0] || ""}
               onChange={(value) =>
                 setFilter((prev) => ({

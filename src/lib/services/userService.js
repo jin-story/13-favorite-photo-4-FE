@@ -28,4 +28,11 @@ export const userService = {
     const data = await tokenFetch("/users/me/market-postings");
     return data;
   },
+  // 내가 제시한 교환 목록 조회 API
+  getMyExchangeOffers: async () => {
+    const response = await tokenFetch("/users/me/exchange-proposals", {
+      method: "GET",
+    });
+    return response;
+  },
 };

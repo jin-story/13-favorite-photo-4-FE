@@ -1,276 +1,186 @@
 "use client";
 
-import Dropdown from "@/components/common/Dropdown";
-import Filter from "@/components/common/Filter";
-import GradeMyCard from "@/components/common/GradeMyCard";
-import InputSearch from "@/components/common/InputSearch";
-import "swiper/css";
-
-import React, { useMemo, useState } from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import Photocard from "@/components/common/Photocard";
-import { useAuth } from "@/providers/AuthProvider";
-import Title from "@/components/common/Title";
-import { useDebounce } from "@/hooks/useDebounce";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import refreshIcon from "@/assets/icons/exchange.svg";
-import { useRouter } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
-import { userService } from "@/lib/services/userService";
+import arrowDownIcon from "@/assets/icons/arrow_down.svg";
+import clsx from "clsx";
 
-const MOCK_GENRES = [
-  "ALBUM",
-  "SPECIAL",
-  "FAN_SIGN",
-  "SEASON_GREETING",
-  "FAN_MEETING",
-  "CONCERT",
-  "MD",
-  "COLLABORATION",
-  "FAN_CLUB",
-  "ETC",
-];
+const dropdownOptions = {
+  grade: {
+    placeholder: "등급",
+    options: [
+      { label: "COMMON", value: "COMMON" },
+      { label: "RARE", value: "RARE" },
+      { label: "SUPER_RARE", value: "SUPER_RARE" },
+      { label: "LEGENDARY", value: "LEGENDARY" },
+    ],
+  },
 
-export default function MyListings() {
-  const route = useRouter();
-  const { user } = useAuth();
-  const [searchKeyword, setSearchKeyword] = useState("");
-  const debouncedKeyword = useDebounce(searchKeyword, 300);
-  const [filter, setFilter] = useState({
-    grade: [],
-    genre: [],
-    availability: [], // status를 availability로 변경
-  });
+  sale: {
+    placeholder: "판매 방법",
+    options: [
+      { label: "판매", value: "SALE" },
+      { label: "교환", value: "EXCHANGE" },
+    ],
+  },
 
-  // 1. 실제 판매 포토카드 API 연동
-  const { data: rawMarketPostings = [], isPending } = useQuery({
-    queryKey: ["myMarketPostings"],
-    queryFn: () => userService.getMyMarketPostings(),
-  });
+  genre: {
+    placeholder: "장르",
+    options: [
+      { label: "앨범", value: "ALBUM" },
+      { label: "특전", value: "SPECIAL" },
+      { label: "팬싸", value: "FAN_SIGN" },
+      { label: "시즌그리팅", value: "SEASON_GREETING" },
+      { label: "팬미팅", value: "FAN_MEETING" },
+      { label: "콘서트", value: "CONCERT" },
+      { label: "MD", value: "MD" },
+      { label: "콜라보", value: "COLLABORATION" },
+      { label: "팬클럽", value: "FAN_CLUB" },
+      { label: "기타", value: "ETC" },
+    ],
+  },
 
-  // 2. 백엔드 데이터를 Photocard 컴포넌트에 맞게 매핑
-  const marketCards = useMemo(() => {
-    return rawMarketPostings.map((posting) => {
-      const photoCard = posting.userInventory?.photoCard || {};
-      const isSoldOut = posting.status === "SOLD" || posting.remainingQuantity === 0;
+  availability: {
+    placeholder: "매진 여부",
+    options: [
+      { label: "판매 중", value: "SALE" },
+      { label: "판매 완료", value: "SOLD_OUT" },
+    ],
+  },
 
-      return {
-        id: posting.id,
-        name: photoCard.name,
-        grade: photoCard.grade,
-        genre: photoCard.genre,
-        price: posting.price,
-        totalQuantity: posting.quantity,
-        remainingQuantity: posting.remainingQuantity,
-        status: posting.status, // 백엔드 원본 상태값 유지 ("ON_SALE" 또는 "SOLD")
-        availability: isSoldOut ? "SOLD_OUT" : "SALE", // 필터용 availability
-        makerNickname: photoCard.creator?.nickname,
-        imgUrl: photoCard.imageUrl,
-        description: "",
-      };
-    });
-  }, [rawMarketPostings]);
+  sort: {
+    placeholder: "낮은 가격순",
+    options: [
+      { label: "낮은 가격순", value: "LOW_PRICE" },
+      { label: "높은 가격순", value: "HIGH_PRICE" },
+      { label: "최신순", value: "LATEST" },
+    ],
+  },
+};
 
-  // 3. 통계 및 요약 정보 계산
-  const userInventory = useMemo(() => {
-    const gradeCounts = marketCards.reduce((acc, card) => {
-      if (card.grade) acc[card.grade] = (acc[card.grade] || 0) + 1;
-      return acc;
-    }, {});
+// css 정리
+const defaultStyle = {
+  button: "flex pc:min-h-[24px] min-h-[22px] items-start gap-[10px]",
+  menu: "flex flex-col absolute z-10 items-start mt-[18px] border border-gray-200 bg-black max-h-[220px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-transparent",
+  item: "flex items-start w-full py-[15px] px-[20px] text-left hover:bg-gray-500",
+};
 
-    const genreCounts = marketCards.reduce((acc, card) => {
-      if (card.genre) acc[card.genre] = (acc[card.genre] || 0) + 1;
-      return acc;
-    }, {});
+const dropdownStyle = {
+  grade: defaultStyle,
 
-    const availabilityCounts = marketCards.reduce((acc, card) => {
-      if (card.availability) acc[card.availability] = (acc[card.availability] || 0) + 1;
-      return acc;
-    }, {});
+  sale: defaultStyle,
 
-    const genreInventory = MOCK_GENRES.reduce((acc, genreKey) => {
-      acc[genreKey] = genreCounts[genreKey] || 0;
-      return acc;
-    }, {});
+  genre: defaultStyle,
 
-    return {
-      total: marketCards.length,
-      ...genreCounts,
-      ...availabilityCounts,
-      ...genreInventory,
-      COMMON: gradeCounts["COMMON"] || 0,
-      RARE: gradeCounts["RARE"] || 0,
-      SUPER_RARE: gradeCounts["SUPER_RARE"] || 0,
-      LEGENDARY: gradeCounts["LEGENDARY"] || 0,
-      grade: {
-        COMMON: gradeCounts["COMMON"] || 0,
-        RARE: gradeCounts["RARE"] || 0,
-        SUPER_RARE: gradeCounts["SUPER_RARE"] || 0,
-        LEGENDARY: gradeCounts["LEGENDARY"] || 0,
-      },
-      genre: genreInventory,
+  availability: defaultStyle,
+
+  sort: {
+    button:
+      "pc:min-w-[180px] pc:min-h-[50px] \
+      tablet:min-w-[140px] tablet:min-h-[45px] \
+      flex min-w-[130px] min-h-[35px] justify-center gap-[10px] items-start border border-gray-200 py-[10px] px-[15px] bg-black",
+    menu: "flex flex-col absolute z-10 mt-[5px] w-full border border-gray-200 bg-black",
+    item: "flex w-full items-center px-[20px] py-[15px] hover:bg-gray-500",
+  },
+};
+
+export default function Dropdown({ type, value, onChange, disabled = false }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  const { placeholder, options } = dropdownOptions[type];
+  const style = dropdownStyle[type];
+
+  const selected =
+    options.find((option) => option.value === value)?.label ?? placeholder;
+
+  // 바깥 클릭 시 닫기
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setIsOpen(false);
+      }
     };
-  }, [marketCards]);
 
-  const handleResetAll = () => {
-    setSearchKeyword("");
-    setFilter({
-      grade: [],
-      genre: [],
-      availability: [],
-    });
-  };
+    document.addEventListener("mousedown", handleClickOutside);
 
-  // 4. 필터링 로직 적용
-  const filteredCards = useMemo(() => {
-    return marketCards.filter((card) => {
-      if (debouncedKeyword.trim()) {
-        const keyword = debouncedKeyword.toLowerCase();
-        const matchesSearch =
-          card.name?.toLowerCase().includes(keyword) ||
-          card.makerNickname?.toLowerCase().includes(keyword);
-        if (!matchesSearch) return false;
-      }
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
-      if (filter.grade.length > 0 && !filter.grade.includes(card.grade)) {
-        return false;
-      }
-
-      if (filter.genre.length > 0 && !filter.genre.includes(card.genre)) {
-        return false;
-      }
-
-      if (
-        filter.availability &&
-        filter.availability.length > 0 &&
-        !filter.availability.includes(card.availability)
-      ) {
-        return false;
-      }
-
-      return true;
-    });
-  }, [debouncedKeyword, filter, marketCards]);
-
-  const isFiltered =
-    searchKeyword.trim().length > 0 ||
-    filter.grade.length > 0 ||
-    filter.genre.length > 0 ||
-    (filter.availability && filter.availability.length > 0);
+  // disabled가 되면 메뉴 닫기
+  useEffect(() => {
+    if (disabled) {
+      setIsOpen(false);
+    }
+  }, [disabled]);
 
   return (
-    <main className="mb-20 max-w-[345px] flex flex-col w-full gap-[15px] tablet:max-w-[704px] pt-5 tablet:pt-10 tablet:gap-10 pc:max-w-[1480px] pc:pt-[60px] mx-auto">
-      <Title
-        className="hidden tablet:block"
-        type="title_line"
-        text="나의 판매 포토카드"
-      />
-      {/* 상단 요약 및 컨트롤 영역 */}
-      <section className="flex flex-col gap-[15px] tablet:gap-5">
-        {/* 등급별 통계 슬라이더 영역 */}
-        <div className="flex flex-col gap-[15px] tablet:gap-5 border-b pb-[15px] border-b-gray-400 tablet:pb-10">
-          <div className="flex gap-[5px] items-end">
-            <h2 className="text-noto-14-bold tablet:text-noto-20-bold pc:text-noto-24-bold">
-              {user?.nickname}님이 판매 중인 포토카드
-            </h2>
-            <span className="text-noto-12-regular text-gray-300 tablet:text-noto-18-regular pc:text-noto-20-regular">
-              ({userInventory.total}장)
-            </span>
-          </div>
-          <div className="mx-[-15px] tablet:mx-[-20px] pl-[15px] tablet:px-5 overflow-hidden">
-            <Swiper slidesPerView="auto" freeMode={true} className="w-full">
-              {Object.entries(userInventory.grade).map(([key, count]) => (
-                <SwiperSlide
-                  key={key}
-                  className="w-auto! mr-[10px] pc:mr-[20px]"
-                >
-                  <GradeMyCard grade={key} count={count} />
-                </SwiperSlide>
-              ))}
-            </Swiper>
-          </div>
+    <div ref={dropdownRef} className="relative inline-block">
+      <button
+        type="button"
+        disabled={disabled}
+        onClick={() => setIsOpen((prev) => !prev)}
+        className={clsx(
+          style.button,
+          disabled && "cursor-not-allowed opacity-50",
+        )}
+      >
+        <span className="pc:text-noto-16-regular tablet:text-noto-14-regular text-noto-12-regular whitespace-nowrap">
+          {selected}
+        </span>
+        <div className="flex w-[24px] h-[24px] items-center justify-center">
+          <Image
+            src={arrowDownIcon}
+            alt=""
+            className={clsx("transition-transform", isOpen && "rotate-180")}
+          />
         </div>
-        {/* 필터 및 검색 바 영역 */}
-        <div className="flex w-full justify-start items-center gap-7.5 pc:gap-[60px]">
-          <div className="flex gap-2.5 w-full tablet:w-fit">
-            <Filter
-              categories={["grade", "genre", "availability"]}
-              counts={userInventory}
-              totalAllCount={marketCards.length}
-              filter={filter}
-              setFilter={setFilter}
-              totalCount={filteredCards.length}
-              onApply={(finalFilter) => setFilter(finalFilter)}
-            />
-            <InputSearch
-              className="w-full tablet:w-[200px] pc:w-[320px]"
-              onChange={setSearchKeyword}
-              value={searchKeyword}
-            />
-          </div>
-          <div className="hidden items-center gap-[25px] tablet:flex pc:gap-[45px]">
-            <Dropdown
-              type="grade"
-              value={filter.grade[0] || ""}
-              onChange={(value) =>
-                setFilter((prev) => ({
-                  ...prev,
-                  grade: value ? [value] : [],
-                }))
-              }
-            />
-            <Dropdown
-              type="genre"
-              value={filter.genre[0] || ""}
-              onChange={(value) =>
-                setFilter((prev) => ({
-                  ...prev,
-                  genre: value ? [value] : [],
-                }))
-              }
-            />
-            <Dropdown
-              type="availability"
-              value={filter.availability?.[0] || ""}
-              onChange={(value) =>
-                setFilter((prev) => ({
-                  ...prev,
-                  availability: value ? [value] : [],
-                }))
-              }
-            />
-            {isFiltered && (
+      </button>
+
+      {!disabled && isOpen && (
+        <ul className={style.menu}>
+          {options.map((option) => (
+            <li key={option.value}>
               <button
                 type="button"
-                onClick={handleResetAll}
-                className="flex items-center justify-center p-2 text-gray-400 hover:text-white transition-colors animate-fade-in"
-                aria-label="필터 초기화"
+                onClick={() => {
+                  onChange(option.value);
+                  setIsOpen(false);
+                }}
+                className={style.item}
               >
-                <Image src={refreshIcon} alt="초기화" width={20} height={20} />
+                <span className="pc:text-noto-16-regular tablet:text-noto-14-regular text-noto-12-regular whitespace-nowrap">
+                  {option.label}
+                </span>
               </button>
-            )}
-          </div>
-        </div>
-      </section>
-      {/* 카드 목록 그리드 영역 */}
-      <section className="grid grid-cols-2 pc:grid-cols-3 gap-[5px] place-items-center tablet:pt-5 tablet:gap-5 pc:gap-20">
-        {filteredCards.length > 0 ? (
-          filteredCards.map((cardData) => (
-            <Photocard
-              key={cardData.id}
-              card={cardData}
-              type="나의 판매 카드"
-              state={cardData.status === "ON_SALE" ? "판매중" : "판매완료"}
-            />
-          ))
-        ) : (
-          !isPending && (
-            <div className="col-span-full py-20 text-center text-gray-400 text-noto-16-regular">
-              등록된 판매 포토카드가 없습니다.
-            </div>
-          )
-        )}
-      </section>
-    </main>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 }
+
+/*  사용법 :
+const [grade, setGrade] = useState("");
+<Dropdown
+  type="grade"
+  value={grade}
+  onChange={(value) => setGrade(value)} // onChange={setGrade}
+  />
+
+const [sale, setSale] = useState("");
+<Dropdown
+  type="sale"
+  value={sale}
+  onChange={setSale}
+/>
+
+const [sort, setSort] = useState("");
+<Dropdown
+  type="sort"
+  value={sort}
+  onChange={setSort}
+/>
+
+*/
