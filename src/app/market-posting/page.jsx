@@ -141,7 +141,7 @@ export default function MarketplacePage() {
           onApply={() => setIsSheetOpen(false)}
         /> */}
 
-        <div className="flex flex-wrap gap-[5px] tablet:gap-5 pc:gap-[80px]">
+        <div className="flex flex-wrap gap-[5px] tablet:gap-5 pc:gap-5">
           {sampleCards.map((card) => (
             <Photocard key={card.id} card={card} type="마켓 카드" />
           ))}
