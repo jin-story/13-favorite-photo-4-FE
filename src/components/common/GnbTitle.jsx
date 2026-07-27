@@ -19,7 +19,11 @@ export default function GnbTitle() {
     const titleMap = {
       "/marketplace": "마켓플레이스",
       "/my-gallery": "마이갤러리",
+
       "/my-gallery/create": "포토카드 생성",
+      "/my-gallery/success": "",
+      "/my-gallery/error": "",
+
       "/my-sales": "나의 판매 포토카드",
       "/notifications": "알림",
     };

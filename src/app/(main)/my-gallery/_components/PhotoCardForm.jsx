@@ -45,8 +45,6 @@ export default function PhotoCardForm() {
 
   const [errors, setErrors] = useState({});
 
-  const {} = useModal();
-
   const isFormValid =
     Boolean(name.trim()) &&
     Boolean(grade) &&
@@ -63,7 +61,7 @@ export default function PhotoCardForm() {
         name: data.name,
         grade: data.grade,
       }).toString();
-      router.push(`/my-gallery/success?${queryParams}`);
+      router.replace(`/my-gallery/create/success?${queryParams}`);
     },
     onError: (error) => {
       console.log("모달 작업 실패", error);
@@ -88,14 +86,13 @@ export default function PhotoCardForm() {
         return;
       }
 
-      
       const queryParams = new URLSearchParams({
         name: name,
         grade: grade,
         error: errorMessage,
       }).toString();
 
-      router.push(`/my-gallery/error?${queryParams}`);
+      router.replace(`/my-gallery/create/error?${queryParams}`);
     },
   });
 
@@ -212,10 +209,10 @@ export default function PhotoCardForm() {
       />
       <PrimaryButton
         type="submit"
-        disabled={!isFormValid}
+        disabled={!isFormValid || isPending}
         className="mt-[10px] w-full text-noto-16-bold h-[55px] tablet:mt-0"
       >
-        생성하기
+        {isPending ? "생성 중..." : "생성하기"}
       </PrimaryButton>
     </form>
   );

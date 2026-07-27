@@ -96,6 +96,18 @@ body {
   font-weight: 400;
   letter-spacing: -0.03em;
 }
+@utility text-baskin-36-regular {
+  font-family: var(--font-baskin-robbins);
+  font-size: 36px;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+}
+@utility text-baskin-30-regular {
+  font-family: var(--font-baskin-robbins);
+  font-size: 30px;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+}
 @utility text-baskin-24 {
   font-family: var(--font-baskin-robbins);
   font-size: 24px;
