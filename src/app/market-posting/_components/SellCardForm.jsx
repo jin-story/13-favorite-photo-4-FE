@@ -83,7 +83,7 @@ export default function SellCardForm({ card, onCancel }) {
           value={grade}
           onChange={setGrade}
           placeholder="등급을 선택해 주세요"
-          className="w-full"
+          className="w-full tablet:max-w-none"
         />
         <InputDropdown
           label="장르"
@@ -91,7 +91,7 @@ export default function SellCardForm({ card, onCancel }) {
           value={genre}
           onChange={setGenre}
           placeholder="장르를 선택해 주세요"
-          className="w-full"
+          className="w-full tablet:max-w-none"
         />
       </div>
 
@@ -104,7 +104,10 @@ export default function SellCardForm({ card, onCancel }) {
       />
 
       <div className="flex flex-row gap-[15px] tablet:gap-[20px]">
-        <ButtonSecondary onClick={onCancel} className="w-full! h-[55px]! pc:h-[60px]!">
+        <ButtonSecondary
+          onClick={onCancel}
+          className="w-full! h-[55px]! pc:h-[60px]!"
+        >
           취소하기
         </ButtonSecondary>
         <ButtonPrimary

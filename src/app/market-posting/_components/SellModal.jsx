@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import InputSearch from "@/components/common/InputSearch";
 import Dropdown from "@/components/common/Dropdown";
-// import SheetFilter from "@/components/common/SheetFilter"; <- 오류 이슈로 임시 주석처리
+// import SheetFilter from "@/components/common/SheetFilter";
 import Photocard from "@/components/common/Photocard";
 import Title from "@/components/common/Title";
 import filterIcon from "@/assets/icons/filter.svg";

@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Drawer } from "vaul";
 import Image from "next/image";
 import { useModal } from "@/providers/ModalProvider";
 import Title from "@/components/common/Title";
 import InputSearch from "@/components/common/InputSearch";
 import Dropdown from "@/components/common/Dropdown";
-// import SheetFilter from "@/components/common/SheetFilter"; <- 오류 이슈로 임시 주석처리
+// import SheetFilter from "@/components/common/SheetFilter";
 import ButtonPrimary from "@/components/common/ButtonPrimary";
 import Photocard from "@/components/common/Photocard";
 import filterIcon from "@/assets/icons/filter.svg";
@@ -55,7 +56,21 @@ export default function MarketplacePage() {
     availability: [],
   });
   const { openModal } = useModal();
+  const [isPc, setIsPc] = useState(false);
+  const [isSellDrawerOpen, setIsSellDrawerOpen] = useState(false);
   const isLoggedIn = true; // 임시
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsPc(window.innerWidth >= 1920);
+    };
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   function handleSellClick() {
     if (!isLoggedIn) {
@@ -63,7 +78,11 @@ export default function MarketplacePage() {
       return;
     }
 
-    openModal(<SellModal />);
+    if (isPc) {
+      openModal(<SellModal />);
+    } else {
+      setIsSellDrawerOpen(true);
+    }
   }
 
   return (
@@ -134,6 +153,18 @@ export default function MarketplacePage() {
           나의 포토카드 판매하기
         </ButtonPrimary>
       </div>
+
+      <Drawer.Root open={isSellDrawerOpen} onOpenChange={setIsSellDrawerOpen}>
+        <Drawer.Portal>
+          <Drawer.Overlay className="fixed inset-0 z-100 bg-black/80" />
+          <Drawer.Content className="fixed inset-x-0 bottom-0 z-100 max-h-[90dvh] overflow-hidden rounded-t-[16px] bg-gray-500 outline-none">
+            <Drawer.Title className="sr-only">
+              나의 포토카드 판매하기
+            </Drawer.Title>
+            <SellModal />
+          </Drawer.Content>
+        </Drawer.Portal>
+      </Drawer.Root>
     </div>
   );
 }
