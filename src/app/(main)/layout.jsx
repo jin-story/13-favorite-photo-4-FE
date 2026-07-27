@@ -13,7 +13,7 @@ export default async function Layout({ children }) {
     <div className="flex min-h-dvh flex-col">
       <Gnb />
       <main className="flex-1 pt-[60px] tablet:pt-[70px] pc:pt-[80px]">
-        <div className="mx-auto w-full max-w-[1920px] ">
+        <div className="mx-auto w-full max-w-[1920px] px-[15px] tablet:px-5 pc:px-0">
           {children}
         </div>
       </main>

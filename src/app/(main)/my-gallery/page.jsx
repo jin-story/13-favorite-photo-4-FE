@@ -124,7 +124,7 @@ export default function MyGallery() {
     filter.genre.length > 0;
 
   return (
-    <main className="mb-20 w-[345px] flex flex-col m-auto gap-[15px] tablet:w-[744px] pt-5 tablet:gap-10 pc:w-[1480px] tablet:px-5">
+    <main className="mb-20 max-w-[345px] flex flex-col w-full gap-[15px] tablet:max-w-[704px] pt-5 tablet:pt-10 tablet:gap-10 pc:max-w-[1480px] pc:pt-[60px] mx-auto">
       <Title
         className="hidden tablet:block"
         buttonText="포토카드 생성하기"
