@@ -11,14 +11,6 @@ import SellerCardAction from "@/components/common/SellerCardAction";
 import Title from "@/components/common/Title";
 import ExchangeCard from "@/components/common/ExchangeCard";
 
-const mockIsLoggedIn = true;
-
-const mockUser = {
-  id: 10,
-  nickname: "유디",
-  point: 1540,
-};
-
 const mockMarketPostingDetail = {
   id: 1,
   photoCardId: 101,
@@ -105,10 +97,7 @@ export default function SellingPhotocardDetails() {
   // 판매 내리기
   const handleSellClose = () => {
     openModal(
-      <div
-        className="flex flex-col justify-center items-center gap-[30px] w-[345px] h-[291px] border-gray-500 rounded-[2px] \
-      tablet:w-[400px] tablet:h-[291px] pc:w-[560px] pc:h-[352px] pc: gap-[40px]"
-      >
+      <div className="flex flex-col justify-center items-center gap-[30px] w-[345px] h-[291px] border-gray-500 rounded-[2px]      tablet:w-[400px] tablet:h-[291px] pc:w-[560px] pc:h-[352px] pc: gap-[40px]">
         <p className="text-noto-18-bold pc:text-noto-20-bold">
           포토카드 판매 내리기
         </p>
@@ -133,10 +122,7 @@ export default function SellingPhotocardDetails() {
   // 거절하기
   const handleReject = (card, cardId) => {
     openModal(
-      <div
-        className="flex flex-col justify-center items-center gap-[30px] w-[345px] h-[291px] rounded-[2px] \
-      tablet:w-[400px] tablet:h-[291px] pc:w-[560px] pc:h-[352px] pc: gap-[40px]"
-      >
+      <div className="flex flex-col justify-center items-center gap-[30px] w-[345px] h-[291px] rounded-[2px] tablet:w-[400px] tablet:h-[291px] pc:w-[560px] pc:h-[352px] pc: gap-[40px]">
         <p className="text-noto-18-bold pc:text-noto-20-bold">
           교환 제시를 거절
         </p>
@@ -146,8 +132,7 @@ export default function SellingPhotocardDetails() {
         </p>
 
         <button
-          className="flex bg-main text-noto-16-bold text-black items-center justify-center w-[120px] h-[55px] mt-[10px] \
-          pc:w-[170px] pc:h-[60px] pc:mt-[20px] pc:text-noto-18-bold tablet:w-[140px]"
+          className="flex bg-main text-noto-16-bold text-black items-center justify-center w-[120px] h-[55px] mt-[10px] pc:w-[170px] pc:h-[60px] pc:mt-[20px] pc:text-noto-18-bold tablet:w-[140px]"
           onClick={() => {
             // reject api(cardId)
 
@@ -163,10 +148,7 @@ export default function SellingPhotocardDetails() {
   //승인하기
   const handleApprove = (card, cardId) => {
     openModal(
-      <div
-        className="flex flex-col justify-center items-center gap-[30px] w-[345px] h-[291px] rounded-[2px] \
-      tablet:w-[400px] tablet:h-[291px] pc:w-[560px] pc:h-[352px] pc: gap-[40px]"
-      >
+      <div className="flex flex-col justify-center items-center gap-[30px] w-[345px] h-[291px] rounded-[2px]    tablet:w-[400px] tablet:h-[291px] pc:w-[560px] pc:h-[352px] pc: gap-[40px]">
         <p className="text-noto-18-bold pc:text-noto-20-bold">교환 제시 승인</p>
 
         <p className="text-noto-14-regular text-gray-300 pc:text-noto-16-regular">
@@ -174,8 +156,7 @@ export default function SellingPhotocardDetails() {
         </p>
 
         <button
-          className="flex bg-main text-noto-16-bold text-black items-center justify-center w-[120px] h-[55px] mt-[10px] \
-          pc:w-[170px] pc:w-[60px] pc:mt-[20px] pc:text-noto-18-bold tablet:w-[140px]"
+          className="flex bg-main text-noto-16-bold text-black items-center justify-center w-[120px] h-[55px] mt-[10px] pc:w-[170px] pc:h-[60px] pc:mt-[20px] pc:text-noto-18-bold tablet:w-[140px]"
           onClick={() => {
             // reject api(cardId)
 
@@ -190,7 +171,7 @@ export default function SellingPhotocardDetails() {
 
   return (
     <>
-      <Gnb isLoggedIn={mockIsLoggedIn} user={mockUser} mobileType="sub" />
+      <Gnb mobileType="sub" />
 
       <main className="bg-black text-white">
         <section className="mx-auto w-full max-w-[1480px] pb-[40px] pt-[80px] px-[15px] tablet:pb-[60px] tablet:pt-[110px] tablet:px-[20px] pc:pb-[180px] pc:pt-[140px] pc:px-[0px]">
