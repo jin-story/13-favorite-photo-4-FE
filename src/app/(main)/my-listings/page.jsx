@@ -9,13 +9,14 @@ import "swiper/css";
 import React, { useMemo, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import Photocard from "@/components/common/Photocard";
-import PrimaryButton from "@/components/common/ButtonPrimary";
 import { useAuth } from "@/providers/AuthProvider";
 import Title from "@/components/common/Title";
 import { useDebounce } from "@/hooks/useDebounce";
 import Image from "next/image";
 import refreshIcon from "@/assets/icons/exchange.svg";
 import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { userService } from "@/lib/services/userService";
 
 const MOCK_GENRES = [
   "ALBUM",
@@ -29,24 +30,6 @@ const MOCK_GENRES = [
   "FAN_CLUB",
   "ETC",
 ];
-const mockMyCards = Array.from({ length: 30 }, (_, index) => {
-  // 예시: index가 4의 배수인 카드들은 수량을 0으로 만들어 품절(SOLD OUT) 상태 테스트
-  const isSoldOut = index % 4 === 0;
-
-  return {
-    makerNickname: `제작자${index + 1}`,
-    name: `포토카드 이름 ${index + 1}`,
-    grade: ["COMMON", "RARE", "SUPER_RARE", "LEGENDARY"][index % 4],
-    genre: MOCK_GENRES[index % MOCK_GENRES.length],
-    sale: index % 2 === 0 ? "SALE" : "EXCHANGE",
-    availability: isSoldOut ? "SOLD_OUT" : "SALE",
-    price: (index + 1) * 100,
-    totalQuantity: isSoldOut ? 0 : (index % 5) + 1, // 👈 0일 때 '나의 판매 카드' 타입에서 품절 처리됨
-    lastQuantity: isSoldOut ? 0 : (index % 5) + 1, // 👈 0일 때 '마켓 카드' 타입에서 품절 처리됨
-    imgUrl: null,
-    description: `포토카드 설명글 ${index + 1}`,
-  };
-});
 
 export default function MyListings() {
   const route = useRouter();
@@ -56,18 +39,53 @@ export default function MyListings() {
   const [filter, setFilter] = useState({
     grade: [],
     genre: [],
-    sale: [],
-    availability: [],
+    status: [],
   });
 
+  // 1. 실제 판매 포토카드 API 연동 (isLoading 대신 isPending 사용)
+  const { data: rawMarketPostings = [], isPending } = useQuery({
+    queryKey: ["myMarketPostings"],
+    queryFn: () => userService.getMyMarketPostings(),
+  });
+
+  // 2. 백엔드 데이터를 Photocard 컴포넌트에 맞게 매핑
+  const marketCards = useMemo(() => {
+    return rawMarketPostings.map((posting) => {
+      const photoCard = posting.userInventory?.photoCard || {};
+      const isSoldOut =
+        posting.status === "SOLD" || posting.remainingQuantity === 0;
+
+      return {
+        id: posting.id,
+        name: photoCard.name,
+        grade: photoCard.grade,
+        genre: photoCard.genre,
+        price: posting.price,
+        totalQuantity: posting.quantity,
+        remainingQuantity: posting.remainingQuantity,
+        status: posting.status, // "ON_SALE" 또는 "SOLD"
+        availability: isSoldOut ? "SOLD_OUT" : "SALE",
+        makerNickname: photoCard.creator?.nickname,
+        imgUrl: photoCard.imageUrl,
+        description: "",
+      };
+    });
+  }, [rawMarketPostings]);
+
+  // 3. 통계 및 요약 정보 계산
   const userInventory = useMemo(() => {
-    const gradeCounts = mockMyCards.reduce((acc, card) => {
-      acc[card.grade] = (acc[card.grade] || 0) + 1;
+    const gradeCounts = marketCards.reduce((acc, card) => {
+      if (card.grade) acc[card.grade] = (acc[card.grade] || 0) + 1;
       return acc;
     }, {});
 
-    const genreCounts = mockMyCards.reduce((acc, card) => {
-      acc[card.genre] = (acc[card.genre] || 0) + 1;
+    const genreCounts = marketCards.reduce((acc, card) => {
+      if (card.genre) acc[card.genre] = (acc[card.genre] || 0) + 1;
+      return acc;
+    }, {});
+
+    const statusCounts = marketCards.reduce((acc, card) => {
+      if (card.status) acc[card.status] = (acc[card.status] || 0) + 1;
       return acc;
     }, {});
 
@@ -77,8 +95,10 @@ export default function MyListings() {
     }, {});
 
     return {
-      total: mockMyCards.length,
+      total: marketCards.length,
       ...genreCounts,
+      ...statusCounts,
+      ...genreInventory,
       COMMON: gradeCounts["COMMON"] || 0,
       RARE: gradeCounts["RARE"] || 0,
       SUPER_RARE: gradeCounts["SUPER_RARE"] || 0,
@@ -91,67 +111,53 @@ export default function MyListings() {
       },
       genre: genreInventory,
     };
-  }, []);
+  }, [marketCards]);
 
   const handleResetAll = () => {
     setSearchKeyword("");
     setFilter({
       grade: [],
       genre: [],
-      sale: [],
-      availability: [],
+      status: [],
     });
   };
 
+  // 4. 필터링 로직 적용
   const filteredCards = useMemo(() => {
-    return mockMyCards.filter((card) => {
-      // 검색어 필터
+    return marketCards.filter((card) => {
       if (debouncedKeyword.trim()) {
         const keyword = debouncedKeyword.toLowerCase();
         const matchesSearch =
-          card.name.toLowerCase().includes(keyword) ||
-          card.makerNickname.toLowerCase().includes(keyword);
+          card.name?.toLowerCase().includes(keyword) ||
+          card.makerNickname?.toLowerCase().includes(keyword);
         if (!matchesSearch) return false;
       }
 
-      // 등급 필터
       if (filter.grade.length > 0 && !filter.grade.includes(card.grade)) {
         return false;
       }
 
-      // 장르 필터
       if (filter.genre.length > 0 && !filter.genre.includes(card.genre)) {
         return false;
       }
 
-      // 판매 방법 필터
       if (
-        filter.sale &&
-        filter.sale.length > 0 &&
-        !filter.sale.includes(card.sale)
-      ) {
-        return false;
-      }
-
-      // 매진 여부 필터
-      if (
-        filter.availability &&
-        filter.availability.length > 0 &&
-        !filter.availability.includes(card.availability)
+        filter.status &&
+        filter.status.length > 0 &&
+        !filter.status.includes(card.status)
       ) {
         return false;
       }
 
       return true;
     });
-  }, [debouncedKeyword, filter]);
+  }, [debouncedKeyword, filter, marketCards]);
 
   const isFiltered =
     searchKeyword.trim().length > 0 ||
     filter.grade.length > 0 ||
     filter.genre.length > 0 ||
-    (filter.sale && filter.sale.length > 0) ||
-    (filter.availability && filter.availability.length > 0);
+    (filter.status && filter.status.length > 0);
 
   return (
     <main className="mb-20 max-w-[345px] flex flex-col w-full gap-[15px] tablet:max-w-[704px] pt-5 tablet:pt-10 tablet:gap-10 pc:max-w-[1480px] pc:pt-[60px] mx-auto">
@@ -166,7 +172,7 @@ export default function MyListings() {
         <div className="flex flex-col gap-[15px] tablet:gap-5 border-b pb-[15px] border-b-gray-400 tablet:pb-10">
           <div className="flex gap-[5px] items-end">
             <h2 className="text-noto-14-bold tablet:text-noto-20-bold pc:text-noto-24-bold">
-              {user?.nickname}님이 보유한 포토카드
+              {user?.nickname}님이 판매 중인 포토카드
             </h2>
             <span className="text-noto-12-regular text-gray-300 tablet:text-noto-18-regular pc:text-noto-20-regular">
               ({userInventory.total}장)
@@ -189,9 +195,9 @@ export default function MyListings() {
         <div className="flex w-full justify-start items-center gap-7.5 pc:gap-[60px]">
           <div className="flex gap-2.5 w-full tablet:w-fit">
             <Filter
-              categories={["grade", "genre", "sale", "availability"]}
+              categories={["grade", "genre", "status"]}
               counts={userInventory}
-              totalAllCount={mockMyCards.length}
+              totalAllCount={marketCards.length}
               filter={filter}
               setFilter={setFilter}
               totalCount={filteredCards.length}
@@ -225,22 +231,12 @@ export default function MyListings() {
               }
             />
             <Dropdown
-              type="sale"
-              value={filter.sale?.[0] || ""}
+              type="status"
+              value={filter.status?.[0] || ""}
               onChange={(value) =>
                 setFilter((prev) => ({
                   ...prev,
-                  sale: value ? [value] : [],
-                }))
-              }
-            />
-            <Dropdown
-              type="availability"
-              value={filter.availability?.[0] || ""}
-              onChange={(value) =>
-                setFilter((prev) => ({
-                  ...prev,
-                  availability: value ? [value] : [],
+                  status: value ? [value] : [],
                 }))
               }
             />
@@ -259,20 +255,20 @@ export default function MyListings() {
       </section>
       {/* 카드 목록 그리드 영역 */}
       <section className="grid grid-cols-2 pc:grid-cols-3 gap-[5px] place-items-center tablet:pt-5 tablet:gap-5 pc:gap-20">
-        {filteredCards.length > 0 ? (
-          filteredCards.map((cardData, index) => (
-            <Photocard
-              key={index}
-              card={cardData}
-              type="나의 판매 카드"
-              state={cardData.sale === "SALE" ? "판매" : "교환"}
-            />
-          ))
-        ) : (
-          <div className="col-span-full py-20 text-center text-gray-400 text-noto-16-regular">
-            검색 결과가 없습니다.
-          </div>
-        )}
+        {filteredCards.length > 0
+          ? filteredCards.map((cardData) => (
+              <Photocard
+                key={cardData.id}
+                card={cardData}
+                type="나의 판매 카드"
+                state={cardData.status === "ON_SALE" ? "판매중" : "판매완료"}
+              />
+            ))
+          : !isPending && (
+              <div className="col-span-full py-20 text-center text-gray-400 text-noto-16-regular">
+                등록된 판매 포토카드가 없습니다.
+              </div>
+            )}
       </section>
     </main>
   );

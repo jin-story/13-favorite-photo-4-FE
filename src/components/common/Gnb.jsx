@@ -176,7 +176,7 @@ export default function Gnb({
           "w-full h-[70px]",
           "items-center justify-between",
           "px-[40px] bg-black",
-          "fixed top-0 z-20",
+          "fixed top-0 z-1000",
         )}
       >
         <Link href="/market-posting">
@@ -238,7 +238,7 @@ export default function Gnb({
           "w-full h-[60px]",
           "items-center justify-between",
           "px-[20px] bg-black",
-          "fixed top-0 z-20",
+          "fixed top-0 z-1000",
         )}
       >
         {mobileType === "main" ? (

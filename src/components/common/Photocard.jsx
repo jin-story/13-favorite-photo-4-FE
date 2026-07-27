@@ -89,7 +89,7 @@ export default function Photocard({
     price = 0,
     totalQuantity = 0,
     lastQuantity = 0,
-    imgUrl,
+    imageUrl,
     description = "포토카드 설명글",
   } = card;
 
@@ -148,8 +148,9 @@ export default function Photocard({
         )}
         <Image
           alt={description}
-          src={imgUrl || mook_img}
+          src={imageUrl || mook_img}
           fill
+          unoptimized
           sizes="(min-width: 1024px) 360px, (min-width: 768px) 302px, 150px"
           className="object-cover z-0"
         />

@@ -36,6 +36,14 @@ const filterOptions = {
     ],
   },
 
+  sale: {
+    title: "판매 방법",
+    options: [
+      { label: "판매", value: "SALE" },
+      { label: "교환", value: "EXCHANGE" },
+    ],
+  },
+
   availability: {
     title: "매진 여부",
     options: [
