@@ -45,7 +45,7 @@ export default function AuthProvider({ children }) {
       setNotification(userData);
     } catch (error) {
       console.error("알림 불러오기에 실패했습니다.", error);
-      setNotification(null);
+      setNotification([]);
     }
   };
 
@@ -89,7 +89,7 @@ export default function AuthProvider({ children }) {
         getNotification();
       } else {
         setUser(null);
-        setNotification(null);
+        setNotification([]);
       }
     }
     fetchUser();

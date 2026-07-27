@@ -271,6 +271,8 @@ export default function Gnb({
             {isLoggedIn ? (
               <button
                 type="button"
+                aria-label="알림보기"
+                aria-expanded={isNotificationOpen}
                 onClick={() => setIsNotificationOpen(true)}
                 className="cursor-pointer"
               >
