@@ -1,37 +1,32 @@
 /* 사용법:
-(백엔드 연동이전 껍데기 값)
-  const isLoggedIn = true; // false로 바꾸면 로그아웃 상태
-  const user = {
-    nickname: "유디",
-    point: 1540,
-  };
+  1. 기본 메인 GNB (PC/Tablet/Mobile 반응형)
+  <Gnb />
 
-  return (
-    <Gnb
-      isLoggedIn={isLoggedIn}
-      user={user}
-    />
-  );
+  2. 모바일 서브 헤더 (기본 뒤로가기 router.back() 자동 동작)
+  <Gnb mobileType="sub" />
 
-  (구현 필요 {}, {()=>})
-  onMenuClick,
-  onBackClick,
+  3. 모바일 서브 헤더 (커스텀 뒤로가기 로직 필요 시)
+  <Gnb
+    mobileType="sub"
+    onBackClick={() => router.push("/marketplace")}
+  />
 */
 
 "use client";
 
-import clsx from "clsx";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import clsx from "clsx";
 
-import alarmIcon from "@/assets/icons/alarm_default.svg";
-import backIcon from "@/assets/icons/arrow_left.svg";
-import menuIcon from "@/assets/icons/menu.svg";
 import logo from "@/assets/images/logo.svg";
-import { useAuth } from "@/providers/AuthProvider";
+import menuIcon from "@/assets/icons/menu.svg";
+import backIcon from "@/assets/icons/back.svg";
+import alarmIcon from "@/assets/icons/alarm_default.svg";
 import Link from "next/link";
+import { useAuth } from "@/providers/AuthProvider";
 import { useRouter } from "next/navigation";
 import Profile from "./Profile";
+import { Suspense, useEffect, useRef, useState } from "react";
+import GnbTitle from "./GnbTitle";
 
 function ProfileMenu({ user, textClassName }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -73,24 +68,23 @@ function ProfileMenu({ user, textClassName }) {
 
 export default function Gnb({
   mobileType = "main", // main | sub
-  title = "",
-  onMenuClick,
   onBackClick,
 }) {
   const { user, logout } = useAuth();
   const isLoggedIn = !!user;
-  const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const onLoginClick = () => {
-    router.push("/login");
-  };
 
-  const onSignupClick = () => {
-    router.push("/register");
+  const router = useRouter();
+
+  const handleBackClick = () => {
+    if (onBackClick) {
+      onBackClick();
+      return;
+    }
+    router.back();
   };
 
   const openSidebar = () => {
-    onMenuClick?.();
     if (isLoggedIn) setIsSidebarOpen(true);
   };
 
@@ -119,8 +113,8 @@ export default function Gnb({
           "w-full h-[80px] max-w-[1920px]",
           "items-center justify-between",
           "bg-black px-[220px]",
-          "fixed top-0 z-50",
-          "inset-0",
+          "fixed top-0 z-20",
+          "inset-0 mx-auto",
         )}
       >
         <Link href="/market-posting">
@@ -151,28 +145,26 @@ export default function Gnb({
             <button
               type="button"
               onClick={logout}
-              className="text-gray-400 text-noto-14-regular cursor-pointer"
+              className="text-gray-400 text-noto-14-regular"
             >
               로그아웃
             </button>
           </div>
         ) : (
           <div className="flex items-center gap-[30px]">
-            <button
-              type="button"
-              onClick={onLoginClick}
+            <Link
+              href="/login"
               className="text-gray-200 text-noto-14-regular cursor-pointer"
             >
               로그인
-            </button>
+            </Link>
 
-            <button
-              type="button"
-              onClick={onSignupClick}
+            <Link
+              href="/register"
               className="text-gray-200 text-noto-14-regular cursor-pointer"
             >
               회원가입
-            </button>
+            </Link>
           </div>
         )}
       </header>
@@ -184,7 +176,7 @@ export default function Gnb({
           "w-full h-[70px]",
           "items-center justify-between",
           "px-[40px] bg-black",
-          "fixed top-0 z-50",
+          "fixed top-0 z-20",
         )}
       >
         <Link href="/market-posting">
@@ -222,21 +214,19 @@ export default function Gnb({
           </div>
         ) : (
           <div className="flex items-center gap-[30px]">
-            <button
-              type="button"
-              onClick={onLoginClick}
+            <Link
+              href="/login"
               className="text-gray-200 text-noto-14-regular cursor-pointer"
             >
               로그인
-            </button>
+            </Link>
 
-            <button
-              type="button"
-              onClick={onSignupClick}
+            <Link
+              href="/register"
               className="text-gray-200 text-noto-14-regular cursor-pointer"
             >
               회원가입
-            </button>
+            </Link>
           </div>
         )}
       </header>
@@ -248,7 +238,7 @@ export default function Gnb({
           "w-full h-[60px]",
           "items-center justify-between",
           "px-[20px] bg-black",
-          "fixed top-0 z-50",
+          "fixed top-0 z-20",
         )}
       >
         {mobileType === "main" ? (
@@ -277,13 +267,12 @@ export default function Gnb({
                 <Image src={alarmIcon} alt="" width={22} />
               </button>
             ) : (
-              <button
-                type="button"
-                onClick={onLoginClick}
+              <Link
+                href="/login"
                 className="text-gray-200 text-noto-14-regular cursor-pointer"
               >
                 로그인
-              </button>
+              </Link>
             )}
           </>
         ) : (
@@ -291,14 +280,22 @@ export default function Gnb({
             {/* Left */}
             <button
               type="button"
-              onClick={onBackClick}
+              onClick={handleBackClick}
               className="cursor-pointer"
             >
               <Image src={backIcon} alt="뒤로가기" width={22} height={22} />
             </button>
 
             {/* Center */}
-            <h1 className=" text-white text-baskin-20">{title}</h1>
+            <Suspense
+              fallback={
+                <h1 className="text-white text-baskin-20-regular">
+                  최애의포토
+                </h1>
+              }
+            >
+              <GnbTitle />
+            </Suspense>
 
             {/* Right */}
             <div className="w-[24px]" />
