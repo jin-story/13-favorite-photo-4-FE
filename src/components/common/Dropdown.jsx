@@ -61,7 +61,7 @@ const dropdownOptions = {
 // css 정리
 const defaultStyle = {
   button: "flex pc:min-h-[24px] min-h-[22px] items-start gap-[10px]",
-  menu: "flex flex-col absolute z-10 items-start mt-[18px] border border-gray-200 bg-black max-h-[220px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-transparent",
+  menu: "flex flex-col absolute z-40 items-start mt-[18px] border border-gray-200 bg-black max-h-[220px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-transparent",
   item: "flex items-start w-full py-[15px] px-[20px] text-left hover:bg-gray-500",
 };
 

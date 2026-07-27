@@ -15,7 +15,7 @@ export default function Profile({ nickname, point, onLogout, className }) {
         <div className="text-noto-14-bold text-white flex flex-col gap-[15px] px-5 py-5 flex-1">
           <Link href={"/market-posting"}>마켓플레이스</Link> {/*추후 주소 등록*/}
           <Link href={"/my-gallery"}>마이갤러리</Link> {/*추후 주소 등록*/}
-          <Link href={"/"}>판매 중인 포토카드</Link> {/*추후 주소 등록*/}
+          <Link href={"/my-listings"}>판매 중인 포토카드</Link> {/*추후 주소 등록*/}
         </div>
         <div className="pb-10 text-noto-14-regular text-gray-400 px-5 tablet:hidden">
           <button type="button" onClick={onLogout}>

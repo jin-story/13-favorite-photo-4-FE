@@ -97,7 +97,7 @@ export default function Photocard({
     (lastQuantity === 0 && type === "마켓 카드") ||
     (totalQuantity === 0 && type === "나의 판매 카드");
 
-  const showStateChip = ALLOWED_STATES.includes(state);
+  const showStateChip = !soldOut && ALLOWED_STATES.includes(state);
 
   const renderQuantitySection = () => {
     let label = "수량";
