@@ -119,7 +119,7 @@ export default function Gnb({
           "w-full h-[80px] max-w-[1920px]",
           "items-center justify-between",
           "bg-black px-[220px]",
-          "fixed top-0 z-50",
+          "fixed top-0 z-1000",
           "inset-0",
         )}
       >
