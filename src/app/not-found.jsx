@@ -1,5 +1,4 @@
 import logo from "@/assets/images/logo.svg";
-import PrimaryButton from "@/components/common/ButtonPrimary";
 import Image from "next/image";
 import Link from "next/link";
 export default function NotFound() {
@@ -11,10 +10,11 @@ export default function NotFound() {
         페이지를 찾을 수 없어요
         <br /> 요청하신 페이지가 존재하지 않거나 이동되었습니다
       </p>
-      <Link href="/" className="cursor-pointer">
-        <PrimaryButton className="rounded-xl  w-65 h-12 tablet:w-65 tablet:h-13 pc:w-65 pc:h-14 text-baskin-24 cursor-pointer">
-          홈으로 이동
-        </PrimaryButton>
+      <Link
+        href="/"
+        className="rounded-xl w-65 h-12 tablet:w-65 tablet:h-13 pc:w-65 pc:h-14 text-baskin-24 cursor-pointer bg-main text-black text-center py-2"
+      >
+        홈으로 이동
       </Link>
     </div>
   );
