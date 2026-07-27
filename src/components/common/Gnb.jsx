@@ -1,25 +1,15 @@
 /* 사용법:
-(백엔드 연동이전 껍데기 값)
-  const isLoggedIn = true; // false로 바꾸면 로그아웃 상태
-  const user = {
-    nickname: "유디",
-    points: 1540,
-  };
+  1. 기본 메인 GNB (PC/Tablet/Mobile 반응형)
+  <Gnb />
 
-  return (
-    <Gnb
-      isLoggedIn={isLoggedIn}
-      user={user}
-    />
+  2. 모바일 서브 헤더 (기본 뒤로가기 router.back() 자동 동작)
+  <Gnb mobileType="sub" />
 
-    <Gnb mobileType="sub" />
-
-    <Gnb
-  mobileType="sub"
-  onBackClick={() => router.push("/marketplace")}
-/>
-  );
-
+  3. 모바일 서브 헤더 (커스텀 뒤로가기 로직 필요 시)
+  <Gnb
+    mobileType="sub"
+    onBackClick={() => router.push("/marketplace")}
+  />
 */
 
 "use client";
