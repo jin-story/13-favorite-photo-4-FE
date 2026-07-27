@@ -6,6 +6,7 @@ import InputTextbox from "@/components/common/InputTextbox";
 import InputTextfield from "@/components/common/InputTextfield";
 import InputUpload from "@/components/common/InputUpload";
 import { photoCardService } from "@/lib/services/photoCardService";
+import { useModal } from "@/providers/ModalProvider";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -44,6 +45,8 @@ export default function PhotoCardForm() {
 
   const [errors, setErrors] = useState({});
 
+  const {} = useModal();
+
   const isFormValid =
     Boolean(name.trim()) &&
     Boolean(grade) &&
@@ -55,26 +58,44 @@ export default function PhotoCardForm() {
 
   const { mutate: createPhotoCard, isPending } = useMutation({
     mutationFn: (formData) => photoCardService.createPhotoCard(formData),
-    onSuccess: (error) => {
-      console.log("모달 작업");
+    onSuccess: (data) => {
+      const queryParams = new URLSearchParams({
+        name: data.name,
+        grade: data.grade,
+      }).toString();
+      router.push(`/my-gallery/success?${queryParams}`);
     },
     onError: (error) => {
-      console.log("모달 작업");
+      console.log("모달 작업 실패", error);
+
+      let errorMessage = "포토카드 생성 중 오류가 발생했습니다.";
+      let errorCode = "UNKNOWN_ERROR";
+
       try {
         const errorData = JSON.parse(error.message);
-
-        if (
-          errorData.code === "PHOTO_CARD_IMAGE_REQUIRED" ||
-          errorData.code === "INVALID_IMAGE_TYPE" ||
-          errorData.code === "IMAGE_FILE_TOO_LARGE"
-        ) {
-          setErrors((prev) => ({ ...prev, image: errorData.message }));
-        } else {
-          alert(errorData.message || "포토카드 생성 중 오류가 발생했습니다.");
-        }
+        errorMessage = errorData.message || errorMessage;
+        errorCode = errorData.code || errorCode;
       } catch {
-        alert(error.message || "포토카드 생성 중 오류가 발생했습니다.");
+        errorMessage = error.message || errorMessage;
       }
+
+      if (
+        errorCode === "PHOTO_CARD_IMAGE_REQUIRED" ||
+        errorCode === "INVALID_IMAGE_TYPE" ||
+        errorCode === "IMAGE_FILE_TOO_LARGE"
+      ) {
+        setErrors((prev) => ({ ...prev, image: errorMessage }));
+        return;
+      }
+
+      
+      const queryParams = new URLSearchParams({
+        name: name,
+        grade: grade,
+        error: errorMessage,
+      }).toString();
+
+      router.push(`/my-gallery/error?${queryParams}`);
     },
   });
 

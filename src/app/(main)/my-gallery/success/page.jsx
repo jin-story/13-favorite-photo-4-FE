@@ -1,5 +1,10 @@
 import React from "react";
+import Result from "../_components/Result";
 
 export default function PhotoCardCreateSuccess() {
-  return <div>PhotoCardCreateSuccess</div>;
+  return (
+    <main>
+      <Result />
+    </main>
+  );
 }

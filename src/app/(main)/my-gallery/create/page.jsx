@@ -1,5 +1,5 @@
 import React from "react";
-import PhotoCardForm from "./_components/PhotoCardForm";
+import PhotoCardForm from "../_components/PhotoCardForm";
 import Title from "@/components/common/Title";
 
 export default function CreatePhotoCardPage() {
