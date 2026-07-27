@@ -77,7 +77,6 @@ function ProfileMenu({ user, textClassName }) {
 
 export default function Gnb({
   mobileType = "main", // main | sub
-  onMenuClick,
   onBackClick,
 }) {
   const { user, logout } = useAuth();
@@ -97,7 +96,6 @@ export default function Gnb({
   };
 
   const openSidebar = () => {
-    onMenuClick?.();
     if (isLoggedIn) setIsSidebarOpen(true);
   };
 
