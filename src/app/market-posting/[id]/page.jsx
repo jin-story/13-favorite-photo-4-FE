@@ -1,97 +1,68 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter, usePathname, useParams } from "next/navigation";
 import Gnb from "@/components/common/Gnb";
 import PhotoCardInfo from "@/components/common/PhotoCardInfo";
 import { useModal } from "@/providers/ModalProvider";
-import cardImage from "@/assets/images/card_woman.svg";
 import SellerCardAction from "@/components/common/SellerCardAction";
 import Title from "@/components/common/Title";
 import ExchangeCard from "@/components/common/ExchangeCard";
+import {
+  getMarketPosting,
+  deleteMarketPosting,
+} from "@/lib/services/marketPostingService";
 
-const mockMarketPostingDetail = {
-  id: 1,
-  photoCardId: 101,
-  sellerId: 20,
-  name: "우리집 앞마당",
-  imageUrl: cardImage,
-  grade: "LEGENDARY",
-  genre: "풍경",
-  ownerNickname: "미쓰손",
-  description:
-    "우리집 앞마당 포토카드입니다. 우리집 앞마당 포토카드입니다. 우리집 앞마당 포토카드입니다.",
-  price: 4,
-  remainingQuantity: 2,
-  totalQuantity: 5,
-  exchange: {
-    grade: "RARE",
-    genre: "풍경",
-    description:
-      "푸릇푸릇한 여름 풍경, 눈 많이 내린 겨울 풍경 사진에 관심이 많습니다.",
-  },
-};
-
-const exchangeCards = [
-  {
-    id: 1,
-    makerNickname: "4팀 화이팅",
-    name: "스페인 여행",
-    grade: "COMMON",
-    genre: "풍경",
-    price: 4,
-    // imgUrl:,
-    description:
-      "스페인 여행 사진도 좋은데.. 우리집 앞마당 포토카드와 교환하고 싶습니다!",
-  },
-  {
-    id: 2,
-    makerNickname: "코드잇 화이팅",
-    name: "How Far I'll Go",
-    grade: "SUPER RARE",
-    genre: "풍경",
-    price: 4,
-    // imgUrl:,
-    description: "여름 바다 풍경 사진과 교환 하실래요?",
-  },
-];
+import {
+  getExchangeProposals,
+  approveExchangeProposal,
+  rejectExchangeProposal,
+} from "@/lib/services/exchangeProposalService";
 
 export default function SellingPhotocardDetails() {
-  // const router = useRouter();
+  const { id } = useParams();
   const { openModal, closeModal } = useModal();
-  const [quantity, setQuantity] = useState(2);
-
-  // 교환 제시 목록 API 연동
-  // const [exchangeCards, setExchangeCards] = useState([]);
-  // useEffect(() => {
-  //   // API 호출
-  //   setExchangeCards(response.data);
-  // }, []);
-
-  const requireLogin = () => {
-    if (mockIsLoggedIn) return true;
-
-    console.log("로그인이 필요한 액션입니다.");
-    alert("로그인이 필요한 서비스입니다.");
-
-    // 로그인 페이지 작업 완료 후 아래 코드로 연결 예정
-    // router.push("/login");
-
-    return false;
-  };
-
-  //수정 하기
   const router = useRouter();
   const pathname = usePathname();
 
+  const [marketPosting, setMarketPosting] = useState(null);
+  const [exchangeCards, setExchangeCards] = useState([]);
+
+  const fetchMarketPosting = async () => {
+    try {
+      const data = await getMarketPosting(id);
+
+      setMarketPosting(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchExchangeCards = async () => {
+    try {
+      const data = await getExchangeProposals(id);
+
+      setExchangeCards(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    if (id) {
+      fetchMarketPosting();
+      fetchExchangeCards();
+    }
+  }, [id]);
+
+  if (!marketPosting) return null;
+
+  //수정 하기
   const handleEdit = () => {
-    router.push(
-      `${pathname}?modal=edit-card&id=${mockMarketPostingDetail.id}`,
-      {
-        scroll: false,
-      },
-    );
+    router.push(`${pathname}?modal=edit-card&id=${marketPosting.id}`, {
+      scroll: false,
+    });
   };
 
   // 판매 내리기
@@ -108,9 +79,12 @@ export default function SellingPhotocardDetails() {
 
         <button
           className="flex items-center justify-center w-[120px] h-[55px] mt-[10px] bg-main text-black text-noto-16-bold tablet:w-[140px] pc:w-[170px] pc:h-[60px] pc:mt-[20px] pc:text-noto-18-bold"
-          onClick={() => {
-            // 판매내리기 API
+          onClick={async () => {
+            await deleteMarketPosting(id);
+
             closeModal();
+
+            router.push("/my-sale");
           }}
         >
           판매 내리기
@@ -133,10 +107,12 @@ export default function SellingPhotocardDetails() {
 
         <button
           className="flex bg-main text-noto-16-bold text-black items-center justify-center w-[120px] h-[55px] mt-[10px] pc:w-[170px] pc:h-[60px] pc:mt-[20px] pc:text-noto-18-bold tablet:w-[140px]"
-          onClick={() => {
-            // reject api(cardId)
+          onClick={async () => {
+            await rejectExchangeProposal(cardId);
 
             closeModal();
+
+            fetchExchangeCards();
           }}
         >
           거절하기
@@ -157,10 +133,12 @@ export default function SellingPhotocardDetails() {
 
         <button
           className="flex bg-main text-noto-16-bold text-black items-center justify-center w-[120px] h-[55px] mt-[10px] pc:w-[170px] pc:h-[60px] pc:mt-[20px] pc:text-noto-18-bold tablet:w-[140px]"
-          onClick={() => {
-            // reject api(cardId)
+          onClick={async () => {
+            await approveExchangeProposal(cardId);
 
             closeModal();
+
+            fetchExchangeCards();
           }}
         >
           승인하기
@@ -178,13 +156,13 @@ export default function SellingPhotocardDetails() {
           <p className="hidden text-gray-300 tablet:text-baskin-18 tablet:block pc:text-baskin-24 pc:block">
             마켓플레이스
           </p>
-          <Title type="card_detail" text={mockMarketPostingDetail.name} />
+          <Title type="card_detail" text={marketPosting.photoCard.name} />
 
           <div className="mt-7 grid gap-8 tablet:mt-10 tablet:grid-cols-2 tablet:gap-5 pc:grid-cols-[1fr_440px] pc:gap-[80px]">
             <div className="relative aspect-[345/258] w-full overflow-hidden bg-gray-500 tablet:aspect-[342/256] pc:aspect-[960/720]">
               <Image
-                src={mockMarketPostingDetail.imageUrl}
-                alt={mockMarketPostingDetail.name}
+                src={marketPosting.photoCard.imageUrl}
+                alt={marketPosting.photoCard.name}
                 fill
                 priority
                 className="object-cover"
@@ -193,21 +171,19 @@ export default function SellingPhotocardDetails() {
 
             <aside className="w-full">
               <PhotoCardInfo
-                grade={mockMarketPostingDetail.grade}
-                genre={mockMarketPostingDetail.genre}
-                ownerNickname={mockMarketPostingDetail.ownerNickname}
-                description={mockMarketPostingDetail.description}
-                price={mockMarketPostingDetail.price}
-                remainingQuantity={mockMarketPostingDetail.remainingQuantity}
-                totalQuantity={mockMarketPostingDetail.totalQuantity}
+                grade={marketPosting.photoCard.grade}
+                genre={marketPosting.photoCard.genre}
+                description={marketPosting.photoCard.description}
+                price={marketPosting.price}
+                remainingQuantity={marketPosting.remainingQuantity}
+                totalQuantity={marketPosting.photoCard.totalQuantity}
+                ownerNickname={marketPosting.seller.nickname}
               />
               <SellerCardAction
                 className="mt-6 pc:mt-8"
-                exchangeGrade={mockMarketPostingDetail.exchange.grade}
-                exchangeGenre={mockMarketPostingDetail.exchange.genre}
-                exchangeDescription={
-                  mockMarketPostingDetail.exchange.description
-                }
+                exchangeGrade={marketPosting.exchangeGrade}
+                exchangeGenre={marketPosting.exchangeGenre}
+                exchangeDescription={marketPosting.exchangeDescription}
                 onEdit={handleEdit}
                 onClose={handleSellClose}
               />
