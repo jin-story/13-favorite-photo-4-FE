@@ -97,7 +97,7 @@ export default function MarketplacePage() {
           onButtonClick={handleSellClick}
         />
 
-        <div className="relative z-30 flex flex-col gap-[15px] tablet:flex-row tablet:items-center tablet:justify-between">
+        <div className="flex flex-col gap-[15px] tablet:flex-row tablet:items-center tablet:justify-between">
           <div className="flex items-center gap-[15px] tablet:gap-[20px] pc:gap-[30px]">
             <InputSearch
               value={search}
