@@ -31,13 +31,19 @@ export default function Filter({
   const [filterState, setFilterState] = useState(initialFilter);
 
   const getFilteredCount = () => {
-    const selectedKeys = categories.flatMap((key) => filterState[key] ?? []);
+    const selectedFilters = categories.flatMap((category) =>
+      (filterState[category] ?? []).map((value) => ({ category, value })),
+    );
 
-    if (selectedKeys.length === 0) {
+    if (selectedFilters.length === 0) {
       return totalAllCount;
     }
 
-    return selectedKeys.reduce((sum, key) => sum + (counts[key] ?? 0), 0);
+    return selectedFilters.reduce(
+      (sum, { category, value }) =>
+        sum + (counts[category]?.[value] ?? counts[value] ?? 0),
+      0,
+    );
   };
 
   return (

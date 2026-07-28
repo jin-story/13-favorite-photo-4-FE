@@ -100,6 +100,18 @@ export default function AuthForm({ type }) {
       handleOpenModal(errorMessage);
     }
   };
+
+  const handleGoogleLogin = () => {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "");
+
+    if (!apiUrl) {
+      handleOpenModal("Google 로그인을 위한 API 주소가 설정되지 않았습니다.");
+      return;
+    }
+
+    window.location.assign(`${apiUrl}/auth/google`);
+  };
+
   return (
     <form
       className="flex flex-col gap-[32px] w-full"
@@ -151,6 +163,7 @@ export default function AuthForm({ type }) {
         </PrimaryButton>
         <button
           type="button"
+          onClick={handleGoogleLogin}
           className="cursor-pointer flex gap-3 bg-white text-noto-16-regular text-black w-[345px] h-[55px] items-center justify-center rounded-[2px] tablet:w-[441px] pc:w-[520px] pc:h-15 pc:text-noto-18-regular"
         >
           <Image

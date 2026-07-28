@@ -27,7 +27,11 @@ function UrlModal() {
   };
 
   return (
-    <Modal isOpen={Boolean(ModalComponent)} onClose={closeModal}>
+    <Modal
+      isOpen={Boolean(ModalComponent)}
+      onClose={closeModal}
+      showCloseButton={false}
+    >
       {ModalComponent && <ModalComponent onClose={closeModal} />}
     </Modal>
   );

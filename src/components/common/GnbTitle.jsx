@@ -13,6 +13,8 @@ export default function GnbTitle() {
     title = "나의 포토카드 판매하기";
   } else if (modal === "exchange-info") {
     title = "포토카드 교환하기";
+  } else if (modal === "exchange") {
+    title = "포토카드 교환하기";
   } else if (modal === "edit-card") {
     title = "수정하기";
   } else {

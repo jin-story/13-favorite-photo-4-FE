@@ -1,5 +1,6 @@
 import ButtonSecondary from "@/components/common/ButtonSecondary";
 import Grade from "@/components/common/Grade";
+import mookImg from "@/assets/images/card_woman.svg";
 import Image from "next/image";
 import React from "react";
 
@@ -8,9 +9,10 @@ export default function MyExchangeOfferCard({ offer, onCancel }) {
     <article className="w-[170px] border border-white/10 bg-gray-500 p-2.5 text-white tablet:w-[302px] tablet:p-5 pc:w-[342px]">
       <div className="relative aspect-[150/112] w-full overflow-hidden bg-gray-400 tablet:aspect-[262/197] pc:aspect-[302/227]">
         <Image
-          src={offer.imageUrl}
+          src={offer.imageUrl || mookImg}
           alt={offer.name}
           fill
+          unoptimized={Boolean(offer.imageUrl)}
           className="object-cover"
         />
       </div>

@@ -19,4 +19,24 @@ export const marketService = {
     );
     return response;
   },
+  requestExchange: async (marketPostingId, { offeredInventoryId, message }) => {
+    const response = await tokenFetch(
+      `/market-postings/${marketPostingId}/exchange-proposals`,
+      {
+        method: "POST",
+        body: JSON.stringify({ offeredInventoryId, message }),
+      },
+    );
+    return response;
+  },
+  cancelExchangeProposal: async (exchangeProposalId) => {
+    const response = await tokenFetch(
+      `/exchange-proposals/${exchangeProposalId}`,
+      {
+        method: "PATCH",
+        body: JSON.stringify({ status: "CANCELED" }),
+      },
+    );
+    return response;
+  },
 };

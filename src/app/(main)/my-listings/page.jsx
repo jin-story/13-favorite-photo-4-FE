@@ -39,14 +39,24 @@ export default function MyListings() {
   const [filter, setFilter] = useState({
     grade: [],
     genre: [],
-    status: [],
+    sale: [],
+    availability: [],
   });
 
-  // 1. 실제 판매 포토카드 API 연동 (isLoading 대신 isPending 사용)
-  const { data: rawMarketPostings = [], isPending } = useQuery({
-    queryKey: ["myMarketPostings"],
-    queryFn: () => userService.getMyMarketPostings(),
-  });
+  // 판매글과 내가 제시한 교환 목록은 별도 API이므로 동시에 조회합니다.
+  const { data: rawMarketPostings = [], isPending: isMarketPostingsPending } =
+    useQuery({
+      queryKey: ["myMarketPostings"],
+      queryFn: () => userService.getMyMarketPostings(),
+    });
+
+  const { data: rawExchangeOffers = [], isPending: isExchangeOffersPending } =
+    useQuery({
+      queryKey: ["myExchangeOffers"],
+      queryFn: () => userService.getMyExchangeOffers(),
+    });
+
+  const isPending = isMarketPostingsPending || isExchangeOffersPending;
 
   // 2. 백엔드 데이터를 Photocard 컴포넌트에 맞게 매핑
   const marketCards = useMemo(() => {
@@ -61,31 +71,75 @@ export default function MyListings() {
         grade: photoCard.grade,
         genre: photoCard.genre,
         price: posting.price,
-        totalQuantity: posting.quantity,
+        totalQuantity: isSoldOut ? 0 : posting.remainingQuantity,
         remainingQuantity: posting.remainingQuantity,
         status: posting.status, // "ON_SALE" 또는 "SOLD"
         availability: isSoldOut ? "SOLD_OUT" : "SALE",
         makerNickname: photoCard.creator?.nickname,
-        imgUrl: photoCard.imageUrl,
+        imageUrl: photoCard.imageUrl,
         description: "",
+        listingType: "SALE",
+        createdAt: posting.createdAt,
       };
     });
   }, [rawMarketPostings]);
 
+  const exchangeCards = useMemo(() => {
+    return rawExchangeOffers
+      .filter((offer) => offer.status === "PENDING")
+      .map((offer) => {
+        const photoCard = offer.offeredInventory?.photoCard || {};
+
+        return {
+          id: `exchange-${offer.id}`,
+          name: photoCard.name,
+          grade: photoCard.grade,
+          genre: photoCard.genre,
+          price: photoCard.minPrice || 0,
+          totalQuantity: 1,
+          remainingQuantity: 1,
+          status: "ON_SALE",
+          availability: "SALE",
+          makerNickname: photoCard.creator?.nickname,
+          imageUrl: photoCard.imageUrl,
+          description: offer.message || "",
+          listingType: "EXCHANGE",
+          createdAt: offer.createdAt,
+        };
+      });
+  }, [rawExchangeOffers]);
+
+  const listingCards = useMemo(
+    () =>
+      [...marketCards, ...exchangeCards].sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+      ),
+    [exchangeCards, marketCards],
+  );
+
   // 3. 통계 및 요약 정보 계산
   const userInventory = useMemo(() => {
-    const gradeCounts = marketCards.reduce((acc, card) => {
+    const gradeCounts = listingCards.reduce((acc, card) => {
       if (card.grade) acc[card.grade] = (acc[card.grade] || 0) + 1;
       return acc;
     }, {});
 
-    const genreCounts = marketCards.reduce((acc, card) => {
+    const genreCounts = listingCards.reduce((acc, card) => {
       if (card.genre) acc[card.genre] = (acc[card.genre] || 0) + 1;
       return acc;
     }, {});
 
-    const statusCounts = marketCards.reduce((acc, card) => {
-      if (card.status) acc[card.status] = (acc[card.status] || 0) + 1;
+    const saleTypeCounts = listingCards.reduce((acc, card) => {
+      if (card.listingType) {
+        acc[card.listingType] = (acc[card.listingType] || 0) + 1;
+      }
+      return acc;
+    }, {});
+
+    const availabilityCounts = listingCards.reduce((acc, card) => {
+      if (card.availability) {
+        acc[card.availability] = (acc[card.availability] || 0) + 1;
+      }
       return acc;
     }, {});
 
@@ -95,9 +149,8 @@ export default function MyListings() {
     }, {});
 
     return {
-      total: marketCards.length,
+      total: listingCards.length,
       ...genreCounts,
-      ...statusCounts,
       ...genreInventory,
       COMMON: gradeCounts["COMMON"] || 0,
       RARE: gradeCounts["RARE"] || 0,
@@ -110,21 +163,24 @@ export default function MyListings() {
         LEGENDARY: gradeCounts["LEGENDARY"] || 0,
       },
       genre: genreInventory,
+      sale: saleTypeCounts,
+      availability: availabilityCounts,
     };
-  }, [marketCards]);
+  }, [listingCards]);
 
   const handleResetAll = () => {
     setSearchKeyword("");
     setFilter({
       grade: [],
       genre: [],
-      status: [],
+      sale: [],
+      availability: [],
     });
   };
 
   // 4. 필터링 로직 적용
   const filteredCards = useMemo(() => {
-    return marketCards.filter((card) => {
+    return listingCards.filter((card) => {
       if (debouncedKeyword.trim()) {
         const keyword = debouncedKeyword.toLowerCase();
         const matchesSearch =
@@ -142,29 +198,36 @@ export default function MyListings() {
       }
 
       if (
-        filter.status &&
-        filter.status.length > 0 &&
-        !filter.status.includes(card.status)
+        filter.sale.length > 0 &&
+        !filter.sale.includes(card.listingType)
+      ) {
+        return false;
+      }
+
+      if (
+        filter.availability.length > 0 &&
+        !filter.availability.includes(card.availability)
       ) {
         return false;
       }
 
       return true;
     });
-  }, [debouncedKeyword, filter, marketCards]);
+  }, [debouncedKeyword, filter, listingCards]);
 
   const isFiltered =
     searchKeyword.trim().length > 0 ||
     filter.grade.length > 0 ||
     filter.genre.length > 0 ||
-    (filter.status && filter.status.length > 0);
+    filter.sale.length > 0 ||
+    filter.availability.length > 0;
 
   return (
     <main className="mb-20 max-w-[345px] flex flex-col w-full gap-[15px] tablet:max-w-[704px] pt-5 tablet:pt-10 tablet:gap-10 pc:max-w-[1480px] pc:pt-[60px] mx-auto">
       <Title
         className="hidden tablet:block"
         type="title_line"
-        text="나의 판매 포토카드"
+        text="나의 판매 및 교환 포토카드"
       />
       {/* 상단 요약 및 컨트롤 영역 */}
       <section className="flex flex-col gap-[15px] tablet:gap-5">
@@ -172,7 +235,7 @@ export default function MyListings() {
         <div className="flex flex-col gap-[15px] tablet:gap-5 border-b pb-[15px] border-b-gray-400 tablet:pb-10">
           <div className="flex gap-[5px] items-end">
             <h2 className="text-noto-14-bold tablet:text-noto-20-bold pc:text-noto-24-bold">
-              {user?.nickname}님이 판매 중인 포토카드
+              {user?.nickname}님이 판매 및 교환 중인 포토카드
             </h2>
             <span className="text-noto-12-regular text-gray-300 tablet:text-noto-18-regular pc:text-noto-20-regular">
               ({userInventory.total}장)
@@ -195,9 +258,9 @@ export default function MyListings() {
         <div className="flex w-full justify-start items-center gap-7.5 pc:gap-[60px]">
           <div className="flex gap-2.5 w-full tablet:w-fit">
             <Filter
-              categories={["grade", "genre", "status"]}
+              categories={["grade", "genre", "sale", "availability"]}
               counts={userInventory}
-              totalAllCount={marketCards.length}
+              totalAllCount={listingCards.length}
               filter={filter}
               setFilter={setFilter}
               totalCount={filteredCards.length}
@@ -231,12 +294,22 @@ export default function MyListings() {
               }
             />
             <Dropdown
-              type="availability"
-              value={filter.status?.[0] || ""}
+              type="sale"
+              value={filter.sale[0] || ""}
               onChange={(value) =>
                 setFilter((prev) => ({
                   ...prev,
-                  status: value ? [value] : [],
+                  sale: value ? [value] : [],
+                }))
+              }
+            />
+            <Dropdown
+              type="availability"
+              value={filter.availability[0] || ""}
+              onChange={(value) =>
+                setFilter((prev) => ({
+                  ...prev,
+                  availability: value ? [value] : [],
                 }))
               }
             />
@@ -261,12 +334,12 @@ export default function MyListings() {
                 key={cardData.id}
                 card={cardData}
                 type="나의 판매 카드"
-                state={cardData.status === "ON_SALE" ? "판매중" : "판매완료"}
+                state={cardData.listingType === "EXCHANGE" ? "교환" : "판매"}
               />
             ))
           : !isPending && (
               <div className="col-span-full py-20 text-center text-gray-400 text-noto-16-regular">
-                등록된 판매 포토카드가 없습니다.
+                등록된 판매 또는 교환 포토카드가 없습니다.
               </div>
             )}
       </section>

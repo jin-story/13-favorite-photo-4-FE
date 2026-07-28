@@ -176,7 +176,7 @@ export default function SheetFilter({
                 <span>{option.label}</span>
               )}
 
-              <span>{counts[option.value] ?? 0}개</span>
+              <span>{counts[tab]?.[option.value] ?? counts[option.value] ?? 0}개</span>
             </button>
           ))}
         </div>

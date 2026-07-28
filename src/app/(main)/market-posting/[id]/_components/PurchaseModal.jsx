@@ -1,6 +1,7 @@
 "use client";
 
 import PrimaryButton from "@/components/common/ButtonPrimary";
+import { marketService } from "@/lib/services/marketService";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { use, useState } from "react";
+import { use, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import BuyerCardAction from "@/components/common/BuyerCardAction";
@@ -13,6 +13,7 @@ import { useAuth } from "@/providers/AuthProvider";
 import { marketService } from "@/lib/services/marketService";
 import { userService } from "@/lib/services/userService";
 import MyExchangeOfferCard from "../_components/BuyerExchangeCard";
+import CancelExchangeOfferModal from "../_components/CancelExchangeOfferModal";
 import { useModal } from "@/providers/ModalProvider";
 import PurchaseModal from "../_components/PurchaseModal";
 
@@ -68,9 +69,28 @@ export default function MarketplacePostingDetailPage({ params }) {
       enabled: isLoggedIn,
     });
 
-  const myExchangeOffers = allMyExchangeOffers.filter(
-    (offer) => String(offer.marketPostingId) === String(id),
-  );
+  const myExchangeOffers = useMemo(() => {
+    if (!Array.isArray(allMyExchangeOffers)) return [];
+
+    return allMyExchangeOffers
+      .filter((offer) => offer.status === "PENDING")
+      .map((offer) => {
+        const photoCard = offer.offeredInventory?.photoCard || {};
+
+        return {
+          id: offer.id,
+          name: photoCard.name || "이름 없는 포토카드",
+          imageUrl:
+            photoCard.imageUrl || photoCard.image_url || offer.imageUrl || null,
+          grade: photoCard.grade || "COMMON",
+          genre: getKorGenre(photoCard.genre),
+          price: photoCard.minPrice || 0,
+          ownerNickname: photoCard.creator?.nickname || "알 수 없음",
+          description: offer.message || "교환 제시 내용이 없습니다.",
+          status: offer.status,
+        };
+      });
+  }, [allMyExchangeOffers]);
 
   const hasMyExchangeOffers = isLoggedIn && myExchangeOffers.length > 0;
 
@@ -96,15 +116,18 @@ export default function MarketplacePostingDetailPage({ params }) {
   };
 
   const handleExchange = () => {
-    if (!requireLogin()) return;
-    // 교환하기 관련 워크플로우 이동 처리
-    console.log("포토카드 교환하기 클릭");
+    router.push("?modal=myCard");
   };
 
   const handleCancelExchangeOffer = (offer) => {
-    // 모달 없이 바로 취소 로직 실행
-    console.log("교환 제시 취소 요청:", offer.id);
-    alert("교환 제시가 취소되었습니다.");
+    openModal(
+      <CancelExchangeOfferModal
+        offerId={offer.id}
+        cardGrade={offer.grade}
+        cardName={offer.name}
+        onClose={closeModal}
+      />,
+    );
   };
 
   if (isPostingLoading) {
@@ -221,19 +244,25 @@ export default function MarketplacePostingDetailPage({ params }) {
           </div>
         </section>
 
-        {hasMyExchangeOffers && (
+        {isLoggedIn && (isOffersLoading || hasMyExchangeOffers) && (
           <section className="mt-[90px] tablet:mt-[120px] pc:mt-[140px]">
             <Title type="card_detail" text="내가 제시한 교환 목록" />
 
-            <div className="mt-8 grid grid-cols-2 gap-3 tablet:mt-10 tablet:grid-cols-2 tablet:gap-5 pc:mt-[70px] pc:grid-cols-3 pc:gap-10">
-              {myExchangeOffers.map((offer) => (
-                <MyExchangeOfferCard
-                  key={offer.id}
-                  offer={offer}
-                  onCancel={handleCancelExchangeOffer}
-                />
-              ))}
-            </div>
+            {isOffersLoading ? (
+              <p className="mt-8 text-noto-16-regular text-gray-300 tablet:mt-10">
+                교환 제시 목록을 불러오는 중입니다.
+              </p>
+            ) : (
+              <div className="mt-8 grid grid-cols-2 justify-items-center gap-[5px] tablet:mt-10 tablet:gap-5 pc:mt-[70px] pc:grid-cols-3 pc:gap-20">
+                {myExchangeOffers.map((offer) => (
+                  <MyExchangeOfferCard
+                    key={offer.id}
+                    offer={offer}
+                    onCancel={handleCancelExchangeOffer}
+                  />
+                ))}
+              </div>
+            )}
           </section>
         )}
       </section>
