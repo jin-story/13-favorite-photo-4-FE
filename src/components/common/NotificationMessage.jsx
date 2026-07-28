@@ -1,5 +1,4 @@
 import clsx from "clsx";
-import React from "react";
 
 const formatRelativeTime = (timeInput) => {
   if (!timeInput) return "";
@@ -9,6 +8,7 @@ const formatRelativeTime = (timeInput) => {
 
   if (isNaN(past.getTime())) return "";
   const diffInSeconds = Math.floor((now - past) / 1000);
+
   if (diffInSeconds < 3600) {
     return "방금 전";
   }

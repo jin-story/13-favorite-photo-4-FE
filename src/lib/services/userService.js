@@ -6,4 +6,8 @@ export const userService = {
     const data = await tokenFetch("/users/me");
     return data;
   },
+  getNotification: async () => {
+    const data = await tokenFetch("/users/me/notifications");
+    return data;
+  },
 };
