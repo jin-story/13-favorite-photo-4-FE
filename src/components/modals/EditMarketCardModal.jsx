@@ -50,6 +50,7 @@ export default function EditMarketCardModal({ onClose }) {
 
   const [exchangeDescription, setExchangeDescription] = useState("");
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
   useEffect(() => {
     if (!id) return;
 
@@ -76,6 +77,7 @@ export default function EditMarketCardModal({ onClose }) {
   if (!marketPosting) return null;
 
   const handleSubmit = async () => {
+    if (isSubmitting) return;
     try {
       const body = {
         quantity,
@@ -86,7 +88,7 @@ export default function EditMarketCardModal({ onClose }) {
         exchangeGenre: selectedGenre,
         exchangeDescription,
       };
-
+      setIsSubmitting(true);
       await updateMarketPosting(id, body);
 
       alert("수정이 완료되었습니다.");
@@ -97,6 +99,8 @@ export default function EditMarketCardModal({ onClose }) {
     } catch (error) {
       console.error(error);
       alert("수정에 실패했습니다.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -184,6 +188,7 @@ export default function EditMarketCardModal({ onClose }) {
             <PrimaryButton
               variant="thinXS"
               className="flex-1"
+              disabled={isSubmitting}
               onClick={handleSubmit}
             >
               수정하기
@@ -195,7 +200,11 @@ export default function EditMarketCardModal({ onClose }) {
               취소하기
             </ButtonSecondary>
 
-            <PrimaryButton className="flex-1" onClick={handleSubmit}>
+            <PrimaryButton
+              className="flex-1"
+              onClick={handleSubmit}
+              disabled={isSubmitting}
+            >
               수정하기
             </PrimaryButton>
           </div>
@@ -205,7 +214,11 @@ export default function EditMarketCardModal({ onClose }) {
               취소하기
             </ButtonSecondary>
 
-            <PrimaryButton variant="thin" onClick={handleSubmit}>
+            <PrimaryButton
+              variant="thin"
+              onClick={handleSubmit}
+              disabled={isSubmitting}
+            >
               수정하기
             </PrimaryButton>
           </div>
