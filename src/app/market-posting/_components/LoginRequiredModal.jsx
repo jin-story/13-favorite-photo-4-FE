@@ -1,10 +1,17 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import ButtonPrimary from "@/components/common/ButtonPrimary";
 import { useModal } from "@/providers/ModalProvider";
 
 export default function LoginRequiredModal() {
+  const router = useRouter();
   const { closeModal } = useModal();
+
+  function handleConfirm() {
+    closeModal();
+    router.push("/login");
+  }
 
   return (
     <div className="flex w-[345px] flex-col items-center gap-[20px] px-[20px] pt-[60px] pb-[40px] text-center pc:w-[560px] pc:gap-[35px] pc:px-[40px] pc:pt-[80px] pc:pb-[60px]">
@@ -19,7 +26,7 @@ export default function LoginRequiredModal() {
       </p>
 
       <ButtonPrimary
-        onClick={closeModal}
+        onClick={handleConfirm}
         className="text-noto-14-bold w-[120px] h-[55px] pc:h-[60px] pc:w-[170px]"
       >
         확인
