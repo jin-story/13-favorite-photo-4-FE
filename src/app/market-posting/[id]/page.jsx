@@ -43,12 +43,25 @@ export default function SellingPhotocardDetails() {
     try {
       const data = await getExchangeProposals(id);
 
-      setExchangeCards(data);
+      const cards = data.map((proposal) => ({
+        id: proposal.id,
+        makerNickname: proposal.offeredInventory.photoCard.creator.nickname,
+        name: proposal.offeredInventory.photoCard.name,
+        grade: proposal.offeredInventory.photoCard.grade,
+        genre: proposal.offeredInventory.photoCard.genre,
+        price: proposal.offeredInventory.photoCard.minPrice,
+        imgUrl: proposal.offeredInventory.photoCard.imageUrl,
+        description: proposal.message,
+        status: proposal.status,
+      }));
+
+      setExchangeCards(cards);
     } catch (error) {
       console.error(error);
     }
   };
 
+  //판매글 먼저 조회
   useEffect(() => {
     if (id) {
       fetchMarketPosting();
@@ -56,7 +69,7 @@ export default function SellingPhotocardDetails() {
     }
   }, [id]);
 
-  if (!marketPosting) return null;
+  if (!marketPosting) return;
 
   //수정 하기
   const handleEdit = () => {
@@ -80,11 +93,15 @@ export default function SellingPhotocardDetails() {
         <button
           className="flex items-center justify-center w-[120px] h-[55px] mt-[10px] bg-main text-black text-noto-16-bold tablet:w-[140px] pc:w-[170px] pc:h-[60px] pc:mt-[20px] pc:text-noto-18-bold"
           onClick={async () => {
-            await deleteMarketPosting(id);
+            try {
+              await deleteMarketPosting(id);
 
-            closeModal();
+              closeModal();
 
-            router.push("/my-sale");
+              router.push("/my-sale");
+            } catch (e) {
+              console.error(e);
+            }
           }}
         >
           판매 내리기
@@ -108,11 +125,15 @@ export default function SellingPhotocardDetails() {
         <button
           className="flex bg-main text-noto-16-bold text-black items-center justify-center w-[120px] h-[55px] mt-[10px] pc:w-[170px] pc:h-[60px] pc:mt-[20px] pc:text-noto-18-bold tablet:w-[140px]"
           onClick={async () => {
-            await rejectExchangeProposal(cardId);
+            try {
+              await rejectExchangeProposal(cardId);
 
-            closeModal();
+              closeModal();
 
-            fetchExchangeCards();
+              fetchExchangeCards();
+            } catch (e) {
+              console.error(e);
+            }
           }}
         >
           거절하기
@@ -134,11 +155,15 @@ export default function SellingPhotocardDetails() {
         <button
           className="flex bg-main text-noto-16-bold text-black items-center justify-center w-[120px] h-[55px] mt-[10px] pc:w-[170px] pc:h-[60px] pc:mt-[20px] pc:text-noto-18-bold tablet:w-[140px]"
           onClick={async () => {
-            await approveExchangeProposal(cardId);
+            try {
+              await approveExchangeProposal(cardId);
 
-            closeModal();
+              closeModal();
 
-            fetchExchangeCards();
+              fetchExchangeCards();
+            } catch (e) {
+              console.error(e);
+            }
           }}
         >
           승인하기
@@ -150,62 +175,65 @@ export default function SellingPhotocardDetails() {
   return (
     <>
       <Gnb mobileType="sub" />
+      {marketPosting.isSeller ? (
+        <main className="bg-black text-white">
+          <section className="mx-auto w-full max-w-[1480px] pb-[40px] pt-[80px] px-[15px] tablet:pb-[60px] tablet:pt-[110px] tablet:px-[20px] pc:pb-[180px] pc:pt-[140px] pc:px-[0px]">
+            <p className="hidden text-gray-300 tablet:text-baskin-18 tablet:block pc:text-baskin-24 pc:block">
+              마켓플레이스
+            </p>
+            <Title type="card_detail" text={marketPosting.photoCard.name} />
 
-      <main className="bg-black text-white">
-        <section className="mx-auto w-full max-w-[1480px] pb-[40px] pt-[80px] px-[15px] tablet:pb-[60px] tablet:pt-[110px] tablet:px-[20px] pc:pb-[180px] pc:pt-[140px] pc:px-[0px]">
-          <p className="hidden text-gray-300 tablet:text-baskin-18 tablet:block pc:text-baskin-24 pc:block">
-            마켓플레이스
-          </p>
-          <Title type="card_detail" text={marketPosting.photoCard.name} />
-
-          <div className="mt-7 grid gap-8 tablet:mt-10 tablet:grid-cols-2 tablet:gap-5 pc:grid-cols-[1fr_440px] pc:gap-[80px]">
-            <div className="relative aspect-[345/258] w-full overflow-hidden bg-gray-500 tablet:aspect-[342/256] pc:aspect-[960/720]">
-              <Image
-                src={marketPosting.photoCard.imageUrl}
-                alt={marketPosting.photoCard.name}
-                fill
-                priority
-                className="object-cover"
-              />
-            </div>
-
-            <aside className="w-full">
-              <PhotoCardInfo
-                grade={marketPosting.photoCard.grade}
-                genre={marketPosting.photoCard.genre}
-                description={marketPosting.photoCard.description}
-                price={marketPosting.price}
-                remainingQuantity={marketPosting.remainingQuantity}
-                totalQuantity={marketPosting.photoCard.totalQuantity}
-                ownerNickname={marketPosting.seller.nickname}
-              />
-              <SellerCardAction
-                className="mt-6 pc:mt-8"
-                exchangeGrade={marketPosting.exchangeGrade}
-                exchangeGenre={marketPosting.exchangeGenre}
-                exchangeDescription={marketPosting.exchangeDescription}
-                onEdit={handleEdit}
-                onClose={handleSellClose}
-              />
-            </aside>
-          </div>
-
-          <section className="mt-[90px] tablet:mt-[120px] pc:mt-[140px]">
-            <Title type="card_detail" text={"교환 제시 목록"} />
-
-            <div className="flex mt-9 gap-[5px] tablet:gap-[20px] tablet:mb-[20px] pc:mb-[50px] pc:gap-[80px]">
-              {exchangeCards.map((card) => (
-                <ExchangeCard
-                  key={card.id}
-                  card={card}
-                  onApprove={() => handleApprove(card, card.id)}
-                  onReject={() => handleReject(card, card.id)}
+            <div className="mt-7 grid gap-8 tablet:mt-10 tablet:grid-cols-2 tablet:gap-5 pc:grid-cols-[1fr_440px] pc:gap-[80px]">
+              <div className="relative aspect-[345/258] w-full overflow-hidden bg-gray-500 tablet:aspect-[342/256] pc:aspect-[960/720]">
+                <Image
+                  src={marketPosting.photoCard.imageUrl}
+                  alt={marketPosting.photoCard.name}
+                  fill
+                  priority
+                  className="object-cover"
                 />
-              ))}
+              </div>
+
+              <aside className="w-full">
+                <PhotoCardInfo
+                  grade={marketPosting.photoCard.grade}
+                  genre={marketPosting.photoCard.genre}
+                  description={marketPosting.photoCard.description}
+                  price={marketPosting.price}
+                  remainingQuantity={marketPosting.remainingQuantity}
+                  totalQuantity={marketPosting.photoCard.totalQuantity}
+                  ownerNickname={marketPosting.seller.nickname}
+                />
+                <SellerCardAction
+                  className="mt-6 pc:mt-8"
+                  exchangeGrade={marketPosting.exchangeGrade}
+                  exchangeGenre={marketPosting.exchangeGenre}
+                  exchangeDescription={marketPosting.exchangeDescription}
+                  onEdit={handleEdit}
+                  onClose={handleSellClose}
+                />
+              </aside>
             </div>
+
+            <section className="mt-[90px] tablet:mt-[120px] pc:mt-[140px]">
+              <Title type="card_detail" text={"교환 제시 목록"} />
+
+              <div className="flex mt-9 gap-[5px] tablet:gap-[20px] tablet:mb-[20px] pc:mb-[50px] pc:gap-[80px]">
+                {exchangeCards.map((card) => (
+                  <ExchangeCard
+                    key={card.id}
+                    card={card}
+                    onApprove={() => handleApprove(card, card.id)}
+                    onReject={() => handleReject(card, card.id)}
+                  />
+                ))}
+              </div>
+            </section>
           </section>
-        </section>
-      </main>
+        </main>
+      ) : (
+        <div className="mt-[200px] text-9xl"> 본인 게시글 아님 </div>
+      )}
     </>
   );
 }
