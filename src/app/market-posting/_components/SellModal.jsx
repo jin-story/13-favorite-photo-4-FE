@@ -15,8 +15,8 @@ import SellCardForm from "./SellCardForm";
 
 export default function SellModal() {
   const [search, setSearch] = useState("");
-  const [grade, setGrade] = useState();
-  const [genre, setGenre] = useState();
+  const [grade, setGrade] = useState([]);
+  const [genre, setGenre] = useState([]);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [sheetFilter, setSheetFilter] = useState({
     grade: [],
@@ -84,8 +84,16 @@ export default function SellModal() {
         />
 
         <div className="hidden items-start gap-[35px] tablet:flex pc:gap-[45px]">
-          <Dropdown type="grade" value={grade} onChange={setGrade} />
-          <Dropdown type="genre" value={genre} onChange={setGenre} />
+          <Dropdown
+            type="grade"
+            value={grade[0]}
+            onChange={(value) => setGrade(value ? [value] : [])}
+          />
+          <Dropdown
+            type="genre"
+            value={genre[0]}
+            onChange={(value) => setGenre(value ? [value] : [])}
+          />
         </div>
       </div>
 
@@ -95,7 +103,11 @@ export default function SellModal() {
         filter={sheetFilter}
         setFilter={setSheetFilter}
         totalCount={cards.length}
-        onApply={() => setIsSheetOpen(false)}
+        onApply={(appliedFilter) => {
+          setGrade(appliedFilter.grade);
+          setGenre(appliedFilter.genre);
+          setIsSheetOpen(false);
+        }}
       />
 
       {isPending && (

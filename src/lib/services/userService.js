@@ -12,8 +12,8 @@ export const userService = {
     const params = new URLSearchParams({ limit: String(limit) });
 
     if (keyword) params.set("keyword", keyword);
-    if (grade) params.set("grade", grade);
-    if (genre) params.set("genre", genre);
+    (grade || []).forEach((value) => params.append("grade", value));
+    (genre || []).forEach((value) => params.append("genre", value));
     if (cursor) params.set("cursor", String(cursor));
 
     const data = await tokenFetch(`/users/me/inventories?${params.toString()}`);

@@ -44,7 +44,7 @@ export default function SellCardForm({ card, onCancel }) {
   const [genre, setGenre] = useState();
   const [description, setDescription] = useState("");
 
-  const { mutate: createMarketPosting } = useMutation({
+  const { mutate: createMarketPosting, isPending } = useMutation({
     mutationFn: (payload) => marketPostingService.createMarketPosting(payload),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["market-postings"] });
@@ -69,6 +69,8 @@ export default function SellCardForm({ card, onCancel }) {
   });
 
   function handleSubmit() {
+    if (isPending) return;
+
     const priceValue = Number(price);
     if (!priceValue || priceValue <= 0) {
       alert("장당 가격을 입력해 주세요.");
@@ -157,9 +159,10 @@ export default function SellCardForm({ card, onCancel }) {
         </ButtonSecondary>
         <ButtonPrimary
           onClick={handleSubmit}
+          disabled={isPending}
           className="h-[55px] w-full pc:h-[60px]"
         >
-          판매하기
+          {isPending ? "등록 중..." : "판매하기"}
         </ButtonPrimary>
       </div>
     </div>

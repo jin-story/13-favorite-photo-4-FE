@@ -24,9 +24,9 @@ import SellModal from "./_components/SellModal";
 export default function MarketplacePage() {
   const router = useRouter();
   const [search, setSearch] = useState("");
-  const [grade, setGrade] = useState();
-  const [genre, setGenre] = useState();
-  const [availability, setAvailability] = useState();
+  const [grade, setGrade] = useState([]);
+  const [genre, setGenre] = useState([]);
+  const [availability, setAvailability] = useState([]);
   const [sort, setSort] = useState();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [sheetFilter, setSheetFilter] = useState({
@@ -140,12 +140,20 @@ export default function MarketplacePage() {
             />
 
             <div className="hidden items-start gap-[35px] tablet:flex pc:gap-[45px]">
-              <Dropdown type="grade" value={grade} onChange={setGrade} />
-              <Dropdown type="genre" value={genre} onChange={setGenre} />
+              <Dropdown
+                type="grade"
+                value={grade[0]}
+                onChange={(value) => setGrade(value ? [value] : [])}
+              />
+              <Dropdown
+                type="genre"
+                value={genre[0]}
+                onChange={(value) => setGenre(value ? [value] : [])}
+              />
               <Dropdown
                 type="availability"
-                value={availability}
-                onChange={setAvailability}
+                value={availability[0]}
+                onChange={(value) => setAvailability(value ? [value] : [])}
               />
             </div>
           </div>
@@ -172,7 +180,12 @@ export default function MarketplacePage() {
           filter={sheetFilter}
           setFilter={setSheetFilter}
           totalCount={cards.length}
-          onApply={() => setIsSheetOpen(false)}
+          onApply={(appliedFilter) => {
+            setGrade(appliedFilter.grade);
+            setGenre(appliedFilter.genre);
+            setAvailability(appliedFilter.availability);
+            setIsSheetOpen(false);
+          }}
         />
 
         {isPending && (
