@@ -69,7 +69,7 @@ export default function SellingPhotocardDetails() {
     }
   }, [id]);
 
-  if (!marketPosting) return;
+  if (!marketPosting) return <div>로딩</div>;
 
   //수정 하기
   const handleEdit = () => {
