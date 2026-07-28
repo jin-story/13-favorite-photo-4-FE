@@ -19,4 +19,9 @@ export const userService = {
     const data = await tokenFetch(`/users/me/inventories?${params.toString()}`);
     return data;
   },
+
+  getNotification: async () => {
+    const data = await tokenFetch("/users/me/notifications");
+    return data;
+  },
 };

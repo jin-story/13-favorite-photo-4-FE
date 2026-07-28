@@ -48,3 +48,23 @@ export const marketPostingService = {
     return data;
   },
 };
+
+// 판매글 상세 조회
+export const getMarketPosting = async (marketPostingId) => {
+  return tokenFetch(`/market-postings/${marketPostingId}`);
+};
+
+// 판매글 수정
+export const updateMarketPosting = async (marketPostingId, body) => {
+  return tokenFetch(`/market-postings/${marketPostingId}`, {
+    method: "PATCH",
+    body: JSON.stringify(body),
+  });
+};
+
+// 판매글 삭제(판매 내리기)
+export const deleteMarketPosting = async (marketPostingId) => {
+  return tokenFetch(`/market-postings/${marketPostingId}`, {
+    method: "DELETE",
+  });
+};
