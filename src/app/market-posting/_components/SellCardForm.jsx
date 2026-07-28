@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useModal } from "@/providers/ModalProvider";
+import { marketPostingService } from "@/lib/services/marketPostingService";
 import Title from "@/components/common/Title";
 import InputDropdown from "@/components/common/InputDropdown";
 import InputTextbox from "@/components/common/InputTextbox";
@@ -20,24 +22,67 @@ const gradeOptions = [
 ];
 
 const genreOptions = [
-  { value: "TRAVEL", label: "여행" },
-  { value: "LANDSCAPE", label: "풍경" },
-  { value: "PERSON", label: "인물" },
-  { value: "OBJECT", label: "사물" },
+  { value: "ALBUM", label: "앨범" },
+  { value: "SPECIAL", label: "특전" },
+  { value: "FAN_SIGN", label: "팬싸" },
+  { value: "SEASON_GREETING", label: "시즌그리팅" },
+  { value: "FAN_MEETING", label: "팬미팅" },
+  { value: "CONCERT", label: "콘서트" },
+  { value: "MD", label: "MD" },
+  { value: "COLLABORATION", label: "콜라보" },
+  { value: "FAN_CLUB", label: "팬클럽" },
+  { value: "ETC", label: "기타" },
 ];
 
 export default function SellCardForm({ card, onCancel }) {
   const router = useRouter();
   const { closeModal } = useModal();
+  const queryClient = useQueryClient();
   const [quantity, setQuantity] = useState(1);
   const [price, setPrice] = useState("");
   const [grade, setGrade] = useState();
   const [genre, setGenre] = useState();
   const [description, setDescription] = useState("");
 
+  const { mutate: createMarketPosting } = useMutation({
+    mutationFn: (payload) => marketPostingService.createMarketPosting(payload),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["market-postings"] });
+      closeModal();
+      const resultParams = new URLSearchParams({
+        grade: data.photoCard.grade,
+        cardName: data.photoCard.name,
+        quantity: String(data.quantity),
+      }).toString();
+      router.replace(`/market-posting/sell-success?${resultParams}`);
+    },
+    onError: () => {
+      closeModal();
+      const resultParams = new URLSearchParams({
+        grade: card.grade,
+        cardName: card.name,
+        quantity: String(quantity),
+      }).toString();
+      router.replace(`/market-posting/sell-fail?${resultParams}`);
+    },
+    meta: { name: "판매 등록" },
+  });
+
   function handleSubmit() {
-    closeModal();
-    router.push("/market-posting/sell-success");
+    const priceValue = Number(price);
+    if (!priceValue || priceValue <= 0) {
+      alert("장당 가격을 입력해 주세요.");
+      return;
+    }
+
+    createMarketPosting({
+      userInventoryId: card.id,
+      quantity,
+      price: priceValue,
+      exchangeGrade: grade,
+      exchangeGenre: genre,
+      exchangeDescription: description,
+    });
   }
 
   return (
@@ -53,7 +98,7 @@ export default function SellCardForm({ card, onCancel }) {
       <div className="flex flex-col gap-[20px] tablet:flex-row tablet:gap-[20px] pc:gap-[40px]">
         <div className="relative h-[259px] w-full overflow-hidden rounded-[2px] tablet:h-[256px] tablet:w-[342px] tablet:shrink-0 pc:h-[330px] pc:w-[440px]">
           <Image
-            alt={card.description}
+            alt={card.description || card.name}
             src={card.imgUrl || mookImg}
             fill
             className="object-cover"

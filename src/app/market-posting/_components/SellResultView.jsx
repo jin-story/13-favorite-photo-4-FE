@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Gnb from "@/components/common/Gnb";
 import ButtonSecondary from "@/components/common/ButtonSecondary";
@@ -17,6 +17,7 @@ const statusConfig = {
       </>
     ),
     buttonText: "나의 판매 포토카드에서 확인하기",
+    buttonHref: "/my-sales",
   },
   fail: {
     label: "실패",
@@ -28,11 +29,16 @@ const statusConfig = {
       </>
     ),
     buttonText: "마켓플레이스로 돌아가기",
+    buttonHref: "/market-posting",
   },
 };
 
-export default function SellResultView({ status, grade, cardName, quantity }) {
+export default function SellResultView({ status }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const grade = searchParams.get("grade");
+  const cardName = searchParams.get("cardName");
+  const quantity = searchParams.get("quantity");
   const config = statusConfig[status];
 
   return (
@@ -63,7 +69,7 @@ export default function SellResultView({ status, grade, cardName, quantity }) {
 
         <ButtonSecondary
           variant="thinXS"
-          onClick={() => router.push("/market-posting")}
+          onClick={() => router.push(config.buttonHref)}
           className="mt-[50px] w-full h-[55px] border border-gray-200 tablet:mt-[60px] tablet:w-auto tablet:px-[30px] tablet:text-noto-16-bold pc:mt-[60px] pc:h-[60px] pc:w-[440px] pc:text-noto-18-bold"
         >
           {config.buttonText}

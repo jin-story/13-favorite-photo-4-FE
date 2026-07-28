@@ -1,51 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import InputSearch from "@/components/common/InputSearch";
 import Dropdown from "@/components/common/Dropdown";
-// import SheetFilter from "@/components/common/SheetFilter";
+import SheetFilter from "@/components/common/SheetFilter";
 import Photocard from "@/components/common/Photocard";
 import Title from "@/components/common/Title";
 import filterIcon from "@/assets/icons/filter.svg";
+import { userService } from "@/lib/services/userService";
+import { useDebounce } from "@/hooks/useDebounce";
 import SellCardForm from "./SellCardForm";
-
-// 목업 데이터
-const myCards = [
-  {
-    id: 1,
-    name: "스페인 여행",
-    grade: "RARE",
-    genre: "여행",
-    price: 4,
-    totalQuantity: 1,
-    makerNickname: "프로여행러",
-    description: "스페인 여행 포토카드",
-    imgUrl: "",
-  },
-  {
-    id: 2,
-    name: "우리집 앞마당",
-    grade: "COMMON",
-    genre: "풍경",
-    price: 4,
-    totalQuantity: 1,
-    makerNickname: "미쓰손",
-    description: "우리집 앞마당 포토카드",
-    imgUrl: "",
-  },
-  {
-    id: 3,
-    name: "How Far I'll Go",
-    grade: "SUPER_RARE",
-    genre: "풍경",
-    price: 4,
-    totalQuantity: 1,
-    makerNickname: "랍스타",
-    description: "How Far I'll Go 포토카드",
-    imgUrl: "",
-  },
-];
 
 export default function SellModal() {
   const [search, setSearch] = useState("");
@@ -58,6 +24,29 @@ export default function SellModal() {
     availability: [],
   });
   const [selectedCard, setSelectedCard] = useState(null);
+  const debouncedSearch = useDebounce(search, 300);
+
+  const { data, isPending, isError } = useQuery({
+    queryKey: ["my-inventories", debouncedSearch, grade, genre],
+    queryFn: () =>
+      userService.getMyInventories({
+        keyword: debouncedSearch,
+        grade,
+        genre,
+      }),
+    meta: { name: "내 포토카드 목록" },
+  });
+
+  const cards =
+    data?.list.map((item) => ({
+      ...item.photoCard,
+      id: item.id,
+      makerNickname: item.photoCard?.creator?.nickname,
+      price: item.photoCard?.minPrice,
+      totalQuantity: item.ownedQuantity,
+      lastQuantity: item.ownedQuantity,
+      imgUrl: item.photoCard?.imageUrl,
+    })) || [];
 
   if (selectedCard) {
     return (
@@ -100,27 +89,47 @@ export default function SellModal() {
         </div>
       </div>
 
-      {/* <SheetFilter
+      <SheetFilter
         open={isSheetOpen}
         onClose={() => setIsSheetOpen(false)}
         filter={sheetFilter}
         setFilter={setSheetFilter}
-        totalCount={myCards.length}
+        totalCount={cards.length}
         onApply={() => setIsSheetOpen(false)}
-      /> */}
+      />
 
-      <div className="flex max-h-[60vh] flex-wrap gap-[5px] overflow-y-auto tablet:gap-[20px] pc:gap-[40px] [scrollbar-color:#5a5a5a_transparent] [scrollbar-width:thin] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-[2px] [&::-webkit-scrollbar-thumb]:bg-gray-400 [&::-webkit-scrollbar-track]:bg-transparent">
-        {myCards.map((card) => (
-          <button
-            key={card.id}
-            type="button"
-            onClick={() => setSelectedCard(card)}
-            className="text-left"
-          >
-            <Photocard card={card} type="나의 카드" />
-          </button>
-        ))}
-      </div>
+      {isPending && (
+        <p className="text-noto-16 py-[60px] text-center text-gray-300">
+          불러오는 중...
+        </p>
+      )}
+
+      {isError && (
+        <p className="text-noto-16 py-[60px] text-center text-gray-300">
+          목록을 불러오지 못했습니다.
+        </p>
+      )}
+
+      {!isPending && !isError && cards.length === 0 && (
+        <p className="text-noto-16 py-[60px] text-center text-gray-300">
+          보유한 포토카드가 없습니다.
+        </p>
+      )}
+
+      {!isPending && !isError && cards.length > 0 && (
+        <div className="flex max-h-[60vh] flex-wrap gap-[5px] overflow-y-auto tablet:gap-[20px] pc:gap-[40px] [scrollbar-color:#5a5a5a_transparent] [scrollbar-width:thin] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-[2px] [&::-webkit-scrollbar-thumb]:bg-gray-400 [&::-webkit-scrollbar-track]:bg-transparent">
+          {cards.map((card) => (
+            <button
+              key={card.id}
+              type="button"
+              onClick={() => setSelectedCard(card)}
+              className="text-left"
+            >
+              <Photocard card={card} type="나의 카드" />
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
