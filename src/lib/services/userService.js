@@ -35,4 +35,8 @@ export const userService = {
     });
     return response;
   },
+  getNotification: async () => {
+    const data = await tokenFetch("/users/me/notifications");
+    return data;
+  },
 };

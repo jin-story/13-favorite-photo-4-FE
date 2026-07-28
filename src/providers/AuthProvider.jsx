@@ -38,6 +38,17 @@ export default function AuthProvider({ children }) {
     }
   };
 
+  const [notification, setNotification] = useState([]);
+  const getNotification = async () => {
+    try {
+      const userData = await userService.getNotification();
+      setNotification(userData);
+    } catch (error) {
+      console.error("알림 불러오기에 실패했습니다.", error);
+      setNotification([]);
+    }
+  };
+
   const register = async (nickname, email, password, passwordConfirmation) => {
     if (password !== passwordConfirmation) {
       throw new Error("비밀번호가 일치하지 않습니다.");
@@ -75,15 +86,19 @@ export default function AuthProvider({ children }) {
       const token = await getServerSideToken();
       if (token) {
         getUser();
+        getNotification();
       } else {
         setUser(null);
+        setNotification([]);
       }
     }
     fetchUser();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, register }}>
+    <AuthContext.Provider
+      value={{ user, notification, login, logout, register }}
+    >
       {children}
     </AuthContext.Provider>
   );
