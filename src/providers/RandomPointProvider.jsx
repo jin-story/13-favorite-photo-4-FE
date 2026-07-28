@@ -2,18 +2,12 @@
 
 import RandomPointModalContent from "@/components/modals/RandomPointModalContent";
 import { pointService } from "@/lib/services/pointService";
+import { useAuth } from "@/providers/AuthProvider";
 import { useModal } from "@/providers/ModalProvider";
 import { useCallback, useEffect, useRef } from "react";
 
-/**
- * 랜덤포인트 모달을 "버튼 클릭"이 아니라 서버가 내려주는 nextAvailableAt 시각에
- * 맞춰 전역으로 자동 오픈시키는 스케줄러.
- *
- * 마운트 시 GET /point-draws로 현재 상태를 조회해 스케줄링하고,
- * 박스 claim 이후에는 RandomPointModalContent의 onClaimed 콜백을 통해
- * 응답의 nextAvailableAt으로 다시 scheduleNext가 호출된다.
- */
 export function RandomPointProvider({ children }) {
+  const { user } = useAuth();
   const { openModal } = useModal();
   const openModalRef = useRef(openModal);
   const timeoutRef = useRef(null);
@@ -59,6 +53,8 @@ export function RandomPointProvider({ children }) {
   }, [scheduleNext]);
 
   useEffect(() => {
+    if (!user) return;
+
     pointService
       .fetchDrawStatus()
       .then(({ canDraw, nextAvailableAt }) => {
@@ -86,7 +82,7 @@ export function RandomPointProvider({ children }) {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       clearTimeout(timeoutRef.current);
     };
-  }, [openRandomPointModal, scheduleNext]);
+  }, [user, openRandomPointModal, scheduleNext]);
 
   return children;
 }

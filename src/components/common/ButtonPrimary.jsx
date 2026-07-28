@@ -28,7 +28,7 @@ export default function PrimaryButton({
       type={type}
       disabled={disabled}
       className={clsx(
-        "flex items-center justify-center",
+        "flex items-center justify-center ",
         buttonStyle[variant],
         disabled ? "bg-gray-400 text-gray-300" : "bg-main text-black",
         className,

@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useEffect, useRef, useState, useCallback } from "react";
-import alarm_default from "@/assets/icons/alarm_default.svg";
 import alarm_active from "@/assets/icons/alarm_active.svg";
+import alarm_default from "@/assets/icons/alarm_default.svg";
 import Image from "next/image";
+import { useCallback, useEffect, useRef, useState } from "react";
 import NotificationMessage from "./NotificationMessage";
 
 /**
@@ -81,7 +81,7 @@ export default function NotificationDropdown({
       {/* 📂 알림 드롭다운 창 */}
       {isOpen && (
         <div
-          className="dropdown-scroll-container absolute right-0 mt-2 w-[300px] max-h-[535px] z-50 overflow-x-hidden overflow-y-auto 
+          className="dropdown-scroll-container absolute right-0 mt-1 top-[25px] w-[300px] max-h-[535px] z-50 overflow-x-hidden overflow-y-auto 
             bg-zinc-900 border border-gray-400 rounded shadow-lg
             [&::-webkit-scrollbar]:w-[4px] 
             [&::-webkit-scrollbar-track]:bg-transparent 

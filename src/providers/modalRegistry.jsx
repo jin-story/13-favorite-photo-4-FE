@@ -1,3 +1,7 @@
+import ExchangeBuyerModal from "@/components/modals/ExchangeBuyerModal";
+import ExchangeMyCardModal from "@/components/modals/ExchangeMyCardModal";
+import EditMarketCardModal from "@/components/modals/EditMarketCardModal";
+
 /*
  * 새 URL 기반 모달을 추가하려면:
  * 1. 모달 컴포넌트를 만들고 (src/components/modals/)
@@ -9,4 +13,7 @@ export const MODAL_COMPONENTS = {
   // url에 담을 문자: 실제 컴포넌트 이름
   // cart: CartModal,
   // welcome: WelcomeModal,
+  myCard: ExchangeMyCardModal,
+  exchange: ExchangeBuyerModal,
+  "edit-card": EditMarketCardModal,
 };

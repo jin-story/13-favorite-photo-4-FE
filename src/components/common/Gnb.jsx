@@ -14,19 +14,21 @@
 
 "use client";
 
-import Image from "next/image";
 import clsx from "clsx";
+import Image from "next/image";
 
-import logo from "@/assets/images/logo.svg";
-import menuIcon from "@/assets/icons/menu.svg";
-import backIcon from "@/assets/icons/back.svg";
 import alarmIcon from "@/assets/icons/alarm_default.svg";
-import Link from "next/link";
+import backIcon from "@/assets/icons/back.svg";
+import menuIcon from "@/assets/icons/menu.svg";
+import logo from "@/assets/images/logo.svg";
 import { useAuth } from "@/providers/AuthProvider";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import Profile from "./Profile";
 import { Suspense, useEffect, useRef, useState } from "react";
 import GnbTitle from "./GnbTitle";
+import MobileNotification from "./MobileNotification";
+import NotificationDropdown from "./NotificationDropdown";
+import Profile from "./Profile";
 
 function ProfileMenu({ user, textClassName }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -70,10 +72,11 @@ export default function Gnb({
   mobileType = "main", // main | sub
   onBackClick,
 }) {
-  const { user, logout } = useAuth();
+  const { user, notification, logout } = useAuth();
   const isLoggedIn = !!user;
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const router = useRouter();
 
   const handleBackClick = () => {
@@ -89,12 +92,15 @@ export default function Gnb({
   };
 
   useEffect(() => {
-    if (!isSidebarOpen) return;
+    if (!isSidebarOpen && !isNotificationOpen) return;
 
     document.body.style.overflow = "hidden";
 
     function handleKeyDown(event) {
-      if (event.key === "Escape") setIsSidebarOpen(false);
+      if (event.key === "Escape") {
+        setIsSidebarOpen(false);
+        setIsNotificationOpen(false);
+      }
     }
     window.addEventListener("keydown", handleKeyDown);
 
@@ -102,7 +108,7 @@ export default function Gnb({
       document.body.style.overflow = "";
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isSidebarOpen]);
+  }, [isSidebarOpen, isNotificationOpen]);
 
   return (
     <>
@@ -133,7 +139,7 @@ export default function Gnb({
               </span>
             </div>
 
-            <Image src={alarmIcon} alt="" width={24} />
+            <NotificationDropdown notifications={notification} />
 
             <ProfileMenu
               user={user}
@@ -176,7 +182,7 @@ export default function Gnb({
           "w-full h-[70px]",
           "items-center justify-between",
           "px-[40px] bg-black",
-          "fixed top-0 z-20",
+          "fixed top-0 z-1000",
         )}
       >
         <Link href="/market-posting">
@@ -195,7 +201,7 @@ export default function Gnb({
               </span>
             </div>
 
-            <Image src={alarmIcon} alt="" width={19} />
+            <NotificationDropdown notifications={notification} />
 
             <ProfileMenu
               user={user}
@@ -238,7 +244,7 @@ export default function Gnb({
           "w-full h-[60px]",
           "items-center justify-between",
           "px-[20px] bg-black",
-          "fixed top-0 z-20",
+          "fixed top-0 z-1000",
         )}
       >
         {mobileType === "main" ? (
@@ -263,7 +269,13 @@ export default function Gnb({
 
             {/* Right */}
             {isLoggedIn ? (
-              <button type="button" className="cursor-pointer">
+              <button
+                type="button"
+                aria-label="알림보기"
+                aria-expanded={isNotificationOpen}
+                onClick={() => setIsNotificationOpen(true)}
+                className="cursor-pointer"
+              >
                 <Image src={alarmIcon} alt="" width={22} />
               </button>
             ) : (
@@ -320,6 +332,29 @@ export default function Gnb({
             }}
             className="h-dvh"
           />
+        </div>
+      )}
+
+      {/* ================= Mobile 알림 (전체 화면) ================= */}
+      {isLoggedIn && isNotificationOpen && (
+        <div className="fixed inset-0 z-50 flex flex-col bg-black tablet:hidden">
+          <header className="flex h-[60px] w-full shrink-0 items-center justify-between px-[20px] bg-black">
+            <button
+              type="button"
+              onClick={() => setIsNotificationOpen(false)}
+              className="cursor-pointer"
+            >
+              <Image src={backIcon} alt="뒤로가기" width={22} height={22} />
+            </button>
+
+            <h1 className="text-white text-baskin-20-regular">알림</h1>
+
+            <div className="w-[22px]" />
+          </header>
+
+          <div className="flex-1 overflow-y-auto">
+            <MobileNotification notifications={notification ?? []} />
+          </div>
         </div>
       )}
     </>

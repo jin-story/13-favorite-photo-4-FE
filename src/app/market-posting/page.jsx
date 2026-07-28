@@ -1,51 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Drawer } from "vaul";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInView } from "react-intersection-observer";
 import Image from "next/image";
+import { useAuth } from "@/providers/AuthProvider";
 import { useModal } from "@/providers/ModalProvider";
+import { marketPostingService } from "@/lib/services/marketPostingService";
+import { useDebounce } from "@/hooks/useDebounce";
 import Title from "@/components/common/Title";
 import InputSearch from "@/components/common/InputSearch";
 import Dropdown from "@/components/common/Dropdown";
-// import SheetFilter from "@/components/common/SheetFilter"; <- 오류 이슈로 임시 주석처리
+import SheetFilter from "@/components/common/SheetFilter";
 import ButtonPrimary from "@/components/common/ButtonPrimary";
 import Photocard from "@/components/common/Photocard";
 import filterIcon from "@/assets/icons/filter.svg";
 import Gnb from "@/components/common/Gnb";
 import LoginRequiredModal from "./_components/LoginRequiredModal";
-
-// 목업 데이터
-const sampleCards = [
-  {
-    id: 1,
-    name: "스페인 여행",
-    grade: "RARE",
-    genre: "여행",
-    price: 3000,
-    totalQuantity: 3,
-    lastQuantity: 3,
-    makerNickname: "유디",
-    description: "3장 일괄 판매합니다.",
-    imgUrl: "",
-  },
-  {
-    id: 2,
-    name: "우리집 앞마당",
-    grade: "COMMON",
-    genre: "풍경",
-    price: 1500,
-    totalQuantity: 2,
-    lastQuantity: 0,
-    makerNickname: "미쓰손",
-    description: "품절된 판매글입니다.",
-    imgUrl: "",
-  },
-];
+import SellModal from "./_components/SellModal";
 
 export default function MarketplacePage() {
+  const router = useRouter();
   const [search, setSearch] = useState("");
-  const [grade, setGrade] = useState();
-  const [genre, setGenre] = useState();
-  const [availability, setAvailability] = useState();
+  const [grade, setGrade] = useState([]);
+  const [genre, setGenre] = useState([]);
+  const [availability, setAvailability] = useState([]);
   const [sort, setSort] = useState();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [sheetFilter, setSheetFilter] = useState({
@@ -54,7 +35,77 @@ export default function MarketplacePage() {
     availability: [],
   });
   const { openModal } = useModal();
-  const isLoggedIn = false;
+  const { user } = useAuth();
+  const isLoggedIn = !!user;
+  const [isPc, setIsPc] = useState(false);
+  const [isSellDrawerOpen, setIsSellDrawerOpen] = useState(false);
+  const debouncedSearch = useDebounce(search, 300);
+
+  const {
+    data,
+    isPending,
+    isError,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  } = useInfiniteQuery({
+    queryKey: [
+      "market-postings",
+      debouncedSearch,
+      grade,
+      genre,
+      availability,
+      sort,
+    ],
+    queryFn: ({ pageParam }) =>
+      marketPostingService.fetchMarketPostings({
+        cursor: pageParam,
+        keyword: debouncedSearch,
+        grade,
+        genre,
+        availability,
+        sort,
+      }),
+    initialPageParam: undefined,
+    getNextPageParam: (lastPage) =>
+      lastPage.hasNextPage ? lastPage.nextCursor : undefined,
+    meta: { name: "마켓플레이스 목록" },
+  });
+
+  const { ref: sentinelRef, inView } = useInView();
+
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  const cards =
+    data?.pages.flatMap((page) =>
+      page.list.map((posting) => ({
+        ...posting.photoCard,
+        id: posting.id,
+        makerNickname: posting.seller?.nickname,
+        sellerId: posting.sellerId,
+        price: posting.price,
+        totalQuantity: posting.quantity,
+        lastQuantity: posting.remainingQuantity,
+        imageUrl: posting.photoCard?.imageUrl,
+        description: posting.description || posting.photoCard?.description,
+      })),
+    ) || [];
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsPc(window.innerWidth >= 1920);
+    };
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   function handleSellClick() {
     if (!isLoggedIn) {
@@ -62,11 +113,24 @@ export default function MarketplacePage() {
       return;
     }
 
-    // 나의 포토카드 판매하기 선택 모달
-    openModal(
-      <div>
-        <p>미구현</p>
-      </div>,
+    if (isPc) {
+      openModal(<SellModal />);
+    } else {
+      setIsSellDrawerOpen(true);
+    }
+  }
+
+  function handleCardClick(card) {
+    if (!isLoggedIn) {
+      openModal(<LoginRequiredModal />);
+      return;
+    }
+
+    const isSeller = String(user.id) === String(card.sellerId);
+    router.push(
+      isSeller
+        ? `/market-posting/${card.id}`
+        : `/market-posting/${card.id}/buyer`,
     );
   }
 
@@ -82,7 +146,7 @@ export default function MarketplacePage() {
           onButtonClick={handleSellClick}
         />
 
-        <div className="relative z-30 flex flex-col gap-[15px] tablet:flex-row tablet:items-center tablet:justify-between">
+        <div className="flex flex-col gap-[15px] tablet:flex-row tablet:items-center tablet:justify-between">
           <div className="flex items-center gap-[15px] tablet:gap-[20px] pc:gap-[30px]">
             <InputSearch
               value={search}
@@ -91,12 +155,20 @@ export default function MarketplacePage() {
             />
 
             <div className="hidden items-start gap-[35px] tablet:flex pc:gap-[45px]">
-              <Dropdown type="grade" value={grade} onChange={setGrade} />
-              <Dropdown type="genre" value={genre} onChange={setGenre} />
+              <Dropdown
+                type="grade"
+                value={grade[0]}
+                onChange={(value) => setGrade(value ? [value] : [])}
+              />
+              <Dropdown
+                type="genre"
+                value={genre[0]}
+                onChange={(value) => setGenre(value ? [value] : [])}
+              />
               <Dropdown
                 type="availability"
-                value={availability}
-                onChange={setAvailability}
+                value={availability[0]}
+                onChange={(value) => setAvailability(value ? [value] : [])}
               />
             </div>
           </div>
@@ -117,20 +189,55 @@ export default function MarketplacePage() {
           </div>
         </div>
 
-        {/* <SheetFilter
+        <SheetFilter
           open={isSheetOpen}
           onClose={() => setIsSheetOpen(false)}
           filter={sheetFilter}
           setFilter={setSheetFilter}
-          totalCount={sampleCards.length}
-          onApply={() => setIsSheetOpen(false)}
-        /> */}
+          singleSelectCategories={["grade", "genre", "availability"]}
+          totalCount={cards.length}
+          onApply={(appliedFilter) => {
+            setGrade(appliedFilter.grade);
+            setGenre(appliedFilter.genre);
+            setAvailability(appliedFilter.availability);
+            setIsSheetOpen(false);
+          }}
+        />
 
-        <div className="flex flex-wrap gap-[5px] tablet:gap-5 pc:gap-[80px]">
-          {sampleCards.map((card) => (
-            <Photocard key={card.id} card={card} type="마켓 카드" />
-          ))}
-        </div>
+        {isPending && (
+          <p className="text-noto-16 py-[60px] text-center text-gray-300">
+            불러오는 중...
+          </p>
+        )}
+
+        {isError && (
+          <p className="text-noto-16 py-[60px] text-center text-gray-300">
+            목록을 불러오지 못했습니다.
+          </p>
+        )}
+
+        {!isPending && !isError && cards.length === 0 && (
+          <p className="text-noto-16 py-[60px] text-center text-gray-300">
+            등록된 판매글이 없습니다.
+          </p>
+        )}
+
+        {!isPending && !isError && cards.length > 0 && (
+          <div className="flex flex-wrap gap-[5px] tablet:gap-5 pc:gap-5">
+            {cards.map((card) => (
+              <button
+                key={card.id}
+                type="button"
+                onClick={() => handleCardClick(card)}
+                className="text-left"
+              >
+                <Photocard card={card} type="마켓 카드" />
+              </button>
+            ))}
+          </div>
+        )}
+
+        <div ref={sentinelRef} className="h-[1px]" />
       </div>
 
       <div className="fixed inset-x-0 bottom-0 z-30 flex justify-center bg-black px-[15px] py-[15px] tablet:hidden">
@@ -138,6 +245,18 @@ export default function MarketplacePage() {
           나의 포토카드 판매하기
         </ButtonPrimary>
       </div>
+
+      <Drawer.Root open={isSellDrawerOpen} onOpenChange={setIsSellDrawerOpen}>
+        <Drawer.Portal>
+          <Drawer.Overlay className="fixed inset-0 z-100 bg-black/80" />
+          <Drawer.Content className="fixed inset-x-0 bottom-0 z-100 max-h-[90dvh] overflow-hidden rounded-t-[16px] bg-gray-500 outline-none">
+            <Drawer.Title className="sr-only">
+              나의 포토카드 판매하기
+            </Drawer.Title>
+            <SellModal />
+          </Drawer.Content>
+        </Drawer.Portal>
+      </Drawer.Root>
     </div>
   );
 }
