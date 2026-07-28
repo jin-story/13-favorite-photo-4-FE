@@ -232,7 +232,9 @@ export default function SellingPhotocardDetails() {
           </section>
         </main>
       ) : (
-        <div className="mt-[200px] text-9xl"> 본인 게시글 아님 </div>
+        <div className="flex h-screen items-center justify-center bg-black text-2xl text-white">
+          본인의 게시글이 아닙니다.
+        </div>
       )}
     </>
   );

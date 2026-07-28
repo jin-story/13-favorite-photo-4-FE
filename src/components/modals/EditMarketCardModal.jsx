@@ -24,10 +24,16 @@ const GRADE_OPTIONS = [
 ];
 
 const GENRE_OPTIONS = [
-  { label: "풍경", value: "풍경" },
-  { label: "인물", value: "인물" },
-  { label: "동물", value: "동물" },
-  { label: "사물", value: "사물" },
+  { label: "앨범", value: "ALBUM" },
+  { label: "특전", value: "SPECIAL" },
+  { label: "팬싸", value: "FAN_SIGN" },
+  { label: "시즌그리팅", value: "SEASON_GREETING" },
+  { label: "팬미팅", value: "FAN_MEETING" },
+  { label: "콘서트", value: "CONCERT" },
+  { label: "MD", value: "MD" },
+  { label: "콜라보", value: "COLLABORATION" },
+  { label: "팬클럽", value: "FAN_CLUB" },
+  { label: "기타", value: "ETC" },
 ];
 
 export default function EditMarketCardModal({ onClose }) {
@@ -85,7 +91,9 @@ export default function EditMarketCardModal({ onClose }) {
 
       alert("수정이 완료되었습니다.");
 
-      onClose?.();
+      if (onClose) onClose();
+
+      window.location.reload();
     } catch (error) {
       console.error(error);
       alert("수정에 실패했습니다.");
