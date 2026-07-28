@@ -66,6 +66,7 @@ export default function SheetFilter({
 
   onApply,
   onReset,
+  singleSelectCategories = [],
 }) {
   const sheetRef = useRef(null);
   const [tab, setTab] = useState("grade");
@@ -96,12 +97,17 @@ export default function SheetFilter({
       const selected = prev[category];
 
       const exists = selected.includes(value);
+      const isSingleSelect = singleSelectCategories.includes(category);
 
       return {
         ...prev,
-        [category]: exists
-          ? selected.filter((v) => v !== value)
-          : [...selected, value],
+        [category]: isSingleSelect
+          ? exists
+            ? []
+            : [value]
+          : exists
+            ? selected.filter((v) => v !== value)
+            : [...selected, value],
       };
     });
   };

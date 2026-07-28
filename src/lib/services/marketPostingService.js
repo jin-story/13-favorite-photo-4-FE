@@ -25,11 +25,11 @@ export const marketPostingService = {
 
     if (cursor) params.set("cursor", cursor);
     if (keyword) params.set("keyword", keyword);
-    (grade || []).forEach((value) => params.append("grade", value));
-    (genre || []).forEach((value) => params.append("genre", value));
-    (availability || []).forEach((value) =>
-      params.append("soldOut", availabilityToSoldOut[value]),
-    );
+    if (grade?.[0]) params.set("grade", grade[0]);
+    if (genre?.[0]) params.set("genre", genre[0]);
+    if (availability?.[0]) {
+      params.set("soldOut", availabilityToSoldOut[availability[0]]);
+    }
     params.set("sort", sort ? sortToQuery[sort] : "recent");
 
     const response = await defaultFetch(
