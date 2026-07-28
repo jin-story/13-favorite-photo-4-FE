@@ -4,11 +4,11 @@ import ButtonSecondary from "./ButtonSecondary";
 
 const TITLE_CONFIG = {
   title_button: {
-    textClass: "text-baskin-48 pc:text-baskin-62",
+    textClass: "text-baskin-48-regular pc:text-baskin-62-regular",
     button: "primary",
   },
   title_line: {
-    textClass: "text-baskin-48 pc:text-baskin-62",
+    textClass: "text-baskin-48-regular pc:text-baskin-62-regular",
     button: null,
   },
   title_line_modal: {
@@ -52,13 +52,21 @@ export default function Title({
   const { textClass, button } = config;
 
   return (
-    <div className={clsx("flex w-full flex-col gap-5", className)}>
+    <div
+      className={clsx(
+        "flex w-full flex-col gap-5 border-b border-b-2 border-b-gray-100 pb-2.5 tablet:pb-5",
+        className,
+      )}
+    >
       {button ? (
         <div className="flex w-full flex-col tablet:flex-row tablet:items-center tablet:justify-between">
           <p className={clsx(textClass, "text-white")}>{text}</p>
           <div className="hidden tablet:block">
             {button === "primary" ? (
-              <ButtonPrimary variant="thick" onClick={onButtonClick}>
+              <ButtonPrimary
+                className="w-[342px] h-15 text-noto-16-bold pc:w-[440px] pc:text-noto-18-bold"
+                onClick={onButtonClick}
+              >
                 {buttonText}
               </ButtonPrimary>
             ) : (
@@ -71,7 +79,6 @@ export default function Title({
       ) : (
         <p className={clsx(textClass, "text-white")}>{text}</p>
       )}
-      <div className="h-[2px] w-full bg-gray-100" />
     </div>
   );
 }

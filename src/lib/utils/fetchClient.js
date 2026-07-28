@@ -13,13 +13,19 @@ export const defaultFetch = async (url, options = {}) => {
     cache: "force-cache",
   };
 
+  const mergedHeaders = {
+    ...defaultOptions.headers,
+    ...options.headers,
+  };
+
+  if (options.body instanceof FormData) {
+    delete mergedHeaders["Content-Type"];
+  }
+
   const mergedOptions = {
     ...defaultOptions,
     ...options,
-    headers: {
-      ...defaultOptions.headers,
-      ...options.headers,
-    },
+    headers: mergedHeaders,
   };
 
   const response = await fetch(`${baseURL}${url}`, mergedOptions);
@@ -49,13 +55,19 @@ export const tokenFetch = async (url, options = {}) => {
     cache: "no-store",
   };
 
+  const mergedHeaders = {
+    ...defaultOptions.headers,
+    ...options.headers,
+  };
+
+  if (options.body instanceof FormData) {
+    delete mergedHeaders["Content-Type"];
+  }
+
   const mergedOptions = {
     ...defaultOptions,
     ...options,
-    headers: {
-      ...defaultOptions.headers,
-      ...options.headers,
-    },
+    headers: mergedHeaders,
   };
 
   let response = await fetch(`${baseURL}${url}`, mergedOptions);

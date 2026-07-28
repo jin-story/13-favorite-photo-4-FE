@@ -1,3 +1,5 @@
+import ExchangeBuyerModal from "@/components/modals/ExchangeBuyerModal";
+import ExchangeMyCardModal from "@/components/modals/ExchangeMyCardModal";
 import EditMarketCardModal from "@/components/modals/EditMarketCardModal";
 
 /*
@@ -11,5 +13,7 @@ export const MODAL_COMPONENTS = {
   // url에 담을 문자: 실제 컴포넌트 이름
   // cart: CartModal,
   // welcome: WelcomeModal,
+  myCard: ExchangeMyCardModal,
+  exchange: ExchangeBuyerModal,
   "edit-card": EditMarketCardModal,
 };

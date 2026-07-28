@@ -22,13 +22,12 @@ export default function ButtonSecondary({
   className,
   ...props
 }) {
-  const safeVariant = buttonStyle[variant] ? variant : "thick";
   return (
     <button
       type={type}
       className={clsx(
         "flex items-center justify-center bg-black text-white",
-        buttonStyle[safeVariant],
+        buttonStyle[variant],
         className,
       )}
       {...props}
