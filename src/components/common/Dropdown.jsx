@@ -27,10 +27,16 @@ const dropdownOptions = {
   genre: {
     placeholder: "장르",
     options: [
-      { label: "여행", value: "TRAVEL" },
-      { label: "풍경", value: "LANDSCAPE" },
-      { label: "인물", value: "PERSON" },
-      { label: "사물", value: "OBJECT" },
+      { label: "앨범", value: "ALBUM" },
+      { label: "특전", value: "SPECIAL" },
+      { label: "팬싸", value: "FAN_SIGN" },
+      { label: "시즌그리팅", value: "SEASON_GREETING" },
+      { label: "팬미팅", value: "FAN_MEETING" },
+      { label: "콘서트", value: "CONCERT" },
+      { label: "MD", value: "MD" },
+      { label: "콜라보", value: "COLLABORATION" },
+      { label: "팬클럽", value: "FAN_CLUB" },
+      { label: "기타", value: "ETC" },
     ],
   },
 
@@ -55,7 +61,7 @@ const dropdownOptions = {
 // css 정리
 const defaultStyle = {
   button: "flex pc:min-h-[24px] min-h-[22px] items-start gap-[10px]",
-  menu: "flex flex-col absolute z-10 items-start mt-[18px] border border-gray-200 bg-black",
+  menu: "flex flex-col absolute z-10 items-start mt-[18px] border border-gray-200 bg-black max-h-[220px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-transparent",
   item: "flex items-start w-full py-[15px] px-[20px] text-left hover:bg-gray-500",
 };
 

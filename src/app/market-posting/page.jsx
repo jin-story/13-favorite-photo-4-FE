@@ -86,10 +86,11 @@ export default function MarketplacePage() {
         ...posting.photoCard,
         id: posting.id,
         makerNickname: posting.seller?.nickname,
+        sellerId: posting.sellerId,
         price: posting.price,
         totalQuantity: posting.quantity,
         lastQuantity: posting.remainingQuantity,
-        imgUrl: posting.photoCard?.imageUrl,
+        imageUrl: posting.photoCard?.imageUrl,
         description: posting.description || posting.photoCard?.description,
       })),
     ) || [];
@@ -117,6 +118,20 @@ export default function MarketplacePage() {
     } else {
       setIsSellDrawerOpen(true);
     }
+  }
+
+  function handleCardClick(card) {
+    if (!isLoggedIn) {
+      openModal(<LoginRequiredModal />);
+      return;
+    }
+
+    const isSeller = String(user.id) === String(card.sellerId);
+    router.push(
+      isSeller
+        ? `/market-posting/${card.id}`
+        : `/market-posting/${card.id}/buyer`,
+    );
   }
 
   return (
@@ -179,6 +194,7 @@ export default function MarketplacePage() {
           onClose={() => setIsSheetOpen(false)}
           filter={sheetFilter}
           setFilter={setSheetFilter}
+          singleSelectCategories={["grade", "genre", "availability"]}
           totalCount={cards.length}
           onApply={(appliedFilter) => {
             setGrade(appliedFilter.grade);
@@ -212,7 +228,7 @@ export default function MarketplacePage() {
               <button
                 key={card.id}
                 type="button"
-                onClick={() => router.push(`/market-posting/${card.id}`)}
+                onClick={() => handleCardClick(card)}
                 className="text-left"
               >
                 <Photocard card={card} type="마켓 카드" />

@@ -7,6 +7,19 @@ import Image from "next/image";
 import clsx from "clsx";
 import Chip from "./Chip";
 
+const GENRE_MAP = {
+  ALBUM: "앨범",
+  SPECIAL: "특전",
+  FAN_SIGN: "팬싸",
+  SEASON_GREETING: "시즌그리팅",
+  FAN_MEETING: "팬미팅",
+  CONCERT: "콘서트",
+  MD: "MD",
+  COLLABORATION: "콜라보",
+  FAN_CLUB: "팬클럽",
+  ETC: "기타",
+};
+
 const CARD_RESPONSIVE_STYLING = clsx(
   "p-2.5 gap-2.5 w-[170px]",
   "tablet:w-[342px] tablet:p-5 tablet:gap-5",
@@ -72,11 +85,11 @@ export default function Photocard({
     makerNickname = "알 수 없음",
     name = "이름 없는 카드",
     grade = "COMMON",
-    genre = "풍경",
+    genre = "기타",
     price = 0,
     totalQuantity = 0,
     lastQuantity = 0,
-    imgUrl,
+    imageUrl,
     description = "포토카드 설명글",
   } = card;
 
@@ -84,7 +97,7 @@ export default function Photocard({
     (lastQuantity === 0 && type === "마켓 카드") ||
     (totalQuantity === 0 && type === "나의 판매 카드");
 
-  const showStateChip = ALLOWED_STATES.includes(state);
+  const showStateChip = !soldOut && ALLOWED_STATES.includes(state);
 
   const renderQuantitySection = () => {
     let label = "수량";
@@ -135,8 +148,9 @@ export default function Photocard({
         )}
         <Image
           alt={description}
-          src={imgUrl || mook_img}
+          src={imageUrl || mook_img}
           fill
+          unoptimized
           sizes="(min-width: 1024px) 360px, (min-width: 768px) 302px, 150px"
           className="object-cover z-0"
         />
@@ -159,15 +173,18 @@ export default function Photocard({
             <Grade grade={grade} type="card" />
             <span
               className={clsx(
-                "border-l border-l-gray-400 pl-[5px] ml-[5px] text-gray-300 tablet:pl-2.5 tablet:ml-2.5",
+                "border-l border-l-gray-400 pl-[5px] ml-[5px] text-gray-300 tablet:pl-2.5 tablet:ml-2.5 truncate",
                 TEXT_RESPONSIVE_STYLING,
               )}
             >
-              {genre}
+              {GENRE_MAP[genre] || genre}
             </span>
           </div>
           <span
-            className={clsx("text-white underline", TEXT_RESPONSIVE_STYLING)}
+            className={clsx(
+              "text-white underline truncate",
+              TEXT_RESPONSIVE_STYLING,
+            )}
           >
             {makerNickname}
           </span>
@@ -188,7 +205,7 @@ export default function Photocard({
       {renderQuantitySection()}
 
       {/* 하단 푸터 로고 */}
-      <div className="hidden tablet:flex justify-center mt-7.5 pc:mt-10">
+      <div className="hidden tablet:flex justify-center mt-7.5 pc:mt-10 tablet:pb-[10px]">
         <Image alt="최애의 포토 로고" src={logo} width={100} height={18} />
       </div>
     </div>

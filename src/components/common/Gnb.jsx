@@ -116,7 +116,7 @@ export default function Gnb({
       <header
         className={clsx(
           "hidden pc:flex",
-          "w-full h-[80px] max-w-[1920px]",
+          "w-full h-[80px]",
           "items-center justify-between",
           "bg-black px-[220px]",
           "fixed top-0 z-1000",
@@ -182,7 +182,7 @@ export default function Gnb({
           "w-full h-[70px]",
           "items-center justify-between",
           "px-[40px] bg-black",
-          "fixed top-0 z-20",
+          "fixed top-0 z-1000",
         )}
       >
         <Link href="/market-posting">
@@ -244,7 +244,7 @@ export default function Gnb({
           "w-full h-[60px]",
           "items-center justify-between",
           "px-[20px] bg-black",
-          "fixed top-0 z-20",
+          "fixed top-0 z-1000",
         )}
       >
         {mobileType === "main" ? (
