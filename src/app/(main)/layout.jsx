@@ -6,9 +6,9 @@ import React from "react";
 export default async function Layout({ children }) {
   const isAuthenticated = await checkAuthWithRefresh();
 
-  // if (!isAuthenticated) {
-  //   redirect("/login", RedirectType.replace);
-  // }
+  if (!isAuthenticated) {
+    redirect("/login", RedirectType.replace);
+  }
   return (
     <div className="flex min-h-dvh flex-col">
       <Gnb />

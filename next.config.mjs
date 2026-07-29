@@ -2,6 +2,20 @@
 const nextConfig = {
   /* config options here */
   reactCompiler: true,
+  async rewrites() {
+    const backendPrefixes = [
+      "auth",
+      "users",
+      "photo-cards",
+      "market-postings",
+      "exchange-proposals",
+      "point-draws",
+    ];
+    return backendPrefixes.map((prefix) => ({
+      source: `/${prefix}/:path*`,
+      destination: `${process.env.BACKEND_ORIGIN}/${prefix}/:path*`,
+    }));
+  },
   logging: false,
   images: {
     remotePatterns: [

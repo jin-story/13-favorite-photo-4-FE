@@ -102,14 +102,7 @@ export default function AuthForm({ type }) {
   };
 
   const handleGoogleLogin = () => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "");
-
-    if (!apiUrl) {
-      handleOpenModal("Google 로그인을 위한 API 주소가 설정되지 않았습니다.");
-      return;
-    }
-
-    window.location.assign(`${apiUrl}/auth/google`);
+    window.location.assign("/auth/google");
   };
 
   return (
