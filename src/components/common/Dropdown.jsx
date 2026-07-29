@@ -61,7 +61,7 @@ const dropdownOptions = {
 // css 정리
 const defaultStyle = {
   button: "flex pc:min-h-[24px] min-h-[22px] items-start gap-[10px]",
-  menu: "flex flex-col absolute z-10 items-start mt-[18px] border border-gray-200 bg-black max-h-[220px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-transparent",
+  menu: "flex flex-col absolute z-30 items-start mt-[18px] border border-gray-200 bg-black max-h-[220px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-transparent",
   item: "flex items-start w-full py-[15px] px-[20px] text-left hover:bg-gray-500",
 };
 
@@ -79,7 +79,7 @@ const dropdownStyle = {
       "pc:min-w-[180px] pc:min-h-[50px] \
       tablet:min-w-[140px] tablet:min-h-[45px] \
       flex min-w-[130px] min-h-[35px] justify-center gap-[10px] items-start border border-gray-200 py-[10px] px-[15px] bg-black",
-    menu: "flex flex-col absolute z-10 mt-[5px] w-full border border-gray-200 bg-black",
+    menu: "flex flex-col absolute z-30 mt-[5px] w-full border border-gray-200 bg-black",
     item: "flex w-full items-center px-[20px] py-[15px] hover:bg-gray-500",
   },
 };
