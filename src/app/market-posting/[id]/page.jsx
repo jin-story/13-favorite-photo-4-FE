@@ -43,17 +43,19 @@ export default function SellingPhotocardDetails() {
     try {
       const data = await getExchangeProposals(id);
 
-      const cards = data.map((proposal) => ({
-        id: proposal.id,
-        makerNickname: proposal.offeredInventory.photoCard.creator.nickname,
-        name: proposal.offeredInventory.photoCard.name,
-        grade: proposal.offeredInventory.photoCard.grade,
-        genre: proposal.offeredInventory.photoCard.genre,
-        price: proposal.offeredInventory.photoCard.minPrice,
-        imgUrl: proposal.offeredInventory.photoCard.imageUrl,
-        description: proposal.message,
-        status: proposal.status,
-      }));
+      const cards = data
+        .filter((proposal) => proposal.status === "PENDING")
+        .map((proposal) => ({
+          id: proposal.id,
+          makerNickname: proposal.offeredInventory.photoCard.creator.nickname,
+          name: proposal.offeredInventory.photoCard.name,
+          grade: proposal.offeredInventory.photoCard.grade,
+          genre: proposal.offeredInventory.photoCard.genre,
+          price: proposal.offeredInventory.photoCard.minPrice,
+          imgUrl: proposal.offeredInventory.photoCard.imageUrl,
+          description: proposal.message,
+          status: proposal.status,
+        }));
 
       setExchangeCards(cards);
     } catch (error) {
@@ -67,7 +69,7 @@ export default function SellingPhotocardDetails() {
       fetchMarketPosting();
       fetchExchangeCards();
     }
-  }, [id]);
+  }, [id, fetchMarketPosting, fetchExchangeCards]);
 
   if (!marketPosting) return <div>로딩</div>;
 
