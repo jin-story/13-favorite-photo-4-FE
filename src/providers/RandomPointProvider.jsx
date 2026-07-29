@@ -7,7 +7,7 @@ import { useModal } from "@/providers/ModalProvider";
 import { useCallback, useEffect, useRef } from "react";
 
 export function RandomPointProvider({ children }) {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const { openModal } = useModal();
   const openModalRef = useRef(openModal);
   const timeoutRef = useRef(null);
@@ -22,9 +22,10 @@ export function RandomPointProvider({ children }) {
     nextAvailableAtRef.current = null;
     openModalRef.current(
       <RandomPointModalContent
-        onClaimed={(nextAvailableAt) =>
-          scheduleNextRef.current(nextAvailableAt)
-        }
+        onClaimed={(nextAvailableAt) => {
+          refreshUser();
+          scheduleNextRef.current(nextAvailableAt);
+        }}
       />,
     );
   }, []);
