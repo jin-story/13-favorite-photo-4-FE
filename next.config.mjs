@@ -2,6 +2,7 @@
 const nextConfig = {
   /* config options here */
   reactCompiler: true,
+  logging: false,
   images: {
     remotePatterns: [
       {
