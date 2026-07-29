@@ -37,6 +37,16 @@ export default function SellModal() {
     meta: { name: "내 포토카드 목록" },
   });
 
+  const { data: allData } = useQuery({
+    queryKey: ["my-inventories-all", debouncedSearch],
+    queryFn: () =>
+      userService.getMyInventories({
+        keyword: debouncedSearch,
+        limit: 100,
+      }),
+    meta: { name: "내 포토카드 전체 목록" },
+  });
+
   const cards =
     data?.list.map((item) => ({
       ...item.photoCard,
@@ -47,6 +57,28 @@ export default function SellModal() {
       lastQuantity: item.ownedQuantity,
       imgUrl: item.photoCard?.imageUrl,
     })) || [];
+
+  const allCards =
+    allData?.list.map((item) => ({
+      grade: item.photoCard?.grade,
+      genre: item.photoCard?.genre,
+    })) || [];
+
+  const previewCards = allCards.filter((card) => {
+    if (sheetFilter.grade.length > 0 && !sheetFilter.grade.includes(card.grade)) {
+      return false;
+    }
+    if (sheetFilter.genre.length > 0 && !sheetFilter.genre.includes(card.genre)) {
+      return false;
+    }
+    return true;
+  });
+
+  const previewCounts = allCards.reduce((acc, card) => {
+    acc[card.grade] = (acc[card.grade] || 0) + 1;
+    acc[card.genre] = (acc[card.genre] || 0) + 1;
+    return acc;
+  }, {});
 
   if (selectedCard) {
     return (
@@ -102,7 +134,10 @@ export default function SellModal() {
         onClose={() => setIsSheetOpen(false)}
         filter={sheetFilter}
         setFilter={setSheetFilter}
-        totalCount={cards.length}
+        categories={["grade", "genre"]}
+        singleSelectCategories={["grade", "genre"]}
+        totalCount={previewCards.length}
+        counts={previewCounts}
         onApply={(appliedFilter) => {
           setGrade(appliedFilter.grade);
           setGenre(appliedFilter.genre);
