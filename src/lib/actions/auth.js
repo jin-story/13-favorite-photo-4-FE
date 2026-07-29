@@ -147,27 +147,3 @@ export async function checkAuthWithRefresh() {
   const refreshToken = cookieStore.get("refreshToken")?.value;
   return !!(accessToken || refreshToken);
 }
-
-/**
- * @deprecated 차후 미들웨어 혹은 전용 서비스 레이어로 이관을 권장합니다.
- * 인증 상태를 확인하고 필요시 토큰을 갱신합니다
- */
-export async function checkAndRefreshAuth() {
-  const cookieStore = await cookies();
-  const accessToken = cookieStore.get("accessToken")?.value;
-  const refreshToken = cookieStore.get("refreshToken")?.value;
-
-  if (accessToken) return true;
-  if (!refreshToken) return false;
-
-  try {
-    const { accessToken: newAccessToken } =
-      await authService.refresh(refreshToken);
-    await updateAccessToken(newAccessToken);
-    return true;
-  } catch (error) {
-    console.error("토큰 갱신 중 오류:", error);
-    await clearServerSideTokens();
-    return false;
-  }
-}

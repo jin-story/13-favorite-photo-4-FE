@@ -4,7 +4,10 @@ import { getServerSideToken, updateAccessToken } from "../actions/auth";
  * 기본 fetch 클라이언트 - 인증이 필요 없는 일반 요청용
  */
 export const defaultFetch = async (url, options = {}) => {
-  const baseURL = process.env.NEXT_PUBLIC_API_URL;
+  // 서버(Node)에서는 절대주소가 필요하지만, 브라우저에서 직접 호출되는 경우도 있어서
+  // 그때는 같은 origin(프록시)으로 상대경로를 써야 한다.
+  const baseURL =
+    typeof window === "undefined" ? process.env.BACKEND_ORIGIN : "";
   const defaultOptions = {
     headers: {
       "Content-Type": "application/json",
@@ -44,7 +47,6 @@ export const defaultFetch = async (url, options = {}) => {
  * 토큰 인증 fetch 클라이언트
  */
 export const tokenFetch = async (url, options = {}) => {
-  const baseURL = process.env.NEXT_PUBLIC_API_URL;
   const token = await getServerSideToken("accessToken");
   const defaultOptions = {
     headers: {
@@ -70,14 +72,14 @@ export const tokenFetch = async (url, options = {}) => {
     headers: mergedHeaders,
   };
 
-  let response = await fetch(`${baseURL}${url}`, mergedOptions);
+  let response = await fetch(url, mergedOptions);
 
   const REFRESH_PATH = "/auth/refresh-token";
 
   if (response.status === 401 && url !== REFRESH_PATH) {
     let refreshResponse;
     try {
-      refreshResponse = await fetch(`${baseURL}${REFRESH_PATH}`, {
+      refreshResponse = await fetch(REFRESH_PATH, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -87,7 +89,7 @@ export const tokenFetch = async (url, options = {}) => {
       if (refreshResponse.ok) {
         const { accessToken: newAccessToken } = await refreshResponse.json();
         mergedOptions.headers.Authorization = `Bearer ${newAccessToken}`;
-        response = await fetch(`${baseURL}${url}`, mergedOptions);
+        response = await fetch(url, mergedOptions);
         await updateAccessToken(newAccessToken);
       }
     } catch (error) {
