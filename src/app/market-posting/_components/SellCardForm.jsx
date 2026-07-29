@@ -76,6 +76,18 @@ export default function SellCardForm({ card, onCancel }) {
       alert("장당 가격을 입력해 주세요.");
       return;
     }
+    if (!grade && !genre) {
+      alert("등급과 장르를 선택해 주세요.");
+      return;
+    }
+    if (!grade) {
+      alert("등급을 선택해 주세요.");
+      return;
+    }
+    if (!genre) {
+      alert("장르를 선택해 주세요.");
+      return;
+    }
 
     createMarketPosting({
       userInventoryId: card.id,
