@@ -1,6 +1,5 @@
-import { refresh } from "next/cache";
 import { clearServerSideTokens } from "../actions/auth";
-import { defaultFetch, tokenFetch } from "../utils/fetchClient";
+import { defaultFetch } from "../utils/fetchClient";
 
 export const authService = {
   // 쿠키 인증을 사용하는 로그인
@@ -40,16 +39,4 @@ export const authService = {
 
   // 로그아웃
   logout: () => clearServerSideTokens(),
-
-  // 토큰 갱식
-  refresh: async (refreshToken) => {
-    const response = await defaultFetch("/auth/refresh-token", {
-      method: "POST",
-      body: JSON.stringify({ refreshToken }),
-      cache: "no-store",
-    });
-
-    const data = await response.json();
-    return data;
-  },
 };

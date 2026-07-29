@@ -4,7 +4,7 @@ import { getServerSideToken, updateAccessToken } from "../actions/auth";
  * 기본 fetch 클라이언트 - 인증이 필요 없는 일반 요청용
  */
 export const defaultFetch = async (url, options = {}) => {
-  const baseURL = process.env.NEXT_PUBLIC_API_URL;
+  const baseURL = process.env.BACKEND_ORIGIN;
   const defaultOptions = {
     headers: {
       "Content-Type": "application/json",
@@ -44,7 +44,6 @@ export const defaultFetch = async (url, options = {}) => {
  * 토큰 인증 fetch 클라이언트
  */
 export const tokenFetch = async (url, options = {}) => {
-  const baseURL = process.env.NEXT_PUBLIC_API_URL;
   const token = await getServerSideToken("accessToken");
   const defaultOptions = {
     headers: {
@@ -70,14 +69,14 @@ export const tokenFetch = async (url, options = {}) => {
     headers: mergedHeaders,
   };
 
-  let response = await fetch(`${baseURL}${url}`, mergedOptions);
+  let response = await fetch(url, mergedOptions);
 
   const REFRESH_PATH = "/auth/refresh-token";
 
   if (response.status === 401 && url !== REFRESH_PATH) {
     let refreshResponse;
     try {
-      refreshResponse = await fetch(`${baseURL}${REFRESH_PATH}`, {
+      refreshResponse = await fetch(REFRESH_PATH, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
