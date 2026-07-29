@@ -17,8 +17,8 @@ export const userService = {
     params.append("includeMeta", "true");
     if (pageParam) params.append("cursor", pageParam);
     if (keyword) params.append("keyword", keyword);
-    if (grade) params.append("grade", grade);
-    if (genre) params.append("genre", genre);
+    if (grade?.length) params.append("grade", grade[0]);
+    if (genre?.length) params.append("genre", genre[0]);
 
     const data = await tokenFetch(`/users/me/inventories?${params.toString()}`);
     return data;
