@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Drawer } from "vaul";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import close from "@/assets/icons/close.svg";
 import Gnb from "../common/Gnb";
@@ -19,6 +19,7 @@ export default function ExchangeBuyerModal({ onClose }) {
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
+  const queryClient = useQueryClient();
 
   const postingId = params?.id;
   const cardId = searchParams.get("cardId"); // 선택한 내 카드 ID (userInventoryId)
@@ -80,7 +81,8 @@ export default function ExchangeBuyerModal({ onClose }) {
   // 5. 교환 제안 API 뮤테이션 (성공 시 success, 실패 시 에러 메시지를 담아 error 페이지로 라우팅)
   const exchangeMutation = useMutation({
     mutationFn: (payload) => marketService.requestExchange(postingId, payload),
-    onSuccess: () => {
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["myExchangeOffers"] });
       router.push(`/market-posting/${postingId}/buyer/exchange-success`);
     },
     onError: (error) => {
