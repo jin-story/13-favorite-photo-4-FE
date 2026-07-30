@@ -23,7 +23,10 @@ function UrlModal() {
     params.delete("modal");
     // params.delete("파라미터에 추가된 부분"); 추가해서 사용
     const query = params.toString();
-    router.push(query ? `${pathname}?${query}` : pathname, { scroll: false });
+    // push 대신 replace: 모달 쿼리를 히스토리에 남기지 않아야 뒤로가기 시 모달이 재오픈되지 않음
+    router.replace(query ? `${pathname}?${query}` : pathname, {
+      scroll: false,
+    });
   };
 
   return (

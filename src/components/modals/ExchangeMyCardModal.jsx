@@ -137,6 +137,7 @@ export default function ExchangeMyCardModal({ onClose }) {
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   // 모달 닫기 공통 처리
+  // 모달 쿼리 이동은 push 대신 replace로 해야 뒤로가기 시 모달이 재오픈되지 않음
   const handleClose = () => {
     if (postingId) {
       router.push(`/market-posting/${postingId}/buyer`);
