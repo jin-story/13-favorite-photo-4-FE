@@ -175,7 +175,7 @@ export default function EditMarketCardModal({ onClose }) {
               <section className="mt-[90px] tablet:mt-[120px] pc:mt-[140px]">
                 <Title type="exchange_info_modal" text="교환 희망 정보" />
 
-                <div className="mt-6 grid grid-cols-1 gap-4 tablet:grid-cols-2 pc:flex pc:gap-[40px]">
+                <div className="mt-6 grid grid-cols-1 gap-4  tablet:flex tablet:gap-[40px] tablet:justify-center">
                   <InputDropdown
                     label="등급"
                     placeholder="등급을 선택해 주세요"
@@ -198,13 +198,13 @@ export default function EditMarketCardModal({ onClose }) {
                   placeholder="설명을 입력해 주세요"
                   value={exchangeDescription}
                   onChange={setExchangeDescription}
-                  className="mt-[49.5px] max-w-[345px] tablet:max-w-[919px] tablet:mt-[35px] pc:max-w-[1080px] pc:mt-[34px]"
+                  className="mt-[49.5px] mx-auto tablet:max-w-[919px] tablet:mt-[35px] pc:max-w-[1080px] pc:mt-[34px]"
                 />
 
                 <div className="mt-6 flex gap-[15px] tablet:hidden">
                   <ButtonSecondary
                     variant="thinXS"
-                    className="flex-1"
+                    className="flex-1 border"
                     onClick={onClose}
                   >
                     취소하기
@@ -220,13 +220,13 @@ export default function EditMarketCardModal({ onClose }) {
                   </PrimaryButton>
                 </div>
 
-                <div className="hidden tablet:flex pc:hidden gap-[20px] mt-8 w-full">
-                  <ButtonSecondary className="flex-1" onClick={onClose}>
+                <div className="hidden tablet:flex pc:hidden gap-[20px] mt-8 w-full text-noto-16-bold mx-auto tablet:max-w-[919px] ">
+                  <ButtonSecondary className="h-[55px] w-full border" onClick={onClose}>
                     취소하기
                   </ButtonSecondary>
 
                   <PrimaryButton
-                    className="flex-1"
+                    className="h-[55px] w-full"
                     onClick={handleSubmit}
                     disabled={isSubmitting}
                   >
@@ -235,7 +235,7 @@ export default function EditMarketCardModal({ onClose }) {
                 </div>
 
                 <div className="hidden pc:flex gap-[40px] mt-[61px] justify-end">
-                  <ButtonSecondary variant="thin" onClick={onClose}>
+                  <ButtonSecondary variant="thin" onClick={onClose} className="border">
                     취소하기
                   </ButtonSecondary>
 
