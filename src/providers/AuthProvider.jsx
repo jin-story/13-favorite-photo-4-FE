@@ -14,6 +14,7 @@ const AuthContext = createContext({
   logout: () => {},
   user: null,
   register: () => {},
+  refreshUser: () => {},
 });
 
 export const useAuth = () => {
