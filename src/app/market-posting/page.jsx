@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Drawer } from "vaul";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
 import Image from "next/image";
 import { useAuth } from "@/providers/AuthProvider";
@@ -17,6 +17,7 @@ import SheetFilter from "@/components/common/SheetFilter";
 import ButtonPrimary from "@/components/common/ButtonPrimary";
 import Photocard from "@/components/common/Photocard";
 import filterIcon from "@/assets/icons/filter.svg";
+import refreshIcon from "@/assets/icons/exchange.svg";
 import Gnb from "@/components/common/Gnb";
 import LoginRequiredModal from "./_components/LoginRequiredModal";
 import SellModal from "./_components/SellModal";
@@ -72,6 +73,16 @@ export default function MarketplacePage() {
     meta: { name: "마켓플레이스 목록" },
   });
 
+  const { data: allData } = useQuery({
+    queryKey: ["market-postings-all", debouncedSearch],
+    queryFn: () =>
+      marketPostingService.fetchMarketPostings({
+        keyword: debouncedSearch,
+        limit: 100,
+      }),
+    meta: { name: "마켓플레이스 전체 목록" },
+  });
+
   const { ref: sentinelRef, inView } = useInView();
 
   useEffect(() => {
@@ -94,6 +105,36 @@ export default function MarketplacePage() {
         description: posting.description || posting.photoCard?.description,
       })),
     ) || [];
+
+  const allCards =
+    allData?.list.map((posting) => ({
+      grade: posting.photoCard?.grade,
+      genre: posting.photoCard?.genre,
+      availability: posting.remainingQuantity === 0 ? "SOLD_OUT" : "SALE",
+    })) || [];
+
+  const previewCards = allCards.filter((card) => {
+    if (sheetFilter.grade.length > 0 && !sheetFilter.grade.includes(card.grade)) {
+      return false;
+    }
+    if (sheetFilter.genre.length > 0 && !sheetFilter.genre.includes(card.genre)) {
+      return false;
+    }
+    if (
+      sheetFilter.availability.length > 0 &&
+      !sheetFilter.availability.includes(card.availability)
+    ) {
+      return false;
+    }
+    return true;
+  });
+
+  const previewCounts = allCards.reduce((acc, card) => {
+    acc[card.grade] = (acc[card.grade] || 0) + 1;
+    acc[card.genre] = (acc[card.genre] || 0) + 1;
+    acc[card.availability] = (acc[card.availability] || 0) + 1;
+    return acc;
+  }, {});
 
   useEffect(() => {
     const handleResize = () => {
@@ -120,6 +161,20 @@ export default function MarketplacePage() {
     }
   }
 
+  const isFiltered =
+    debouncedSearch.trim().length > 0 ||
+    grade.length > 0 ||
+    genre.length > 0 ||
+    availability.length > 0;
+
+  const handleResetAll = () => {
+    setSearch("");
+    setGrade([]);
+    setGenre([]);
+    setAvailability([]);
+    setSheetFilter({ grade: [], genre: [], availability: [] });
+  };
+
   function handleCardClick(card) {
     if (!isLoggedIn) {
       openModal(<LoginRequiredModal />);
@@ -139,12 +194,14 @@ export default function MarketplacePage() {
       <Gnb />
 
       <div className="mx-auto flex w-full max-w-[1920px] flex-col gap-[20px] px-[15px] pt-[80px] pb-[90px] tablet:px-5 tablet:pt-[110px] tablet:pb-[40px] pc:px-[220px] pc:pt-[140px] pc:pb-[60px]">
-        <Title
-          type="title_button"
-          text="마켓플레이스"
-          buttonText="나의 포토카드 판매하기"
-          onButtonClick={handleSellClick}
-        />
+        <div className="hidden tablet:block">
+          <Title
+            type="title_button"
+            text="마켓플레이스"
+            buttonText="나의 포토카드 판매하기"
+            onButtonClick={handleSellClick}
+          />
+        </div>
 
         <div className="flex flex-col gap-[15px] tablet:flex-row tablet:items-center tablet:justify-between">
           <div className="flex items-center gap-[15px] tablet:gap-[20px] pc:gap-[30px]">
@@ -154,7 +211,7 @@ export default function MarketplacePage() {
               className="w-full tablet:w-[200px] pc:w-[320px]"
             />
 
-            <div className="hidden items-start gap-[35px] tablet:flex pc:gap-[45px]">
+            <div className="hidden items-start gap-[35px] tablet:flex tablet:gap-[20px] pc:gap-[45px]">
               <Dropdown
                 type="grade"
                 value={grade[0]}
@@ -170,6 +227,16 @@ export default function MarketplacePage() {
                 value={availability[0]}
                 onChange={(value) => setAvailability(value ? [value] : [])}
               />
+              {isFiltered && (
+                <button
+                  type="button"
+                  onClick={handleResetAll}
+                  className="flex items-center justify-center p-2 text-gray-400 hover:text-white transition-colors animate-fade-in"
+                  aria-label="필터 초기화"
+                >
+                  <Image src={refreshIcon} alt="초기화" width={20} height={20} />
+                </button>
+              )}
             </div>
           </div>
 
@@ -195,7 +262,8 @@ export default function MarketplacePage() {
           filter={sheetFilter}
           setFilter={setSheetFilter}
           singleSelectCategories={["grade", "genre", "availability"]}
-          totalCount={cards.length}
+          counts={previewCounts}
+          totalCount={previewCards.length}
           onApply={(appliedFilter) => {
             setGrade(appliedFilter.grade);
             setGenre(appliedFilter.genre);
@@ -223,7 +291,7 @@ export default function MarketplacePage() {
         )}
 
         {!isPending && !isError && cards.length > 0 && (
-          <div className="flex flex-wrap gap-[5px] tablet:gap-5 pc:gap-5">
+          <div className="mx-auto grid max-w-[345px] grid-cols-2 place-items-center gap-[5px] tablet:max-w-[704px] tablet:gap-5 pc:max-w-[1480px] pc:grid-cols-3 pc:gap-20">
             {cards.map((card) => (
               <button
                 key={card.id}
@@ -240,7 +308,7 @@ export default function MarketplacePage() {
         <div ref={sentinelRef} className="h-[1px]" />
       </div>
 
-      <div className="fixed inset-x-0 bottom-0 z-30 flex justify-center bg-black px-[15px] py-[15px] tablet:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-30 flex justify-center px-[15px] py-[15px] tablet:hidden">
         <ButtonPrimary variant="thin" onClick={handleSellClick}>
           나의 포토카드 판매하기
         </ButtonPrimary>
