@@ -2,6 +2,7 @@
 
 import PrimaryButton from "@/components/common/ButtonPrimary";
 import { marketService } from "@/lib/services/marketService";
+import { useAuth } from "@/providers/AuthProvider";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
@@ -16,9 +17,13 @@ export default function PurchaseModal({
   onClose,
 }) {
   const router = useRouter();
+  const { refreshUser } = useAuth();
   const purchaseMutation = useMutation({
     mutationFn: () => marketService.purchasePosting(id, quantity),
     onSuccess: () => {
+      // 구매로 차감된 포인트를 GNB에 즉시 반영
+      refreshUser();
+
       // 모달 닫기
       if (onClose) onClose();
 
