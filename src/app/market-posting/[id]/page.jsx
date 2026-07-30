@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter, usePathname, useParams } from "next/navigation";
 import Gnb from "@/components/common/Gnb";
 import PhotoCardInfo from "@/components/common/PhotoCardInfo";
@@ -28,38 +28,40 @@ export default function SellingPhotocardDetails() {
 
   const [marketPosting, setMarketPosting] = useState(null);
   const [exchangeCards, setExchangeCards] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const fetchMarketPosting = async () => {
+  const fetchMarketPosting = useCallback(async () => {
     try {
       const data = await getMarketPosting(id);
-
       setMarketPosting(data);
     } catch (error) {
-      console.error(error);
+      console.error("판매글 조회 실패:", error);
     }
-  };
+  }, [id]);
 
-  const fetchExchangeCards = async () => {
+  const fetchExchangeCards = useCallback(async () => {
     try {
       const data = await getExchangeProposals(id);
 
-      const cards = data.map((proposal) => ({
-        id: proposal.id,
-        makerNickname: proposal.offeredInventory.photoCard.creator.nickname,
-        name: proposal.offeredInventory.photoCard.name,
-        grade: proposal.offeredInventory.photoCard.grade,
-        genre: proposal.offeredInventory.photoCard.genre,
-        price: proposal.offeredInventory.photoCard.minPrice,
-        imgUrl: proposal.offeredInventory.photoCard.imageUrl,
-        description: proposal.message,
-        status: proposal.status,
-      }));
+      const cards = data
+        .filter((proposal) => proposal.status === "PENDING")
+        .map((proposal) => ({
+          id: proposal.id,
+          makerNickname: proposal.offeredInventory.photoCard.creator.nickname,
+          name: proposal.offeredInventory.photoCard.name,
+          grade: proposal.offeredInventory.photoCard.grade,
+          genre: proposal.offeredInventory.photoCard.genre,
+          price: proposal.offeredInventory.photoCard.minPrice,
+          imgUrl: proposal.offeredInventory.photoCard.imageUrl,
+          description: proposal.message,
+          status: proposal.status,
+        }));
 
       setExchangeCards(cards);
     } catch (error) {
       console.error(error);
     }
-  };
+  }, [id]);
 
   //판매글 먼저 조회
   useEffect(() => {
@@ -67,7 +69,7 @@ export default function SellingPhotocardDetails() {
       fetchMarketPosting();
       fetchExchangeCards();
     }
-  }, [id]);
+  }, [id, fetchMarketPosting, fetchExchangeCards]);
 
   if (!marketPosting) return <div>로딩</div>;
 
@@ -91,6 +93,7 @@ export default function SellingPhotocardDetails() {
         </p>
 
         <button
+          disabled={isSubmitting}
           className="flex items-center justify-center w-[120px] h-[55px] mt-[10px] bg-main text-black text-noto-16-bold tablet:w-[140px] pc:w-[170px] pc:h-[60px] pc:mt-[20px] pc:text-noto-18-bold"
           onClick={async () => {
             try {
@@ -101,6 +104,8 @@ export default function SellingPhotocardDetails() {
               router.push("/my-sale");
             } catch (e) {
               console.error(e);
+            } finally {
+              setIsSubmitting(false);
             }
           }}
         >
@@ -123,6 +128,7 @@ export default function SellingPhotocardDetails() {
         </p>
 
         <button
+          disabled={isSubmitting}
           className="flex bg-main text-noto-16-bold text-black items-center justify-center w-[120px] h-[55px] mt-[10px] pc:w-[170px] pc:h-[60px] pc:mt-[20px] pc:text-noto-18-bold tablet:w-[140px]"
           onClick={async () => {
             try {
@@ -130,9 +136,11 @@ export default function SellingPhotocardDetails() {
 
               closeModal();
 
-              fetchExchangeCards();
+              await fetchExchangeCards();
             } catch (e) {
               console.error(e);
+            } finally {
+              setIsSubmitting(false);
             }
           }}
         >
@@ -153,6 +161,7 @@ export default function SellingPhotocardDetails() {
         </p>
 
         <button
+          disabled={isSubmitting}
           className="flex bg-main text-noto-16-bold text-black items-center justify-center w-[120px] h-[55px] mt-[10px] pc:w-[170px] pc:h-[60px] pc:mt-[20px] pc:text-noto-18-bold tablet:w-[140px]"
           onClick={async () => {
             try {
@@ -160,9 +169,11 @@ export default function SellingPhotocardDetails() {
 
               closeModal();
 
-              fetchExchangeCards();
+              await fetchExchangeCards();
             } catch (e) {
               console.error(e);
+            } finally {
+              setIsSubmitting(false);
             }
           }}
         >
