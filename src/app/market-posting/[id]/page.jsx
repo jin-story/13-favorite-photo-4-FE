@@ -75,7 +75,8 @@ export default function SellingPhotocardDetails() {
 
   //수정 하기
   const handleEdit = () => {
-    router.push(`${pathname}?modal=edit-card&id=${marketPosting.id}`, {
+    // 모달 쿼리는 push 대신 replace로 이동해야 뒤로가기 시 모달이 재오픈되지 않음
+    router.replace(`${pathname}?modal=edit-card&id=${marketPosting.id}`, {
       scroll: false,
     });
   };
