@@ -48,11 +48,14 @@ export default function MyGallery() {
     useInfiniteQuery({
       queryKey: ["myInventories", debouncedKeyword, filter.grade, filter.genre],
       queryFn: ({ pageParam }) =>
+        // getMyInventories(userService.js)는 grade/genre를 배열로 받아 내부에서 [0]번째 값을 꺼내 씁니다.
+        // 여기서 먼저 [0]으로 문자열을 뽑아 넘기면, 서비스 쪽에서 그 문자열의 첫 글자만 잘려 전송돼
+        // 백엔드가 잘못된 등급 값으로 인식해 에러가 났습니다. 배열 그대로 넘겨야 합니다.
         userService.getMyInventories({
           pageParam,
           keyword: debouncedKeyword || "",
-          grade: filter.grade?.[0] || "",
-          genre: filter.genre?.[0] || "",
+          grade: filter.grade,
+          genre: filter.genre,
           includeMeta: true,
           limit: 12,
         }),
