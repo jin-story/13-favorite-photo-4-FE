@@ -1,22 +1,22 @@
 "use client";
 
-import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
-import { useRouter, usePathname, useParams } from "next/navigation";
+import ExchangeCard from "@/components/common/ExchangeCard";
 import Gnb from "@/components/common/Gnb";
 import PhotoCardInfo from "@/components/common/PhotoCardInfo";
-import { useModal } from "@/providers/ModalProvider";
 import SellerCardAction from "@/components/common/SellerCardAction";
 import Title from "@/components/common/Title";
-import ExchangeCard from "@/components/common/ExchangeCard";
 import {
-  getMarketPosting,
   deleteMarketPosting,
+  getMarketPosting,
 } from "@/lib/services/marketPostingService";
+import { useModal } from "@/providers/ModalProvider";
+import Image from "next/image";
+import { useParams, usePathname, useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 
 import {
-  getExchangeProposals,
   approveExchangeProposal,
+  getExchangeProposals,
   rejectExchangeProposal,
 } from "@/lib/services/exchangeProposalService";
 
@@ -101,7 +101,7 @@ export default function SellingPhotocardDetails() {
 
               closeModal();
 
-              router.push("/my-sale");
+              router.push("/my-listings");
             } catch (e) {
               console.error(e);
             } finally {
