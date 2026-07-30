@@ -208,7 +208,7 @@ export default function MarketplacePage() {
               className="w-full tablet:w-[200px] pc:w-[320px]"
             />
 
-            <div className="hidden items-start gap-[35px] tablet:flex pc:gap-[45px]">
+            <div className="hidden items-start gap-[35px] tablet:flex tablet:gap-[20px] pc:gap-[45px]">
               <Dropdown
                 type="grade"
                 value={grade[0]}
