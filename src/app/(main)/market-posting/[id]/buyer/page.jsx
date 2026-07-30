@@ -73,7 +73,11 @@ export default function MarketplacePostingDetailPage({ params }) {
     if (!Array.isArray(allMyExchangeOffers)) return [];
 
     return allMyExchangeOffers
-      .filter((offer) => offer.status === "PENDING")
+      .filter(
+        (offer) =>
+          offer.status === "PENDING" &&
+          String(offer.marketPostingId) === String(id),
+      )
       .map((offer) => {
         const photoCard = offer.offeredInventory?.photoCard || {};
 
@@ -90,7 +94,7 @@ export default function MarketplacePostingDetailPage({ params }) {
           status: offer.status,
         };
       });
-  }, [allMyExchangeOffers]);
+  }, [allMyExchangeOffers, id]);
 
   const hasMyExchangeOffers = isLoggedIn && myExchangeOffers.length > 0;
 
