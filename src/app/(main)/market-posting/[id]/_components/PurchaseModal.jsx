@@ -3,7 +3,7 @@
 import PrimaryButton from "@/components/common/ButtonPrimary";
 import { marketService } from "@/lib/services/marketService";
 import { useAuth } from "@/providers/AuthProvider";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
 import React from "react";
@@ -18,11 +18,14 @@ export default function PurchaseModal({
 }) {
   const router = useRouter();
   const { refreshUser } = useAuth();
+  const queryClient = useQueryClient();
   const purchaseMutation = useMutation({
     mutationFn: () => marketService.purchasePosting(id, quantity),
     onSuccess: () => {
       // 구매로 차감된 포인트를 GNB에 즉시 반영
       refreshUser();
+      // 구매로 늘어난 보유 카드를 마이갤러리에도 즉시 반영
+      queryClient.invalidateQueries({ queryKey: ["myInventories"] });
 
       // 모달 닫기
       if (onClose) onClose();
