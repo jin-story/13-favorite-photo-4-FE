@@ -247,7 +247,7 @@ export default function MarketplacePage() {
         )}
 
         {!isPending && !isError && cards.length > 0 && (
-          <div className="flex flex-wrap gap-[5px] tablet:gap-5 pc:gap-5">
+          <div className="mx-auto grid max-w-[345px] grid-cols-2 place-items-center gap-[5px] tablet:max-w-[704px] tablet:gap-5 pc:max-w-[1480px] pc:grid-cols-3 pc:gap-20">
             {cards.map((card) => (
               <button
                 key={card.id}

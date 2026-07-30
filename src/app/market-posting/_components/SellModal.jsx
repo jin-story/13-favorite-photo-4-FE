@@ -184,7 +184,7 @@ export default function SellModal() {
       )}
 
       {!isPending && !isError && cards.length > 0 && (
-        <div className="flex max-h-[60vh] flex-wrap gap-[5px] overflow-y-auto tablet:gap-[20px] pc:gap-[40px] [scrollbar-color:#5a5a5a_transparent] [scrollbar-width:thin] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-[2px] [&::-webkit-scrollbar-thumb]:bg-gray-400 [&::-webkit-scrollbar-track]:bg-transparent">
+        <div className="mx-auto grid max-h-[60vh] max-w-[345px] grid-cols-2 place-items-center gap-[5px] overflow-y-auto tablet:max-w-none tablet:gap-[20px] pc:gap-[40px] [scrollbar-color:#5a5a5a_transparent] [scrollbar-width:thin] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-[2px] [&::-webkit-scrollbar-thumb]:bg-gray-400 [&::-webkit-scrollbar-track]:bg-transparent">
           {cards.map((card) => (
             <button
               key={card.id}
