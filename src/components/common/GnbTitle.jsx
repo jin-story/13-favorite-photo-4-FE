@@ -26,7 +26,7 @@ export default function GnbTitle() {
       "/my-gallery/success": "",
       "/my-gallery/error": "",
 
-      "/my-sales": "나의 판매 포토카드",
+      "/my-listings": "나의 판매 포토카드",
       "/notifications": "알림",
     };
     title = titleMap[pathname] ?? "최애의포토";
