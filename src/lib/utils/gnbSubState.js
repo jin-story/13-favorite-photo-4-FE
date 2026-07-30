@@ -18,6 +18,8 @@ export const GNB_SUB_PATH_TITLES = {
 
   "/my-listings": "나의 판매 포토카드",
   "/notifications": "알림",
+  "/market-posting/sell-success": "",
+  "/market-posting/sell-fail": "",
 };
 
 // 정확히 이 경로가 아니라, 이 접두사로 시작하는 하위 경로 전체에 적용되는 규칙입니다.
@@ -27,9 +29,18 @@ export const GNB_SUB_PATH_PREFIX_TITLES = [
   { prefix: "/market-posting/", title: "마켓플레이스" },
 ];
 
+// [id]처럼 동적 세그먼트가 껴 있어 정확 일치로는 잡을 수 없는 경로들입니다.
+// 끝부분(suffix)만 고정돼 있으므로 이걸로 매칭하고, prefix 규칙보다 먼저 검사해서 덮어씁니다.
+export const GNB_SUB_PATH_SUFFIX_TITLES = [
+  { suffix: "/buyer/purchase-error", title: "" },
+  { suffix: "/buyer/purchase-success", title: "" },
+  { suffix: "/buyer/exchange-error", title: "" },
+  { suffix: "/buyer/exchange-success", title: "" },
+];
+
 const DEFAULT_TITLE = "최애의포토";
 
-// modal이 우선순위를 가지며, 없으면 pathname 매칭 결과를 사용합니다.
+// 우선순위: modal > 정확 일치 > suffix 일치 > prefix 일치
 export function getGnbSubState(pathname, modal) {
   if (modal && GNB_SUB_MODAL_TITLES[modal] !== undefined) {
     return { isSub: true, title: GNB_SUB_MODAL_TITLES[modal] };
@@ -37,6 +48,13 @@ export function getGnbSubState(pathname, modal) {
 
   if (pathname in GNB_SUB_PATH_TITLES) {
     return { isSub: true, title: GNB_SUB_PATH_TITLES[pathname] };
+  }
+
+  const suffixMatch = GNB_SUB_PATH_SUFFIX_TITLES.find(({ suffix }) =>
+    pathname.endsWith(suffix),
+  );
+  if (suffixMatch) {
+    return { isSub: true, title: suffixMatch.title };
   }
 
   const prefixMatch = GNB_SUB_PATH_PREFIX_TITLES.find(({ prefix }) =>

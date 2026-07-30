@@ -73,7 +73,11 @@ export default function MarketplacePostingDetailPage({ params }) {
     if (!Array.isArray(allMyExchangeOffers)) return [];
 
     return allMyExchangeOffers
-      .filter((offer) => offer.status === "PENDING")
+      .filter(
+        (offer) =>
+          offer.status === "PENDING" &&
+          String(offer.marketPostingId) === String(id),
+      )
       .map((offer) => {
         const photoCard = offer.offeredInventory?.photoCard || {};
 
@@ -90,7 +94,7 @@ export default function MarketplacePostingDetailPage({ params }) {
           status: offer.status,
         };
       });
-  }, [allMyExchangeOffers]);
+  }, [allMyExchangeOffers, id]);
 
   const hasMyExchangeOffers = isLoggedIn && myExchangeOffers.length > 0;
 
@@ -116,7 +120,8 @@ export default function MarketplacePostingDetailPage({ params }) {
   };
 
   const handleExchange = () => {
-    router.push("?modal=myCard");
+    // 모달 쿼리는 push 대신 replace로 이동해야 뒤로가기 시 모달이 재오픈되지 않음
+    router.replace("?modal=myCard");
   };
 
   const handleCancelExchangeOffer = (offer) => {
