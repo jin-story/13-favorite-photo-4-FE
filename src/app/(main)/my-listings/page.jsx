@@ -7,6 +7,7 @@ import InputSearch from "@/components/common/InputSearch";
 import "swiper/css";
 
 import React, { useMemo, useState } from "react";
+import { useInView } from "react-intersection-observer";
 import { Swiper, SwiperSlide } from "swiper/react";
 import Photocard from "@/components/common/Photocard";
 import { useAuth } from "@/providers/AuthProvider";
@@ -30,6 +31,10 @@ const MOCK_GENRES = [
   "FAN_CLUB",
   "ETC",
 ];
+
+// 백엔드가 이 목록은 페이지네이션 없이 전체를 한 번에 내려주기 때문에,
+// 프론트에서만 한 번에 보여줄 개수를 잘라서 무한스크롤처럼 동작시킵니다.
+const PAGE_SIZE = 12;
 
 export default function MyListings() {
   const route = useRouter();
@@ -222,6 +227,31 @@ export default function MyListings() {
     filter.sale.length > 0 ||
     filter.availability.length > 0;
 
+  // 5. 무한스크롤 - 검색/필터 결과 중 앞에서부터 일부만 노출하고,
+  // 스크롤이 하단 감지 영역(sentinel)에 닿으면 노출 개수를 늘립니다.
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+
+  // 검색어/필터가 바뀌면 노출 개수를 처음으로 되돌립니다.
+  // (렌더링 중 이전 값과 비교해서 바뀐 경우에만 재설정 — effect 없이 처리)
+  const filterSignature = JSON.stringify({ debouncedKeyword, filter });
+  const [prevFilterSignature, setPrevFilterSignature] =
+    useState(filterSignature);
+  if (filterSignature !== prevFilterSignature) {
+    setPrevFilterSignature(filterSignature);
+    setVisibleCount(PAGE_SIZE);
+  }
+
+  const visibleCards = filteredCards.slice(0, visibleCount);
+  const hasMore = visibleCount < filteredCards.length;
+
+  const { ref: sentinelRef } = useInView({
+    onChange: (inView) => {
+      if (inView && hasMore) {
+        setVisibleCount((prev) => prev + PAGE_SIZE);
+      }
+    },
+  });
+
   return (
     <main className="mb-20 max-w-[345px] flex flex-col w-full gap-[15px] tablet:max-w-[704px] pt-5 tablet:pt-10 tablet:gap-10 pc:max-w-[1480px] pc:pt-[60px] mx-auto">
       <Title
@@ -328,8 +358,8 @@ export default function MyListings() {
       </section>
       {/* 카드 목록 그리드 영역 */}
       <section className="grid grid-cols-2 pc:grid-cols-3 gap-[5px] place-items-center tablet:pt-5 tablet:gap-5 pc:gap-20">
-        {filteredCards.length > 0
-          ? filteredCards.map((cardData) => (
+        {visibleCards.length > 0
+          ? visibleCards.map((cardData) => (
               <Photocard
                 key={cardData.id}
                 card={cardData}
@@ -343,6 +373,7 @@ export default function MyListings() {
               </div>
             )}
       </section>
+      {hasMore && <div ref={sentinelRef} className="h-1 w-full" />}
     </main>
   );
 }
