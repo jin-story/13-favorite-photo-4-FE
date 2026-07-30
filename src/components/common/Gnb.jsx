@@ -99,7 +99,7 @@ function MobileMainHeader({
           type="button"
           aria-label="알림보기"
           aria-expanded={isNotificationOpen}
-          onClick={() => setIsNotificationOpen(true)}
+          onClick={() => setIsNotificationOpen((prev) => !prev)}
           className="cursor-pointer"
         >
           <Image src={alarmIcon} alt="" width={22} />
@@ -116,7 +116,7 @@ function MobileMainHeader({
   );
 }
 
-function MobileSubHeader({ onBackClick }) {
+function MobileSubHeader({ onBackClick, titleOverride }) {
   return (
     <>
       {/* Left */}
@@ -125,7 +125,11 @@ function MobileSubHeader({ onBackClick }) {
       </button>
 
       {/* Center */}
-      <GnbTitle />
+      {titleOverride !== undefined ? (
+        <h1 className="text-white text-baskin-20-regular">{titleOverride}</h1>
+      ) : (
+        <GnbTitle />
+      )}
 
       {/* Right */}
       <div className="w-[24px]" />
@@ -135,13 +139,13 @@ function MobileSubHeader({ onBackClick }) {
 
 // Suspense fallback 전용: GnbTitle(useSearchParams)을 렌더링하면 fallback 안에서 또
 // suspend가 발생할 수 있어, 정적인 텍스트만 보여주는 안전한 버전을 별도로 둡니다.
-function MobileSubHeaderFallback({ onBackClick }) {
+function MobileSubHeaderFallback({ onBackClick, title = "최애의포토" }) {
   return (
     <>
       <button type="button" onClick={onBackClick} className="cursor-pointer">
         <Image src={backIcon} alt="뒤로가기" width={22} height={22} />
       </button>
-      <h1 className="text-white text-baskin-20-regular">최애의포토</h1>
+      <h1 className="text-white text-baskin-20-regular">{title}</h1>
       <div className="w-[24px]" />
     </>
   );
@@ -151,8 +155,10 @@ function MobileSubHeaderFallback({ onBackClick }) {
 // GnbTitle이 사용하는 것과 동일한 gnbSubState 규칙을 기준으로 삼기 때문에,
 // 저 페이지를 벗어나거나 모달이 닫히면(경로/쿼리 변경) 자동으로 main으로 돌아갑니다.
 // mobileTypeOverride가 주어지면 (예: 동적 라우트처럼 규칙에 없는 페이지) 그 값을 우선합니다.
+// forceSubTitle이 주어지면 (예: 모바일 전체화면 알림) 경로/모달 판정을 무시하고 그 타이틀로 sub 헤더를 강제합니다.
 function MobileHeaderResolver({
   mobileTypeOverride,
+  forceSubTitle,
   onBackClick,
   isLoggedIn,
   openSidebar,
@@ -162,6 +168,10 @@ function MobileHeaderResolver({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const modal = searchParams.get("modal");
+
+  if (forceSubTitle !== undefined) {
+    return <MobileSubHeader onBackClick={onBackClick} titleOverride={forceSubTitle} />;
+  }
 
   const { isSub } = getGnbSubState(pathname, modal);
   const resolvedType = mobileTypeOverride ?? (isSub ? "sub" : "main");
@@ -361,7 +371,12 @@ export default function Gnb({
       >
         <Suspense
           fallback={
-            mobileType === "sub" ? (
+            isNotificationOpen ? (
+              <MobileSubHeaderFallback
+                title="알림"
+                onBackClick={() => setIsNotificationOpen(false)}
+              />
+            ) : mobileType === "sub" ? (
               <MobileSubHeaderFallback onBackClick={handleBackClick} />
             ) : (
               <MobileMainHeader
@@ -375,7 +390,12 @@ export default function Gnb({
         >
           <MobileHeaderResolver
             mobileTypeOverride={mobileType}
-            onBackClick={handleBackClick}
+            forceSubTitle={isNotificationOpen ? "알림" : undefined}
+            onBackClick={
+              isNotificationOpen
+                ? () => setIsNotificationOpen(false)
+                : handleBackClick
+            }
             isLoggedIn={isLoggedIn}
             openSidebar={openSidebar}
             isNotificationOpen={isNotificationOpen}
@@ -387,7 +407,7 @@ export default function Gnb({
       {/* ================= Mobile 사이드바 (프로필) ================= */}
       {isLoggedIn && isSidebarOpen && (
         <div
-          className="fixed inset-0 z-50 flex bg-black/80 tablet:hidden"
+          className="fixed inset-0 z-[1000] flex bg-black/80 tablet:hidden"
           onClick={(event) => {
             if (event.target === event.currentTarget) setIsSidebarOpen(false);
           }}
@@ -404,23 +424,11 @@ export default function Gnb({
         </div>
       )}
 
-      {/* ================= Mobile 알림 (전체 화면) ================= */}
+      {/* ================= Mobile 알림 (전체 화면) =================
+          헤더는 위의 고정 Mobile Gnb가 "알림" sub 타입으로 자동 전환되어 보여주므로,
+          여기서는 그 높이(60px)만큼 여백을 두고 목록만 렌더링합니다. */}
       {isLoggedIn && isNotificationOpen && (
-        <div className="fixed inset-0 z-50 flex flex-col bg-black tablet:hidden">
-          <header className="flex h-[60px] w-full shrink-0 items-center justify-between px-[20px] bg-black">
-            <button
-              type="button"
-              onClick={() => setIsNotificationOpen(false)}
-              className="cursor-pointer"
-            >
-              <Image src={backIcon} alt="뒤로가기" width={22} height={22} />
-            </button>
-
-            <h1 className="text-white text-baskin-20-regular">알림</h1>
-
-            <div className="w-[22px]" />
-          </header>
-
+        <div className="fixed inset-0 z-50 flex flex-col bg-black pt-[60px] tablet:hidden">
           <div className="flex-1 overflow-y-auto">
             <MobileNotification notifications={notification ?? []} />
           </div>
