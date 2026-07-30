@@ -26,7 +26,7 @@ const QuantityStepper = ({
   return (
     <div
       className={clsx(
-        "flex flex-col items-center justify-between rounded-[2px] border border-[#DDDDDD] bg-[#0F0F0F]",
+        "flex flex-col items-center justify-between rounded-[2px] border border-[#DDDDDD]",
         "h-[40px] px-2.5 py-2",
         "pc:h-[45px] pc:px-3 pc:py-2.5",
         className,

@@ -83,7 +83,7 @@ const MyCardDetailSaleForm = ({
   };
 
   return (
-    <section className={clsx("w-full bg-[#0F0F0F] text-white", className)}>
+    <section className={clsx("w-full text-white", className)}>
       <div className="flex items-center justify-between gap-4">
         <div className="flex min-w-0 items-center gap-3">
           <Grade type="detail" grade={grade} />

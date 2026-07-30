@@ -1,10 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import Title from "@/components/common/Title";
+import { Drawer } from "vaul";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import close from "@/assets/icons/close.svg";
+import Gnb from "../common/Gnb";
+import Title from "@/components/common/Title";
 import MyCardDetailSaleForm from "../common/MyCardDetailSaleForm";
 import InputDropdown from "../common/InputDropdown";
 import InputTextbox from "../common/InputTextbox";
@@ -105,125 +108,150 @@ export default function EditMarketCardModal({ onClose }) {
   };
 
   return (
-    <div className="max-w-[1160px] max-h-[90vh] overflow-y-auto rounded-[2px] border-gray-500 bg-black px-5 py-8 text-white tablet:px-10 tablet:bg-gray-500 pc:px-[120px] pc:py-[60px]">
-      <div className="hidden tablet:flex pc:hidden justify-center mb-4">
-        <div className="w-12 h-1.5 bg-gray-600 rounded-full" />
-      </div>
+    <Drawer.Root open={true} onOpenChange={(open) => !open && onClose?.()}>
+      <Drawer.Portal>
+        {/* 백드롭 */}
+        <Drawer.Overlay className="fixed inset-0 z-[9999] bg-black/80" />
 
-      <section className="mx-auto w-full">
-        <p className="hidden text-gray-300 tablet:text-baskin-18 tablet:block pc:text-baskin-24">
-          수정하기
-        </p>
-
-        <Title
-          type="card_detail"
-          text={marketPosting.photoCard.name}
-          className="top-0 pc:mt-[40px] tablet:mt-[40px]"
-        />
-
-        <div className="mt-6 grid grid-cols-1 tablet:grid-cols-2 tablet:gap-6 pc:grid-cols-[1fr_440px] pc:gap-[80px]">
-          <div className="relative aspect-[4/3] w-full overflow-hidden rounded bg-gray-800 tablet:aspect-[342/256] pc:aspect-[960/720]">
-            <Image
-              src={marketPosting.photoCard.imageUrl}
-              alt={marketPosting.photoCard.name}
-              fill
-              priority
-              className="object-cover"
-            />
-          </div>
-
-          <aside className="w-full">
-            <MyCardDetailSaleForm
-              grade={marketPosting.photoCard.grade}
-              genre={marketPosting.photoCard.genre}
-              ownerNickname={marketPosting.seller.nickname}
-              quantity={quantity}
-              minQuantity={1}
-              maxQuantity={marketPosting.remainingQuantity}
-              price={price}
-              onQuantityChange={setQuantity}
-              onPriceChange={setPrice}
-            />
-          </aside>
-        </div>
-
-        <section className="mt-[90px] tablet:mt-[120px] pc:mt-[140px]">
-          <Title type="exchange_info_modal" text="교환 희망 정보" />
-
-          <div className="mt-6 grid grid-cols-1 gap-4 tablet:grid-cols-2 pc:flex pc:gap-[40px]">
-            <InputDropdown
-              label="등급"
-              placeholder="등급을 선택해 주세요"
-              options={GRADE_OPTIONS}
-              value={selectedGrade}
-              onChange={setSelectedGrade}
-            />
-
-            <InputDropdown
-              label="장르"
-              placeholder="장르를 선택해 주세요"
-              options={GENRE_OPTIONS}
-              value={selectedGenre}
-              onChange={setSelectedGenre}
-            />
-          </div>
-
-          <InputTextbox
-            label="교환 희망 설명"
-            placeholder="설명을 입력해 주세요"
-            value={exchangeDescription}
-            onChange={setExchangeDescription}
-            className="mt-[49.5px] max-w-[345px] tablet:max-w-[919px] tablet:mt-[35px] pc:max-w-[1080px] pc:mt-[34px]"
-          />
-
-          <div className="mt-6 flex gap-[15px] tablet:hidden">
-            <ButtonSecondary
-              variant="thinXS"
-              className="flex-1"
+        {/* 드로어 컨텐츠 영역 */}
+        <Drawer.Content className="fixed inset-x-0 bottom-0 z-[9999] flex flex-col bg-gray-500 text-white outline-none focus:outline-none focus-visible:outline-none h-full tablet:h-[95vh] tablet:rounded-t-[20px] pc:inset-auto pc:left-1/2 pc:top-1/2 pc:-translate-x-1/2 pc:-translate-y-1/2 pc:w-[1160px] pc:h-[85vh] pc:rounded-[0px] overflow-hidden">
+          {/* 상단 고정 영역 */}
+          <div className="relative flex-shrink-0">
+            <button
+              type="button"
               onClick={onClose}
+              className="hidden pc:flex absolute top-[30px] right-[30px] z-20 items-center justify-center w-8 h-8 text-gray-300 hover:text-white transition-colors"
+              aria-label="모달 닫기"
             >
-              취소하기
-            </ButtonSecondary>
+              <Image src={close} alt="닫기버튼" width={32} height={32} />
+            </button>
 
-            <PrimaryButton
-              variant="thinXS"
-              className="flex-1"
-              disabled={isSubmitting}
-              onClick={handleSubmit}
-            >
-              수정하기
-            </PrimaryButton>
+            <section className="tablet:hidden">
+              <Gnb mobileType="sub" />
+            </section>
+
+            <div className="hidden tablet:block mx-auto mt-3 h-1.5 w-12 rounded-full bg-gray-400 pc:hidden" />
           </div>
 
-          <div className="hidden tablet:flex pc:hidden gap-[20px] mt-8 w-full">
-            <ButtonSecondary className="flex-1" onClick={onClose}>
-              취소하기
-            </ButtonSecondary>
+          {/* 스크롤 영역 */}
+          <div className="flex-1 mt-[70px] tablet:mt-[30px] pc:mt-[60px] overflow-y-auto px-4 tablet:px-8 pb-12 [&::-webkit-scrollbar]:w-[8px] [&::-webkit-scrollbar-thumb]:bg-[var(--gray-gray400,#5A5A5A)] [&::-webkit-scrollbar-thumb]:rounded-[4px] [&::-webkit-scrollbar-track]:bg-transparent">
+            <div className="mx-auto w-full">
+              <p className="hidden text-gray-300 tablet:text-baskin-18 tablet:block pc:text-baskin-24">
+                수정하기
+              </p>
 
-            <PrimaryButton
-              className="flex-1"
-              onClick={handleSubmit}
-              disabled={isSubmitting}
-            >
-              수정하기
-            </PrimaryButton>
+              <Title
+                type="card_detail"
+                text={marketPosting.photoCard.name}
+                className="top-0 pc:mt-[40px] tablet:mt-[40px]"
+              />
+
+              <div className="mt-6 grid grid-cols-1 tablet:grid-cols-2 tablet:gap-6 pc:grid-cols-[1fr_440px] pc:gap-[80px]">
+                <div className="relative aspect-[4/3] w-full overflow-hidden rounded bg-gray-800 tablet:aspect-[342/256] pc:aspect-[960/720]">
+                  <Image
+                    src={marketPosting.photoCard.imageUrl}
+                    alt={marketPosting.photoCard.name}
+                    fill
+                    priority
+                    className="object-cover"
+                  />
+                </div>
+
+                <aside className="w-full mt-5 tablet:mt-0">
+                  <MyCardDetailSaleForm
+                    grade={marketPosting.photoCard.grade}
+                    genre={marketPosting.photoCard.genre}
+                    ownerNickname={marketPosting.seller.nickname}
+                    quantity={quantity}
+                    minQuantity={1}
+                    maxQuantity={marketPosting.remainingQuantity}
+                    price={price}
+                    onQuantityChange={setQuantity}
+                    onPriceChange={setPrice}
+                  />
+                </aside>
+              </div>
+
+              <section className="mt-[90px] tablet:mt-[120px] pc:mt-[140px]">
+                <Title type="exchange_info_modal" text="교환 희망 정보" />
+
+                <div className="mt-6 grid grid-cols-1 gap-4 tablet:grid-cols-2 pc:flex pc:gap-[40px]">
+                  <InputDropdown
+                    label="등급"
+                    placeholder="등급을 선택해 주세요"
+                    options={GRADE_OPTIONS}
+                    value={selectedGrade}
+                    onChange={setSelectedGrade}
+                  />
+
+                  <InputDropdown
+                    label="장르"
+                    placeholder="장르를 선택해 주세요"
+                    options={GENRE_OPTIONS}
+                    value={selectedGenre}
+                    onChange={setSelectedGenre}
+                  />
+                </div>
+
+                <InputTextbox
+                  label="교환 희망 설명"
+                  placeholder="설명을 입력해 주세요"
+                  value={exchangeDescription}
+                  onChange={setExchangeDescription}
+                  className="mt-[49.5px] max-w-[345px] tablet:max-w-[919px] tablet:mt-[35px] pc:max-w-[1080px] pc:mt-[34px]"
+                />
+
+                <div className="mt-6 flex gap-[15px] tablet:hidden">
+                  <ButtonSecondary
+                    variant="thinXS"
+                    className="flex-1"
+                    onClick={onClose}
+                  >
+                    취소하기
+                  </ButtonSecondary>
+
+                  <PrimaryButton
+                    variant="thinXS"
+                    className="flex-1"
+                    disabled={isSubmitting}
+                    onClick={handleSubmit}
+                  >
+                    수정하기
+                  </PrimaryButton>
+                </div>
+
+                <div className="hidden tablet:flex pc:hidden gap-[20px] mt-8 w-full">
+                  <ButtonSecondary className="flex-1" onClick={onClose}>
+                    취소하기
+                  </ButtonSecondary>
+
+                  <PrimaryButton
+                    className="flex-1"
+                    onClick={handleSubmit}
+                    disabled={isSubmitting}
+                  >
+                    수정하기
+                  </PrimaryButton>
+                </div>
+
+                <div className="hidden pc:flex gap-[40px] mt-[61px] justify-end">
+                  <ButtonSecondary variant="thin" onClick={onClose}>
+                    취소하기
+                  </ButtonSecondary>
+
+                  <PrimaryButton
+                    variant="thin"
+                    onClick={handleSubmit}
+                    disabled={isSubmitting}
+                  >
+                    수정하기
+                  </PrimaryButton>
+                </div>
+              </section>
+            </div>
           </div>
-
-          <div className="hidden pc:flex gap-[40px] mt-[61px] justify-end">
-            <ButtonSecondary variant="thin" onClick={onClose}>
-              취소하기
-            </ButtonSecondary>
-
-            <PrimaryButton
-              variant="thin"
-              onClick={handleSubmit}
-              disabled={isSubmitting}
-            >
-              수정하기
-            </PrimaryButton>
-          </div>
-        </section>
-      </section>
-    </div>
+        </Drawer.Content>
+      </Drawer.Portal>
+    </Drawer.Root>
   );
 }
