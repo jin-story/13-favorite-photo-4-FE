@@ -20,6 +20,7 @@ const AuthContext = createContext({
   logout: () => {},
   user: null,
   register: () => {},
+  refreshUser: () => {},
 });
 
 export const useAuth = () => {
@@ -117,7 +118,14 @@ export default function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, notification, login, logout, register }}
+      value={{
+        user,
+        notification,
+        login,
+        logout,
+        register,
+        refreshUser: getUser,
+      }}
     >
       {children}
     </AuthContext.Provider>

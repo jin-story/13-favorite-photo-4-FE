@@ -4,6 +4,7 @@ import Image from "next/image";
 import { use, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
+import { useInView } from "react-intersection-observer";
 import BuyerCardAction from "@/components/common/BuyerCardAction";
 import ButtonPrimary from "@/components/common/ButtonPrimary";
 import Grade from "@/components/common/Grade";
@@ -33,6 +34,10 @@ const getKorGenre = (genreKey) => {
   if (!genreKey) return "";
   return GENRE_MAP[genreKey] || genreKey;
 };
+
+// 백엔드가 이 목록은 페이지네이션 없이 전체를 한 번에 내려주기 때문에,
+// 프론트에서만 한 번에 보여줄 개수를 잘라서 무한스크롤처럼 동작시킵니다.
+const PAGE_SIZE = 12;
 
 export default function MarketplacePostingDetailPage({ params }) {
   const resolvedParams = use(params);
@@ -97,6 +102,18 @@ export default function MarketplacePostingDetailPage({ params }) {
   }, [allMyExchangeOffers, id]);
 
   const hasMyExchangeOffers = isLoggedIn && myExchangeOffers.length > 0;
+
+  const [visibleOfferCount, setVisibleOfferCount] = useState(PAGE_SIZE);
+  const visibleExchangeOffers = myExchangeOffers.slice(0, visibleOfferCount);
+  const hasMoreOffers = visibleOfferCount < myExchangeOffers.length;
+
+  const { ref: offersSentinelRef } = useInView({
+    onChange: (inView) => {
+      if (inView && hasMoreOffers) {
+        setVisibleOfferCount((prev) => prev + PAGE_SIZE);
+      }
+    },
+  });
 
   const requireLogin = () => {
     if (isLoggedIn) return true;
@@ -258,15 +275,20 @@ export default function MarketplacePostingDetailPage({ params }) {
                 교환 제시 목록을 불러오는 중입니다.
               </p>
             ) : (
-              <div className="mt-8 grid grid-cols-2 justify-items-center gap-[5px] tablet:mt-10 tablet:gap-5 pc:mt-[70px] pc:grid-cols-3 pc:gap-20">
-                {myExchangeOffers.map((offer) => (
-                  <MyExchangeOfferCard
-                    key={offer.id}
-                    offer={offer}
-                    onCancel={handleCancelExchangeOffer}
-                  />
-                ))}
-              </div>
+              <>
+                <div className="mt-8 grid grid-cols-2 justify-items-center gap-[5px] tablet:mt-10 tablet:gap-5 pc:mt-[70px] pc:grid-cols-3 pc:gap-20">
+                  {visibleExchangeOffers.map((offer) => (
+                    <MyExchangeOfferCard
+                      key={offer.id}
+                      offer={offer}
+                      onCancel={handleCancelExchangeOffer}
+                    />
+                  ))}
+                </div>
+                {hasMoreOffers && (
+                  <div ref={offersSentinelRef} className="h-1 w-full" />
+                )}
+              </>
             )}
           </section>
         )}

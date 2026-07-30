@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import InputSearch from "@/components/common/InputSearch";
 import Dropdown from "@/components/common/Dropdown";
@@ -27,16 +27,38 @@ export default function SellModal() {
   const [selectedCard, setSelectedCard] = useState(null);
   const debouncedSearch = useDebounce(search, 300);
 
-  const { data, isPending, isError } = useQuery({
+  const {
+    data,
+    isPending,
+    isError,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  } = useInfiniteQuery({
     queryKey: ["my-inventories", debouncedSearch, grade, genre],
-    queryFn: () =>
+    queryFn: ({ pageParam }) =>
       userService.getMyInventories({
+        pageParam,
         keyword: debouncedSearch,
         grade,
         genre,
       }),
+    initialPageParam: undefined,
+    getNextPageParam: (lastPage) =>
+      lastPage.hasNextPage ? lastPage.nextCursor : undefined,
     meta: { name: "내 포토카드 목록" },
   });
+
+  // 이 목록은 페이지 전체가 아니라 그리드 자체가 내부 스크롤(overflow-y-auto)이라,
+  // 뷰포트 기준인 IntersectionObserver 대신 그리드의 스크롤 위치로 다음 페이지를 감지합니다.
+  const handleGridScroll = (event) => {
+    const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
+    const reachedBottom = scrollHeight - scrollTop - clientHeight < 120;
+
+    if (reachedBottom && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  };
 
   const { data: allData } = useQuery({
     queryKey: ["my-inventories-all", debouncedSearch],
@@ -49,15 +71,17 @@ export default function SellModal() {
   });
 
   const cards =
-    data?.list.map((item) => ({
-      ...item.photoCard,
-      id: item.id,
-      makerNickname: item.photoCard?.creator?.nickname,
-      price: item.photoCard?.minPrice,
-      totalQuantity: item.ownedQuantity,
-      lastQuantity: item.ownedQuantity,
-      imgUrl: item.photoCard?.imageUrl,
-    })) || [];
+    data?.pages.flatMap((page) =>
+      page.list.map((item) => ({
+        ...item.photoCard,
+        id: item.id,
+        makerNickname: item.photoCard?.creator?.nickname,
+        price: item.photoCard?.minPrice,
+        totalQuantity: item.ownedQuantity,
+        lastQuantity: item.ownedQuantity,
+        imgUrl: item.photoCard?.imageUrl,
+      })),
+    ) || [];
 
   const allCards =
     allData?.list.map((item) => ({
@@ -185,7 +209,10 @@ export default function SellModal() {
       )}
 
       {!isPending && !isError && cards.length > 0 && (
-        <div className="mx-auto grid max-h-[60vh] max-w-[345px] grid-cols-2 place-items-center gap-[5px] overflow-y-auto tablet:max-w-none tablet:gap-[20px] pc:gap-[40px] [scrollbar-color:#5a5a5a_transparent] [scrollbar-width:thin] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-[2px] [&::-webkit-scrollbar-thumb]:bg-gray-400 [&::-webkit-scrollbar-track]:bg-transparent">
+        <div
+          onScroll={handleGridScroll}
+          className="mx-auto grid max-h-[60vh] max-w-[345px] grid-cols-2 place-items-center gap-[5px] overflow-y-auto tablet:max-w-none tablet:gap-[20px] pc:gap-[40px] [scrollbar-color:#5a5a5a_transparent] [scrollbar-width:thin] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-[2px] [&::-webkit-scrollbar-thumb]:bg-gray-400 [&::-webkit-scrollbar-track]:bg-transparent"
+        >
           {cards.map((card) => (
             <button
               key={card.id}
