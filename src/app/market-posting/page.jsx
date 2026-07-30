@@ -172,6 +172,7 @@ export default function MarketplacePage() {
     setGrade([]);
     setGenre([]);
     setAvailability([]);
+    setSheetFilter({ grade: [], genre: [], availability: [] });
   };
 
   function handleCardClick(card) {

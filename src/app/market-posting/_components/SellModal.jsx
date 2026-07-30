@@ -88,6 +88,7 @@ export default function SellModal() {
     setSearch("");
     setGrade([]);
     setGenre([]);
+    setSheetFilter({ grade: [], genre: [] });
   };
 
   if (selectedCard) {
