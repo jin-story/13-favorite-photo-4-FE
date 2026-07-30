@@ -27,7 +27,7 @@ import { useAuth } from "@/providers/AuthProvider";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
-import { getGnbSubState } from "./gnbSubState";
+import { getGnbSubState } from "../../lib/utils/gnbSubState";
 import GnbTitle from "./GnbTitle";
 import MobileNotification from "./MobileNotification";
 import NotificationDropdown from "./NotificationDropdown";
@@ -170,7 +170,12 @@ function MobileHeaderResolver({
   const modal = searchParams.get("modal");
 
   if (forceSubTitle !== undefined) {
-    return <MobileSubHeader onBackClick={onBackClick} titleOverride={forceSubTitle} />;
+    return (
+      <MobileSubHeader
+        onBackClick={onBackClick}
+        titleOverride={forceSubTitle}
+      />
+    );
   }
 
   const { isSub } = getGnbSubState(pathname, modal);

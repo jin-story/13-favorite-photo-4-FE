@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useSearchParams } from "next/navigation";
-import { getGnbSubState } from "./gnbSubState";
+import { getGnbSubState } from "../../lib/utils/gnbSubState";
 
 export default function GnbTitle() {
   const pathname = usePathname();
