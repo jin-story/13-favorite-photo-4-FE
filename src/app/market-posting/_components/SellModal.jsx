@@ -9,6 +9,7 @@ import SheetFilter from "@/components/common/SheetFilter";
 import Photocard from "@/components/common/Photocard";
 import Title from "@/components/common/Title";
 import filterIcon from "@/assets/icons/filter.svg";
+import refreshIcon from "@/assets/icons/exchange.svg";
 import { userService } from "@/lib/services/userService";
 import { useDebounce } from "@/hooks/useDebounce";
 import SellCardForm from "./SellCardForm";
@@ -80,6 +81,15 @@ export default function SellModal() {
     return acc;
   }, {});
 
+  const isFiltered =
+    debouncedSearch.trim().length > 0 || grade.length > 0 || genre.length > 0;
+
+  const handleResetAll = () => {
+    setSearch("");
+    setGrade([]);
+    setGenre([]);
+  };
+
   if (selectedCard) {
     return (
       <SellCardForm
@@ -126,6 +136,16 @@ export default function SellModal() {
             value={genre[0]}
             onChange={(value) => setGenre(value ? [value] : [])}
           />
+          {isFiltered && (
+            <button
+              type="button"
+              onClick={handleResetAll}
+              className="flex items-center justify-center p-2 text-gray-400 hover:text-white transition-colors animate-fade-in"
+              aria-label="필터 초기화"
+            >
+              <Image src={refreshIcon} alt="초기화" width={20} height={20} />
+            </button>
+          )}
         </div>
       </div>
 

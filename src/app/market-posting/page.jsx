@@ -17,6 +17,7 @@ import SheetFilter from "@/components/common/SheetFilter";
 import ButtonPrimary from "@/components/common/ButtonPrimary";
 import Photocard from "@/components/common/Photocard";
 import filterIcon from "@/assets/icons/filter.svg";
+import refreshIcon from "@/assets/icons/exchange.svg";
 import Gnb from "@/components/common/Gnb";
 import LoginRequiredModal from "./_components/LoginRequiredModal";
 import SellModal from "./_components/SellModal";
@@ -120,6 +121,19 @@ export default function MarketplacePage() {
     }
   }
 
+  const isFiltered =
+    debouncedSearch.trim().length > 0 ||
+    grade.length > 0 ||
+    genre.length > 0 ||
+    availability.length > 0;
+
+  const handleResetAll = () => {
+    setSearch("");
+    setGrade([]);
+    setGenre([]);
+    setAvailability([]);
+  };
+
   function handleCardClick(card) {
     if (!isLoggedIn) {
       openModal(<LoginRequiredModal />);
@@ -170,6 +184,16 @@ export default function MarketplacePage() {
                 value={availability[0]}
                 onChange={(value) => setAvailability(value ? [value] : [])}
               />
+              {isFiltered && (
+                <button
+                  type="button"
+                  onClick={handleResetAll}
+                  className="flex items-center justify-center p-2 text-gray-400 hover:text-white transition-colors animate-fade-in"
+                  aria-label="필터 초기화"
+                >
+                  <Image src={refreshIcon} alt="초기화" width={20} height={20} />
+                </button>
+              )}
             </div>
           </div>
 
