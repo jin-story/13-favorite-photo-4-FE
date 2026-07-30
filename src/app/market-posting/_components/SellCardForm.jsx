@@ -162,7 +162,7 @@ export default function SellCardForm({ card, onCancel }) {
         className="tablet:max-w-none pc:max-w-none"
       />
 
-      <div className="flex flex-row gap-[15px] tablet:gap-[20px]">
+      <div className="sticky bottom-0 flex flex-row gap-[15px] tablet:gap-[20px]">
         <ButtonSecondary
           onClick={onCancel}
           className="w-full! h-[55px]! pc:h-[60px]!"

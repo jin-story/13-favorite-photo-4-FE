@@ -100,7 +100,7 @@ export default function SellModal() {
   }
 
   return (
-    <div className="flex w-screen flex-col gap-[20px] px-[15px] pt-[35px] pb-[30px] tablet:gap-[25px] tablet:px-[20px] tablet:pt-[50px] tablet:pb-[40px] pc:w-[1180px] pc:gap-[30px] pc:px-[120px] pc:pt-[60px] pc:pb-[60px]">
+    <div className="flex w-screen flex-col gap-[20px] px-[15px] pt-[35px] pb-[30px] tablet:gap-[25px] tablet:px-[20px] tablet:pt-[50px] tablet:pb-[40px] pc:w-[1180px] pc:max-h-[calc(100dvh-80px)] pc:gap-[30px] pc:overflow-y-auto pc:px-[120px] pc:pt-[60px] pc:pb-[60px] pc:[scrollbar-color:#5a5a5a_transparent] pc:[scrollbar-width:thin] pc:[&::-webkit-scrollbar]:w-2 pc:[&::-webkit-scrollbar-thumb]:rounded-[2px] pc:[&::-webkit-scrollbar-thumb]:bg-gray-400 pc:[&::-webkit-scrollbar-track]:bg-transparent">
       <div className="mx-auto h-[6px] w-[48px] rounded-full bg-gray-400 pc:hidden" />
 
       <p className="text-baskin-18 pc:text-baskin-24 text-gray-300">

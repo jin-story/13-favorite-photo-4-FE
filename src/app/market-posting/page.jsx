@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Drawer } from "vaul";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
 import Image from "next/image";
 import { useAuth } from "@/providers/AuthProvider";
@@ -73,6 +73,16 @@ export default function MarketplacePage() {
     meta: { name: "마켓플레이스 목록" },
   });
 
+  const { data: allData } = useQuery({
+    queryKey: ["market-postings-all", debouncedSearch],
+    queryFn: () =>
+      marketPostingService.fetchMarketPostings({
+        keyword: debouncedSearch,
+        limit: 100,
+      }),
+    meta: { name: "마켓플레이스 전체 목록" },
+  });
+
   const { ref: sentinelRef, inView } = useInView();
 
   useEffect(() => {
@@ -95,6 +105,36 @@ export default function MarketplacePage() {
         description: posting.description || posting.photoCard?.description,
       })),
     ) || [];
+
+  const allCards =
+    allData?.list.map((posting) => ({
+      grade: posting.photoCard?.grade,
+      genre: posting.photoCard?.genre,
+      availability: posting.remainingQuantity === 0 ? "SOLD_OUT" : "SALE",
+    })) || [];
+
+  const previewCards = allCards.filter((card) => {
+    if (sheetFilter.grade.length > 0 && !sheetFilter.grade.includes(card.grade)) {
+      return false;
+    }
+    if (sheetFilter.genre.length > 0 && !sheetFilter.genre.includes(card.genre)) {
+      return false;
+    }
+    if (
+      sheetFilter.availability.length > 0 &&
+      !sheetFilter.availability.includes(card.availability)
+    ) {
+      return false;
+    }
+    return true;
+  });
+
+  const previewCounts = allCards.reduce((acc, card) => {
+    acc[card.grade] = (acc[card.grade] || 0) + 1;
+    acc[card.genre] = (acc[card.genre] || 0) + 1;
+    acc[card.availability] = (acc[card.availability] || 0) + 1;
+    return acc;
+  }, {});
 
   useEffect(() => {
     const handleResize = () => {
@@ -219,7 +259,8 @@ export default function MarketplacePage() {
           filter={sheetFilter}
           setFilter={setSheetFilter}
           singleSelectCategories={["grade", "genre", "availability"]}
-          totalCount={cards.length}
+          counts={previewCounts}
+          totalCount={previewCards.length}
           onApply={(appliedFilter) => {
             setGrade(appliedFilter.grade);
             setGenre(appliedFilter.genre);
@@ -264,7 +305,7 @@ export default function MarketplacePage() {
         <div ref={sentinelRef} className="h-[1px]" />
       </div>
 
-      <div className="fixed inset-x-0 bottom-0 z-30 flex justify-center bg-black px-[15px] py-[15px] tablet:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-30 flex justify-center px-[15px] py-[15px] tablet:hidden">
         <ButtonPrimary variant="thin" onClick={handleSellClick}>
           나의 포토카드 판매하기
         </ButtonPrimary>
