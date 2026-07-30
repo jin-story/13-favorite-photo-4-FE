@@ -1,22 +1,22 @@
 "use client";
 
-import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
-import { useRouter, usePathname, useParams } from "next/navigation";
+import ExchangeCard from "@/components/common/ExchangeCard";
 import Gnb from "@/components/common/Gnb";
 import PhotoCardInfo from "@/components/common/PhotoCardInfo";
-import { useModal } from "@/providers/ModalProvider";
 import SellerCardAction from "@/components/common/SellerCardAction";
 import Title from "@/components/common/Title";
-import ExchangeCard from "@/components/common/ExchangeCard";
 import {
-  getMarketPosting,
   deleteMarketPosting,
+  getMarketPosting,
 } from "@/lib/services/marketPostingService";
+import { useModal } from "@/providers/ModalProvider";
+import Image from "next/image";
+import { useParams, usePathname, useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 
 import {
-  getExchangeProposals,
   approveExchangeProposal,
+  getExchangeProposals,
   rejectExchangeProposal,
 } from "@/lib/services/exchangeProposalService";
 
@@ -75,7 +75,8 @@ export default function SellingPhotocardDetails() {
 
   //수정 하기
   const handleEdit = () => {
-    router.push(`${pathname}?modal=edit-card&id=${marketPosting.id}`, {
+    // 모달 쿼리는 push 대신 replace로 이동해야 뒤로가기 시 모달이 재오픈되지 않음
+    router.replace(`${pathname}?modal=edit-card&id=${marketPosting.id}`, {
       scroll: false,
     });
   };
@@ -101,7 +102,7 @@ export default function SellingPhotocardDetails() {
 
               closeModal();
 
-              router.push("/my-sale");
+              router.push("/my-listings");
             } catch (e) {
               console.error(e);
             } finally {

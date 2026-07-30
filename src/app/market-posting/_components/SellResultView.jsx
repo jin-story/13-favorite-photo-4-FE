@@ -1,10 +1,10 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
-import Image from "next/image";
-import Gnb from "@/components/common/Gnb";
-import ButtonSecondary from "@/components/common/ButtonSecondary";
 import closeIcon from "@/assets/icons/close.svg";
+import ButtonSecondary from "@/components/common/ButtonSecondary";
+import Gnb from "@/components/common/Gnb";
+import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const statusConfig = {
   success: {
@@ -17,7 +17,7 @@ const statusConfig = {
       </>
     ),
     buttonText: "나의 판매 포토카드에서 확인하기",
-    buttonHref: "/my-sales",
+    buttonHref: "/my-listings",
   },
   fail: {
     label: "실패",
@@ -58,7 +58,6 @@ export default function SellResultView({ status }) {
           >
             <Image src={closeIcon} alt="" className="size-full" />
           </button>
-
           판매 등록{" "}
           <span className={config.labelClassName}>{config.label}</span>
         </p>

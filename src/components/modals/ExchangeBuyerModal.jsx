@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Drawer } from "vaul";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import close from "@/assets/icons/close.svg";
 import Gnb from "../common/Gnb";
@@ -19,6 +19,7 @@ export default function ExchangeBuyerModal({ onClose }) {
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
+  const queryClient = useQueryClient();
 
   const postingId = params?.id;
   const cardId = searchParams.get("cardId"); // 선택한 내 카드 ID (userInventoryId)
@@ -80,7 +81,8 @@ export default function ExchangeBuyerModal({ onClose }) {
   // 5. 교환 제안 API 뮤테이션 (성공 시 success, 실패 시 에러 메시지를 담아 error 페이지로 라우팅)
   const exchangeMutation = useMutation({
     mutationFn: (payload) => marketService.requestExchange(postingId, payload),
-    onSuccess: () => {
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["myExchangeOffers"] });
       router.push(`/market-posting/${postingId}/buyer/exchange-success`);
     },
     onError: (error) => {
@@ -117,9 +119,10 @@ export default function ExchangeBuyerModal({ onClose }) {
     });
   };
 
+  // 모달 쿼리 이동은 push 대신 replace로 해야 뒤로가기 시 모달이 재오픈되지 않음
   const handleClose = () => {
     if (postingId) {
-      router.push(`/market-posting/${postingId}/buyer`);
+      router.replace(`/market-posting/${postingId}/buyer`);
     }
     onClose?.();
   };
@@ -151,7 +154,7 @@ export default function ExchangeBuyerModal({ onClose }) {
           </div>
 
           {/* 스크롤 영역 */}
-          <div className="flex-1 overflow-y-auto px-4 tablet:px-8 pb-12 [&::-webkit-scrollbar]:w-[8px] [&::-webkit-scrollbar-thumb]:bg-[var(--gray-gray400,#5A5A5A)] [&::-webkit-scrollbar-thumb]:rounded-[4px] [&::-webkit-scrollbar-track]:bg-transparent">
+          <div className="flex-1 mt-[60px] tablet:mt-0 overflow-y-auto px-4 tablet:px-8 pb-12 [&::-webkit-scrollbar]:w-[8px] [&::-webkit-scrollbar-thumb]:bg-[var(--gray-gray400,#5A5A5A)] [&::-webkit-scrollbar-thumb]:rounded-[4px] [&::-webkit-scrollbar-track]:bg-transparent">
             <div className="flex flex-col w-full max-w-[345px] tablet:max-w-[704px] mx-auto pc:max-w-[920px]">
               {/* 타이틀 영역 */}
               <span className="mt-[30px] pc:mt-[60px] hidden tablet:block text-baskin-16 pc:text-baskin-24 text-gray-300">
