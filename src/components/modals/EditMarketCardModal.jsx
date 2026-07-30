@@ -82,15 +82,23 @@ export default function EditMarketCardModal({ onClose }) {
   const handleSubmit = async () => {
     if (isSubmitting) return;
     try {
-      const body = {
+      const rawBody = {
         quantity,
-        price,
+        price: Number(price),
         title: marketPosting.title,
         description: marketPosting.description,
         exchangeGrade: selectedGrade,
         exchangeGenre: selectedGenre,
         exchangeDescription,
       };
+      // 백엔드 수정 스키마는 이 필드들을 optional로만 선언해서 undefined(생략)는
+      // 허용하지만 null은 유효성 검사에서 거부한다. 기존 값이 비어있던(null) 필드는
+      // body에서 아예 제외해 생략 처리한다.
+      const body = Object.fromEntries(
+        Object.entries(rawBody).filter(
+          ([, value]) => value !== null && value !== undefined && value !== "",
+        ),
+      );
       setIsSubmitting(true);
       await updateMarketPosting(id, body);
 
