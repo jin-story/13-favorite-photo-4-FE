@@ -85,7 +85,7 @@ function MobileMainHeader({
       </button>
 
       {/* Center */}
-      <Link href="/market-posting">
+      <Link href="/">
         <Image
           src={logo}
           alt="최애의 포토"
@@ -250,7 +250,7 @@ export default function Gnb({
           "inset-0",
         )}
       >
-        <Link href="/market-posting">
+        <Link href="/">
           <Image
             src={logo}
             alt="최애의 포토"
@@ -312,7 +312,7 @@ export default function Gnb({
           "fixed top-0 z-1000",
         )}
       >
-        <Link href="/market-posting">
+        <Link href="/">
           <Image
             src={logo}
             alt="최애의 포토"
