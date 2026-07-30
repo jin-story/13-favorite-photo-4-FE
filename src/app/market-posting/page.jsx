@@ -193,12 +193,14 @@ export default function MarketplacePage() {
       <Gnb />
 
       <div className="mx-auto flex w-full max-w-[1920px] flex-col gap-[20px] px-[15px] pt-[80px] pb-[90px] tablet:px-5 tablet:pt-[110px] tablet:pb-[40px] pc:px-[220px] pc:pt-[140px] pc:pb-[60px]">
-        <Title
-          type="title_button"
-          text="마켓플레이스"
-          buttonText="나의 포토카드 판매하기"
-          onButtonClick={handleSellClick}
-        />
+        <div className="hidden tablet:block">
+          <Title
+            type="title_button"
+            text="마켓플레이스"
+            buttonText="나의 포토카드 판매하기"
+            onButtonClick={handleSellClick}
+          />
+        </div>
 
         <div className="flex flex-col gap-[15px] tablet:flex-row tablet:items-center tablet:justify-between">
           <div className="flex items-center gap-[15px] tablet:gap-[20px] pc:gap-[30px]">
