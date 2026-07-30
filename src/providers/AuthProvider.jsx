@@ -1,5 +1,5 @@
 "use client";
-
+import { useNotificationStream } from "@/hooks/useNotificationStream";
 import {
   getServerSideToken,
   loginAction,
@@ -7,7 +7,13 @@ import {
 } from "@/lib/actions/auth";
 import { authService } from "@/lib/services/authService";
 import { userService } from "@/lib/services/userService";
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 const AuthContext = createContext({
   login: () => {},
@@ -28,6 +34,8 @@ export const useAuth = () => {
 
 export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [notification, setNotification] = useState([]);
+
   const getUser = async () => {
     try {
       const userData = await userService.getMe();
@@ -38,7 +46,6 @@ export default function AuthProvider({ children }) {
     }
   };
 
-  const [notification, setNotification] = useState([]);
   const getNotification = async () => {
     try {
       const userData = await userService.getNotification();
@@ -48,6 +55,18 @@ export default function AuthProvider({ children }) {
       setNotification([]);
     }
   };
+
+  const handleSseNotification = useCallback((newNotification) => {
+    setNotification((currentNotifications) => [
+      newNotification,
+      ...currentNotifications,
+    ]);
+  }, []);
+
+  useNotificationStream({
+    enabled: Boolean(user),
+    onNotification: handleSseNotification,
+  });
 
   const register = async (nickname, email, password, passwordConfirmation) => {
     if (password !== passwordConfirmation) {
@@ -76,6 +95,7 @@ export default function AuthProvider({ children }) {
     try {
       await authService.logout();
       setUser(null);
+      setNotification([]);
     } catch (error) {
       console.error("로그아웃 실패:", error);
     }
